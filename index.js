@@ -10,9 +10,6 @@ dbConnection();
 
 app.use(cors());
 
-//Public
-app.use( express.static('public') );
-
 //parse Body Json
 app.use(express.json());
 
