@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const { validateJWT } = require("../middlewares/validateJWT");
 const { check } = require("express-validator");
-const { getEvents, newEvent, updateEvent, deleteEvent } = require("../controllers/events");
 const { validateFields } = require("../middlewares/validateFields"); 
 const { isDate } = require("../helpers/isDate");
+const { updateRecord, saveRecord, getRecord, deleteRecord } = require("../controllers/adopters");
 
 const router = Router();
 /**
@@ -12,19 +12,13 @@ const router = Router();
 router.use(validateJWT);
 
 
-router.get('/',  getEvents);
+router.get('/',  getRecord);
 
 router.post('/',
-[
-    check('title','title is obliged').not().isEmpty(),
-    check('start','date start is obliged').custom( isDate ),
-    check('end','date end  is obliged').custom( isDate ),
-    validateFields
-],
-newEvent);
+saveRecord);
 
-router.put('/:id',   updateEvent);
+router.put('/:id',   updateRecord);
 
-router.delete('/:id',  deleteEvent);
+router.delete('/:id',  deleteRecord);
 
 module.exports = router;

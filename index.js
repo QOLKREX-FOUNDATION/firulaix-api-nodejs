@@ -16,7 +16,10 @@ app.use(express.json());
 
 //Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/events', require('./routes/events'));
+app.use('/api/country', require('./routes/country'));
+
+//data
+app.use('/api/adopters', require('./routes/adopters'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo'+ process.env.PORT);

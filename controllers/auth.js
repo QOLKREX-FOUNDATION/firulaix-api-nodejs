@@ -8,12 +8,19 @@ const { validateRol } = require("../helpers/validateRol");
 const getRecord = async (req, res = response) => {
 	req.query.publicAddress = String(req.query.publicAddress).toUpperCase();
 	const { publicAddress } = req.query;
+	try {
+		const user = await User.findOne({ publicAddress });
 
-	const user = await User.findOne({ publicAddress });
-
-	res.status(201).json({
-		user,
-	});
+		res.status(201).json({
+			user,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "error system",
+		});
+	}
 };
 
 const createRecord = async (req, res = response) => {
@@ -38,7 +45,7 @@ const createRecord = async (req, res = response) => {
 		}
 
 		newUser = new User(req.body);
-		console.log(req.body);
+		newUser.user = req.uid;
 		await newUser.save();
 
 		res.status(201).json({
@@ -79,6 +86,10 @@ const login = async (req, res = response) => {
 
 		if (address.toUpperCase() === publicAddress.toUpperCase()) {
 			const token = await generateJWT(user.id, user.address);
+			user.nonce = Math.floor(Math.random() * 1000000);
+
+			await User.findByIdAndUpdate(user._id, { ...user }, { new: true });
+
 			res.json({
 				ok: true,
 				token,
