@@ -20,6 +20,7 @@ app.use('/api/country', require('./routes/country'));
 
 //data
 app.use('/api/adopters', require('./routes/adopters'));
+app.use('/api/pets', require('./routes/pets'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo'+ process.env.PORT);

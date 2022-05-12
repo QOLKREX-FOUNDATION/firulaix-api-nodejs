@@ -5,17 +5,23 @@ const User = require("../model/User");
 const getRecord = async (req, res = response) => {
 	const { country, document, documentNumber } = req.query;
 	try {
-		const user = await User.findOne({ _id: req.uid });
-
 		let adopters = await Adopter.findOne({
 			country,
 			document,
 			documentNumber,
 		}).populate("user", "publicAddress");
 
+		const compare = await User.findById(adopters.user._id).populate(
+			"user",
+			"publicAddress"
+		);
+
+		const user = await User.findById(req.uid).populate("user", "publicAddress");
+			console.log(compare)
+			console.log(user)
 		if (
-			String(user.publicAddress).toUpperCase() !=
-			String(adopters.user.publicAddress).toUpperCase()
+			String(user.user._id).toUpperCase() !=
+			String(compare.user._id).toUpperCase()
 		) {
 			adopters = {
 				_id: adopters._id,
@@ -51,23 +57,23 @@ const getRecord = async (req, res = response) => {
 const saveRecord = async (req, res = response) => {
 	delete req.body._id;
 	const adopter = new Adopter(req.body);
-	let msg="";
+	let msg = "";
 	try {
 		adopter.user = req.uid;
 
-		let  find = await Adopter.findOne({ address: req.body.address });
-		if(find) msg = "app.errorPost.addressDuplicate";
+		let find = await Adopter.findOne({ address: req.body.address });
+		if (find) msg = "app.errorPost.addressDuplicate";
 
 		find = await Adopter.findOne({ email: req.body.email });
-		if(find) msg= "app.errorPost.emailDuplicate"
+		if (find) msg = "app.errorPost.emailDuplicate";
 
-		if(msg){
+		if (msg) {
 			res.status(400).json({
 				ok: false,
-				msg: msg
+				msg: msg,
 			});
 		}
-		
+
 		const record = await adopter.save();
 
 		res.status(201).json({
@@ -89,7 +95,13 @@ const updateRecord = async (req, res = response) => {
 			"user",
 			"publicAddress"
 		);
-		const user = await User.findOne({ _id: req.uid });
+
+		const compare = await User.findById(find.user._id).populate(
+			"user",
+			"publicAddress"
+		);
+
+		const user = await User.findById(req.uid).populate("user", "publicAddress");
 
 		if (!find) {
 			return res.status(404).json({
@@ -106,8 +118,8 @@ const updateRecord = async (req, res = response) => {
 		}
 
 		if (
-			String(user.publicAddress).toUpperCase() ==
-			String(find.user.publicAddress).toUpperCase()
+			String(compare.user._id).toUpperCase() ==
+			String(user.user._id).toUpperCase()
 		) {
 			await Adopter.findByIdAndUpdate(
 				req.params.id,
@@ -137,7 +149,12 @@ const deleteRecord = async (req, res = response) => {
 		"publicAddress"
 	);
 
-	const user = await User.findOne({ _id: req.uid });
+	const compare = await User.findById(find.user._id).populate(
+		"user",
+		"publicAddress"
+	);
+
+	const user = await User.findById(req.uid).populate("user", "publicAddress");
 
 	if (!find) {
 		return res.status(404).json({
@@ -153,8 +170,8 @@ const deleteRecord = async (req, res = response) => {
 		});
 	}
 	if (
-		String(user.publicAddress).toUpperCase() ==
-		String(find.user.publicAddress).toUpperCase()
+		String(user.user._id).toUpperCase() ==
+		String(compare.user._id).toUpperCase()
 	) {
 		await Adopter.findByIdAndRemove(req.params.id);
 	}
@@ -163,6 +180,8 @@ const deleteRecord = async (req, res = response) => {
 		ok: true,
 	});
 };
+
+
 
 module.exports = {
 	getRecord,

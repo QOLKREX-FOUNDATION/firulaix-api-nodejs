@@ -26,15 +26,6 @@ const getRecord = async (req, res = response) => {
 const createRecord = async (req, res = response) => {
 	try {
 		req.body.publicAddress = String(req.body.publicAddress).toUpperCase();
-		const { publicAddress } = req.body;
-		let newUser = await User.findOne({ publicAddress });
-
-		if (newUser) {
-			return res.status(409).json({
-				ok: false,
-				errors: "Address Exist",
-			});
-		}
 
 		let user = await User.findOne({ _id: req.uid });
 		if (!validateRol(user.rol, req.body.rol)) {
@@ -44,10 +35,23 @@ const createRecord = async (req, res = response) => {
 			});
 		}
 
-		newUser = new User(req.body);
-		newUser.user = req.uid;
-		await newUser.save();
+		const { publicAddress } = req.body;
+		let newUser = await User.findOne({ publicAddress });
 
+		if (newUser) {
+			await User.findByIdAndUpdate(
+				newUser._id,
+				{
+					...req.body,
+					user: req.uid,
+				},
+				{ new: true }
+			);
+		}else{
+			newUser = new User(req.body);
+			newUser.user = req.uid;
+			await newUser.save();
+		}
 		res.status(201).json({
 			ok: true,
 			uid: user.id,
