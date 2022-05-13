@@ -4,25 +4,29 @@ const User = require("../model/User");
 
 const getRecord = async (req, res = response) => {
 	const { country, document, documentNumber } = req.query;
+
 	try {
 		let adopters = await Adopter.findOne({
 			country,
 			document,
 			documentNumber,
-		}).populate("user", "publicAddress");
+		});
 
-		const compare = await User.findById(adopters.user._id).populate(
-			"user",
-			"publicAddress"
-		);
-
+		const compare = await User.findById(
+			String(adopters.user).toString()
+		).populate("user", "publicAddress");
 		const user = await User.findById(req.uid).populate("user", "publicAddress");
-			console.log(compare)
-			console.log(user)
+
 		if (
-			String(user.user._id).toUpperCase() !=
-			String(compare.user._id).toUpperCase()
+			String(user?.user?._id).toUpperCase() ==
+				String(compare?.user?._id).toUpperCase() ||
+			String(adopters.user).toString() == "000000000000000000000000"
 		) {
+			adopters = {
+				...adopters._doc,
+				idEntity: adopters._doc.idRegisteringEntity,
+			};
+		} else {
 			adopters = {
 				_id: adopters._id,
 				country: adopters.country,
@@ -36,11 +40,13 @@ const getRecord = async (req, res = response) => {
 				lastName: adopters.lastName,
 				mLastName: adopters.mLastName,
 				user: {
-					_id: adopters.user._id,
+					_id: adopters?.user?._id,
 				},
 				idRegisteringEntity: adopters.idRegisteringEntity,
+				idEntity: adopters.idRegisteringEntity,
 			};
 		}
+
 		res.json({
 			ok: true,
 			adopters,
@@ -91,12 +97,9 @@ const saveRecord = async (req, res = response) => {
 
 const updateRecord = async (req, res = response) => {
 	try {
-		const find = await Adopter.findById(req.params.id).populate(
-			"user",
-			"publicAddress"
-		);
+		const find = await Adopter.findById(req.params.id);
 
-		const compare = await User.findById(find.user._id).populate(
+		const compare = await User.findById(String(find.user).toString()).populate(
 			"user",
 			"publicAddress"
 		);
@@ -110,30 +113,32 @@ const updateRecord = async (req, res = response) => {
 			});
 		}
 
-		if (find.user._id.toString() !== req.uid) {
-			return res.status(404).json({
-				ok: false,
-				msg: "No permit",
-			});
-		}
-
 		if (
-			String(compare.user._id).toUpperCase() ==
-			String(user.user._id).toUpperCase()
+			String(user?.user?._id).toUpperCase() ==
+				String(compare?.user?._id).toUpperCase() ||
+			String(find.user).toString() == "000000000000000000000000"
 		) {
 			await Adopter.findByIdAndUpdate(
 				req.params.id,
 				{
 					...req.body,
-					user: req.uid,
+					user:
+						req.body.idRegisteringEntity == find.idRegisteringEntity
+							? req.uid
+							: "000000000000000000000000",
 				},
 				{ new: true }
 			);
-		}
 
-		res.status(200).json({
-			ok: true,
-		});
+			res.status(200).json({
+				ok: true,
+			});
+		} else {
+			return res.status(404).json({
+				ok: false,
+				msg: "No permit",
+			});
+		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
@@ -144,12 +149,9 @@ const updateRecord = async (req, res = response) => {
 };
 
 const deleteRecord = async (req, res = response) => {
-	const find = await Adopter.findById(req.params.id).populate(
-		"user",
-		"publicAddress"
-	);
+	const find = await Adopter.findById(req.params.id);
 
-	const compare = await User.findById(find.user._id).populate(
+	const compare = await User.findById(String(find.user).toString()).populate(
 		"user",
 		"publicAddress"
 	);
@@ -163,25 +165,24 @@ const deleteRecord = async (req, res = response) => {
 		});
 	}
 
-	if (find.user._id.toString() !== req.uid) {
+	if (
+		String(user?.user?._id).toUpperCase() ==
+			String(compare?.user?._id).toUpperCase() ||
+		String(find.user).toString() == "000000000000000000000000"
+	) {
+		await Adopter.findByIdAndRemove(req.params.id);
+
+	res.status(200).json({
+		ok: true,
+	});
+	} else {
 		return res.status(404).json({
 			ok: false,
 			msg: "No permit",
 		});
 	}
-	if (
-		String(user.user._id).toUpperCase() ==
-		String(compare.user._id).toUpperCase()
-	) {
-		await Adopter.findByIdAndRemove(req.params.id);
-	}
 
-	res.status(200).json({
-		ok: true,
-	});
 };
-
-
 
 module.exports = {
 	getRecord,
