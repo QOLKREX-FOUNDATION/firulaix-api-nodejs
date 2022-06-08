@@ -1,18 +1,13 @@
-const validateObject = [
-	{ rol: "admin", insert: "er" },
-	{ rol: "er", insert: "user" },
-	{ rol: "user", insert: "medical" },
-];
-
-const validateRol = (rol, insert) => {
-    let bandera=false;
-	validateObject.forEach((ob) => {
-		if (ob.rol === rol && ob.insert === insert) {
-            bandera =true;
-			return true;
-		}
-	});
-	return bandera;
+const validateRol = (rolNew) => {
+	if(rolNew=="ad") {
+		return {ad:true};
+	}else if(rolNew=="er"){
+		return {er:true};
+	}else if (rolNew == "us"){
+		return {user:true};
+	}else{
+		return {}
+	}
 };
 
 module.exports= {

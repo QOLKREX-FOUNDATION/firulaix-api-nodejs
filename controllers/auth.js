@@ -28,10 +28,10 @@ const createRecord = async (req, res = response) => {
 		req.body.publicAddress = String(req.body.publicAddress).toUpperCase();
 
 		let user = await User.findOne({ _id: req.uid });
-		if (!validateRol(user.rol, req.body.rol)) {
+		if (!user[req.body.rol]) {
 			return res.status(403).json({
 				ok: false,
-				errors: "No permit",
+				errors: "No permit"
 			});
 		}
 
@@ -43,12 +43,12 @@ const createRecord = async (req, res = response) => {
 				newUser._id,
 				{
 					...req.body,
-					user: req.uid,
+					...validateRol(req.body.rolNew),
 				},
 				{ new: true }
 			);
-		}else{
-			newUser = new User(req.body);
+		} else {
+			newUser = new User({ ...req.body, ...validateRol(req.body.rolNew) });
 			newUser.user = req.uid;
 			await newUser.save();
 		}
@@ -56,7 +56,6 @@ const createRecord = async (req, res = response) => {
 			ok: true,
 			uid: user.id,
 			publicAddress: user.publicAddress,
-			nonce: user.nonce,
 		});
 	} catch (error) {
 		console.log(error);

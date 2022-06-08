@@ -6,6 +6,7 @@ const {
 	getRecord,
 	deleteRecord,
 	statusRecord,
+	getHash,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -19,6 +20,7 @@ const router = Router();
 router.use(validateJWT);
 
 router.get("/", getRecord);
+
 
 router.post("/", saveRecord);
 

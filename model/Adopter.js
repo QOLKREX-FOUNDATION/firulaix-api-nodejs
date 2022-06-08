@@ -29,6 +29,7 @@ const AdopterSchema = new Schema({
     address: {
 		type: String,
 		required: true,
+		unique: true,
 	},
 	name: {
 		type: String,
@@ -60,21 +61,17 @@ const AdopterSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	departament: {
+	department: {
 		type: String,
-		required: true,
 	},
 	province: {
 		type: String,
-		required: true,
 	},
 	district: {
 		type: String,
-		required: true,
 	},
 	direction: {
 		type: String,
-		required: true,
 	},
 	status: {
 		type: Boolean,

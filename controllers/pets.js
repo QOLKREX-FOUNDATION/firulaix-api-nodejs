@@ -1,20 +1,17 @@
 const { response } = require("express");
 const { validateJWT } = require("../middlewares/validateJWT");
 const Pet = require("../model/Pet");
-const User = require("../model/User");
 
 const getRecord = async (req, res = response) => {
 	const { chip } = req.query;
 	try {
-		const user = await User.findOne({ _id: req.uid });
-
-		let chip = await Pet.findOne({
+		let pet = await Pet.findOne({
 			chip,
 		}).populate("user", "publicAddress");
 
 		res.json({
 			ok: true,
-			chip,
+			pet,
 		});
 	} catch (error) {
 		console.log(error);
@@ -24,6 +21,8 @@ const getRecord = async (req, res = response) => {
 		});
 	}
 };
+
+
 
 const saveRecord = async (req, res = response) => {
 	const pet = new Pet(req.body);

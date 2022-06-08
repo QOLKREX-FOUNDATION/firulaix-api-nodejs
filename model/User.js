@@ -10,12 +10,23 @@ const UserSchema = new Schema({
 		type: String,
         default:  () => Math.floor(Math.random() * 1000000),
 	},
-    rol: {
-		type: String,
-        ref: 'Rol',
-        required: true,
+	ad: {
+		type: Boolean,
+		default:false
+    },
+	er: {
+		type: Boolean,
+		default:false
+    },
+	us: {
+		type: Boolean,
+		default:false
     },
 	user: {
+		type: Boolean,
+		default:false
+    },
+	created: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,

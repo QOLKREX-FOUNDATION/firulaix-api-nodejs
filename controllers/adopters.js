@@ -2,6 +2,41 @@ const { response } = require("express");
 const Adopter = require("../model/Adopter");
 const User = require("../model/User");
 
+const getAddress = async (req, res = response) => {
+	const { address } = req.query;
+	try {
+		let find = await Adopter.findOne({ address });
+		let bandera = find.address ? true : false;
+		res.status(201).json({
+			ok: true,
+			bandera,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
+const getEmail = async (req, res = response) => {
+	const { email } = req.query;
+	try {
+		let find = await Adopter.findOne({ email });
+		let bandera = find.email ? true : false;
+		res.status(201).json({
+			ok: true,
+			bandera,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
 const getRecord = async (req, res = response) => {
 	const { country, document, documentNumber } = req.query;
 
@@ -67,14 +102,21 @@ const saveRecord = async (req, res = response) => {
 	try {
 		adopter.user = req.uid;
 
-		let find = await Adopter.findOne({ address: req.body.address });
+		let find = await Adopter.findOne({ email: req.body.email });
+		if (find) msg = "app.errorPost.emailDuplicate";
+	
+		find = await Adopter.findOne({ address: req.body.address });
 		if (find) msg = "app.errorPost.addressDuplicate";
 
-		find = await Adopter.findOne({ email: req.body.email });
-		if (find) msg = "app.errorPost.emailDuplicate";
+		find = await Adopter.findOne({
+			country: req.body.country,
+			document: req.body.document,
+			documentNumber: req.body.documentNumber,
+		});
+		if (find) msg = "warOffice.form.adopterForm.register";
 
-		if (msg) {
-			res.status(400).json({
+		if (msg!="") {
+			return res.status(400).json({
 				ok: false,
 				msg: msg,
 			});
@@ -96,6 +138,7 @@ const saveRecord = async (req, res = response) => {
 };
 
 const updateRecord = async (req, res = response) => {
+	let msg = "";
 	try {
 		const find = await Adopter.findById(req.params.id);
 
@@ -110,6 +153,33 @@ const updateRecord = async (req, res = response) => {
 			return res.status(404).json({
 				ok: false,
 				msg: "No exist adopter",
+			});
+		}
+
+		let validate = await Adopter.findOne({
+			country: req.body.country,
+			document: req.body.document,
+			documentNumber: req.body.documentNumber,
+			_id: { $ne: req.params.id},
+		});
+		if (validate) msg = "warOffice.form.adopterForm.register";
+
+		 validate = await Adopter.findOne({
+			address: req.body.address,
+			_id: { $ne: req.params.id},
+		});
+		if (validate) msg = "app.errorPost.addressDuplicate";
+
+		validate = await Adopter.findOne({
+			email: req.body.email,
+			_id: { $ne: req.params.id},
+		});
+		if (validate) msg = "app.errorPost.emailDuplicate";
+
+		if (msg) {
+			return res.status(400).json({
+				ok: false,
+				msg: msg,
 			});
 		}
 
@@ -172,19 +242,20 @@ const deleteRecord = async (req, res = response) => {
 	) {
 		await Adopter.findByIdAndRemove(req.params.id);
 
-	res.status(200).json({
-		ok: true,
-	});
+		res.status(200).json({
+			ok: true,
+		});
 	} else {
 		return res.status(404).json({
 			ok: false,
 			msg: "No permit",
 		});
 	}
-
 };
 
 module.exports = {
+	getAddress,
+	getEmail,
 	getRecord,
 	saveRecord,
 	updateRecord,
