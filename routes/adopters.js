@@ -1,8 +1,6 @@
 const { Router } = require("express");
 const { validateJWT } = require("../middlewares/validateJWT");
-const { check } = require("express-validator");
-const { validateFields } = require("../middlewares/validateFields");
-const { isDate } = require("../helpers/isDate");
+
 const {
 	updateRecord,
 	saveRecord,
@@ -10,10 +8,14 @@ const {
 	deleteRecord,
     getAddress,
     getEmail,
+	getPublic,
 } = require("../controllers/adopters");
 const { validateUppercase } = require("../middlewares/validateUppercase");
 
 const router = Router();
+
+router.get("/public", getPublic);
+
 /**
  * Middleware all routes
  */
