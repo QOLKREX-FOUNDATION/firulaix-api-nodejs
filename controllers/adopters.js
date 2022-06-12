@@ -24,6 +24,13 @@ const getPublic = async (req, res = response) => {
 	const { address } = req.query;
 	try {
 		let find = await Adopter.findOne({ address });
+
+		if(!find.status) {
+			res.status(400).json({
+				ok: false,
+			});
+		}
+
 		res.status(201).json({
 			ok: true,
 			phone: find.phone,
