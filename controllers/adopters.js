@@ -124,22 +124,18 @@ const saveRecord = async (req, res = response) => {
 	delete req.body._id;
 	const adopter = new Adopter(req.body);
 	let msg = "";
+	let find = await Adopter.findOne({ email: req.body.email });
+	find = await Adopter.findOne({ address: req.body.address });
+	if (find) msg = "app.errorPost.emailDuplicate";
+	if (find) msg = "app.errorPost.addressDuplicate";
+	find = await Adopter.findOne({
+		country: req.body.country,
+		document: req.body.document,
+		documentNumber: req.body.documentNumber,
+	});
+	if (find) msg = "warOffice.form.adopterForm.register";
 	try {
 		adopter.user = req.uid;
-
-		let find = await Adopter.findOne({ email: req.body.email });
-		if (find) msg = "app.errorPost.emailDuplicate";
-	
-		find = await Adopter.findOne({ address: req.body.address });
-		if (find) msg = "app.errorPost.addressDuplicate";
-
-		find = await Adopter.findOne({
-			country: req.body.country,
-			document: req.body.document,
-			documentNumber: req.body.documentNumber,
-		});
-		if (find) msg = "warOffice.form.adopterForm.register";
-
 		if (msg!="") {
 			return res.status(400).json({
 				ok: false,
