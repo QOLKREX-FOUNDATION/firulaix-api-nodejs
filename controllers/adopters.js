@@ -70,7 +70,7 @@ const getRecord = async (req, res = response) => {
 			country,
 			document,
 			documentNumber,
-		});
+		}).select('-privateKey');
 
 		const compare = await User.findById(
 			String(adopters.user).toString()

@@ -5,11 +5,11 @@ const AdopterSchema = new Schema({
 		type: String,
 		required: true,
 	},
-    type: {
+	type: {
 		type: String,
 		required: true,
-    },
-    person: {
+	},
+	person: {
 		type: String,
 		required: true,
 	},
@@ -21,12 +21,12 @@ const AdopterSchema = new Schema({
 		type: String,
 		required: true,
 	},
-    address: {
+	address: {
 		type: String,
 		required: true,
-        unique: true,
+		unique: true,
 	},
-    address: {
+	address: {
 		type: String,
 		required: true,
 		unique: true,
@@ -55,9 +55,9 @@ const AdopterSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
-        unique: true,
+		unique: true,
 	},
-    phone: {
+	phone: {
 		type: String,
 		required: true,
 	},
@@ -81,11 +81,21 @@ const AdopterSchema = new Schema({
 		type: Number,
 		required: true,
 	},
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    }
+	userName: {
+		type: String,
+	},
+	password: {
+		type: String,
+		select: false
+	},
+	privateKey: {
+		type: String,
+	},
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	},
 });
 
 module.exports = model("Adopter", AdopterSchema);
