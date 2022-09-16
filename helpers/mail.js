@@ -1,6 +1,21 @@
-
 const nodemailer = require("nodemailer");
 const { template } = require("../mail/mailAdopter");
+const { templateReset } = require("../mail/mailReset");
+
+const config = () => {
+	return nodemailer.createTransport({
+		host: "firulaixcoin.finance",
+		port: 465,
+		secure: true,
+		auth: {
+			user: "no-reply@firulaixcoin.finance",
+			pass: "NS~a44pClJP",
+		},
+		tls: {
+			rejectUnauthorized: false,
+		},
+	});
+};
 
 const mail = async ({
 	email,
@@ -10,21 +25,10 @@ const mail = async ({
 	title = "RENIAN",
 }) => {
 	try {
-		let transporter = nodemailer.createTransport({
-			host: "firulaixcoin.finance",
-			port: 465,
-			secure: true,
-			auth: {
-				user: "no-reply@firulaixcoin.finance",
-				pass: "NS~a44pClJP",
-			},
-			tls: {
-				rejectUnauthorized: false,
-			},
-		});
+		let transporter = config();
 
 		await transporter.sendMail({
-			from: '"Renian" <notification@firulaixcoin.finance>', // sender address,
+			from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
 			to: email,
 			subject: "RENIAN - Registro de Usuario",
 			html: template({ email, password, address, privateKey, title }),
@@ -35,4 +39,24 @@ const mail = async ({
 	}
 };
 
-module.exports = { mail };
+const mailReset = async ({
+	email,
+	name,
+	token,
+}) => {
+	try {
+		let transporter = config();
+
+		await transporter.sendMail({
+			from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
+			to: email,
+			subject: "RENIAN - Registro de Usuario",
+			html: templateReset({ name, token }),
+		});
+		return true;
+	} catch (error) {
+		return false;
+	}
+};
+
+module.exports = { mail,mailReset };

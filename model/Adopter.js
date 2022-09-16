@@ -26,11 +26,6 @@ const AdopterSchema = new Schema({
 		required: true,
 		unique: true,
 	},
-	address: {
-		type: String,
-		required: true,
-		unique: true,
-	},
 	name: {
 		type: String,
 		required: true,
@@ -81,20 +76,28 @@ const AdopterSchema = new Schema({
 		type: Number,
 		required: true,
 	},
-	userName: {
-		type: String,
-	},
 	password: {
 		type: String,
 		select: false
-	},
-	privateKey: {
-		type: String,
 	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
 		required: true,
+	},
+	created_for: {
+		type: String,
+	},
+	created_at: {
+		type: Date,
+		default: new Date()
+	},
+	update_for: {
+		type: String,
+
+	},
+	update_at: {
+		type: String,
 	},
 });
 

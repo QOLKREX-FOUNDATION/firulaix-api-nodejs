@@ -12,7 +12,7 @@ const validateJWT = (req, res = response, next) => {
 	}
 
 	try {
-		const { uid, name } = jwt.verify(token, process.env.SECRET_JWT_SEED);
+		const { uid, name, email } = jwt.verify(token, process.env.SECRET_JWT_SEED);
 		if (!uid) {
 			return res.status(401).json({
 				ok: false,
@@ -21,6 +21,7 @@ const validateJWT = (req, res = response, next) => {
 		}
 		req.uid = uid;
 		req.name = name;
+		req.verifyCredential = email ?? null;
 	} catch (error) {
 		return res.status(401).json({
 			ok: false,
@@ -30,6 +31,7 @@ const validateJWT = (req, res = response, next) => {
 
 	next();
 };
+
 
 module.exports = {
 	validateJWT,

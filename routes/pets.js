@@ -6,7 +6,9 @@ const {
 	getRecord,
 	deleteRecord,
 	statusRecord,
-	getHash,
+	getHistory,
+	getAdopterPets,
+	upload,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -14,19 +16,19 @@ const router = Router();
  * Middleware all routes
  */
 
- router.post("/status", statusRecord);
+router.post("/status", statusRecord);
 
+router.get("/", [validateJWT], getRecord);
 
-router.use(validateJWT);
+router.post("/", [validateJWT], saveRecord);
+router.put("/", [validateJWT], updateRecord);
 
-router.get("/", getRecord);
+router.post("/upload", [validateJWT], upload);
 
+router.delete("/", [validateJWT], deleteRecord);
 
-router.post("/", saveRecord);
+router.get("/getHistory", [validateJWT], getHistory);
 
-router.put("/:id", updateRecord);
-
-router.delete("/:id", deleteRecord);
-
+router.get("/getAdopterPets", [validateJWT], getAdopterPets);
 
 module.exports = router;

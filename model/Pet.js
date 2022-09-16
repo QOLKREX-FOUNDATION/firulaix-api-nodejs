@@ -43,13 +43,19 @@ const PetSchema = new Schema({
 	},
 	chip: {
 		type: String,
-		require:true,
-        unique: true,
+		require: true,
+		unique: true,
+	},
+	chipDate: {
+		type: Date,
 	},
 	colour: {
 		type: String,
 	},
 	image: {
+		type: String,
+	},
+	pedigree: {
 		type: String,
 	},
 	country: {
@@ -58,16 +64,35 @@ const PetSchema = new Schema({
 	type: {
 		type: String,
 	},
-    hash:{
+	sterilized:{
 		type: String,
-    },
-	status:{
+	},
+	hash: {
 		type: String,
-		default:"ACTIVE"
-    },
+	},
+	status: {
+		type: String,
+		default: "ACTIVE",
+	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
+	},
+	idRegisteringEntity: {
+		type: Number,
+	},
+	created_for: {
+		type: String,
+	},
+	created_at: {
+		type: Date,
+		default: new Date(),
+	},
+	update_for: {
+		type: String,
+	},
+	update_at: {
+		type: String,
 	},
 });
 

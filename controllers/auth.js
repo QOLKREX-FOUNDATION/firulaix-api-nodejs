@@ -31,7 +31,7 @@ const createRecord = async (req, res = response) => {
 		if (!user[req.body.rol]) {
 			return res.status(403).json({
 				ok: false,
-				errors: "No permit"
+				errors: "No permit",
 			});
 		}
 
@@ -96,6 +96,7 @@ const login = async (req, res = response) => {
 			res.json({
 				ok: true,
 				token,
+				er: user.er,
 			});
 		} else {
 			res.status(401).json({

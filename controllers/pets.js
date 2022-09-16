@@ -1,17 +1,23 @@
 const { response } = require("express");
 const { validateJWT } = require("../middlewares/validateJWT");
 const Pet = require("../model/Pet");
+const Adopter = require("../model/Adopter");
 
 const getRecord = async (req, res = response) => {
 	const { chip } = req.query;
 	try {
 		let pet = await Pet.findOne({
 			chip,
-		}).populate("user", "publicAddress");
+		});
+
+		let adopter = await Adopter.findOne({
+			address: pet.adopter,
+		});
 
 		res.json({
 			ok: true,
 			pet,
+			adopter,
 		});
 	} catch (error) {
 		console.log(error);
@@ -22,9 +28,8 @@ const getRecord = async (req, res = response) => {
 	}
 };
 
-
-
 const saveRecord = async (req, res = response) => {
+	req.body.created_for = req.body.userAddress;
 	const pet = new Pet(req.body);
 	let msg = "";
 	try {
@@ -57,10 +62,7 @@ const saveRecord = async (req, res = response) => {
 
 const updateRecord = async (req, res = response) => {
 	try {
-		const find = await Pet.findOne({ chip: req.params.id }).populate(
-			"user",
-			"publicAddress"
-		);
+		const find = await Pet.findOne({ chip: req.body.chip });
 
 		if (!find) {
 			return res.status(401).json({
@@ -73,7 +75,8 @@ const updateRecord = async (req, res = response) => {
 			find._id,
 			{
 				...req.body,
-				user: req.uid,
+				update_for: req.body.userAddress,
+				update_at: new Date(),
 			},
 			{ new: true }
 		);
@@ -91,10 +94,7 @@ const updateRecord = async (req, res = response) => {
 };
 
 const deleteRecord = async (req, res = response) => {
-	const find = await Pet.findOne({ chip: req.params.id }).populate(
-		"user",
-		"publicAddress"
-	);
+	const find = await Pet.findOne({ chip: req.body.chip });
 
 	if (!find) {
 		return res.status(401).json({
@@ -125,7 +125,6 @@ const statusRecord = async (req, res = response) => {
 		}
 
 		if (find.adopter == req.body.address) {
-
 		} else {
 			validateJWT;
 		}
@@ -150,10 +149,73 @@ const statusRecord = async (req, res = response) => {
 	}
 };
 
+const getHistory = async (req, res = response) => {
+	try {
+		const { idRegisteringEntity } = req.query;
+		let pets = await Pet.find({ idRegisteringEntity }).sort("create_at");
+
+		let adopters = await Adopter.find({ idRegisteringEntity });
+
+		res.status(201).json({
+			ok: true,
+			pets,
+			adopters,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
+const upload = async (req, res = response) => {
+	try {
+		const { name, chip } = req.body;
+		const file = req.files.file;
+		file.mv(`./public/images/${name}/${chip}.jpg`, (err) => {
+			if (err) return res.status(500).send({ message: err });
+			res.status(201).json({
+				ok: true,
+				message: "File upload",
+			});
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
+const getAdopterPets = async (req, res = response) => {
+	try {
+		const adopter = await Adopter.findOne({ email: req.verifyCredential });
+		const pets = await Pet.find({ adopter: adopter.address });
+
+		res.status(201).json({
+			ok: true,
+			pets,
+			adopter,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
 module.exports = {
 	getRecord,
 	saveRecord,
 	updateRecord,
 	deleteRecord,
 	statusRecord,
+	getHistory,
+	getAdopterPets,
+	upload,
 };

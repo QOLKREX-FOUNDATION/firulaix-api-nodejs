@@ -9,6 +9,8 @@ const {
     getAddress,
     getEmail,
 	getPublic,
+	getRecordAddress,
+	getHistory,
 } = require("../controllers/adopters");
 const { validateUppercase } = require("../middlewares/validateUppercase");
 
@@ -16,19 +18,21 @@ const router = Router();
 
 router.get("/public", getPublic);
 
-/**
- * Middleware all routes
- */
-router.use(validateJWT);
+// /**
+//  * Middleware all routes
+//  */
+// router.use(validateJWT);
 
-router.get("/", getRecord);
-router.get("/email/", getEmail);
-router.get("/address/", getAddress);
+router.get("/",[validateJWT], getRecord);
+router.get("/getHistory",[validateJWT], getHistory);
+router.get("/getUpdate",[validateJWT], getRecordAddress);
+router.get("/email/",[validateJWT], getEmail);
+router.get("/address/",[validateJWT], getAddress);
 
-router.post("/", validateUppercase, saveRecord);
+router.post("/",[validateJWT], saveRecord);
 
-router.put("/:id", validateUppercase, updateRecord);
+router.put("/:id",[validateJWT], updateRecord);
 
-router.delete("/:id", deleteRecord);
+router.delete("/:id",[validateJWT], deleteRecord);
 
 module.exports = router;

@@ -1,12 +1,18 @@
 const { response } = require("express");
+const { mail } = require("../helpers/mail");
+const { passwordEncrypt } = require("../helpers/passwordEncrypt");
 const Adopter = require("../model/Adopter");
 const User = require("../model/User");
 
 const getAddress = async (req, res = response) => {
-	const { address } = req.query;
+	const { address, id } = req.query;
 	try {
 		let find = await Adopter.findOne({ address });
-		let bandera = find.address ? true : false;
+
+		let bandera =
+			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
+				? true
+				: false;
 		res.status(201).json({
 			ok: true,
 			bandera,
@@ -25,7 +31,7 @@ const getPublic = async (req, res = response) => {
 	try {
 		let find = await Adopter.findOne({ address });
 
-		if(!find.status) {
+		if (!find.status) {
 			res.status(400).json({
 				ok: false,
 			});
@@ -45,13 +51,44 @@ const getPublic = async (req, res = response) => {
 };
 
 const getEmail = async (req, res = response) => {
-	const { email } = req.query;
+	const { email, id } = req.query;
 	try {
 		let find = await Adopter.findOne({ email });
-		let bandera = find.email ? true : false;
+		let bandera =
+			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
+				? true
+				: false;
 		res.status(201).json({
 			ok: true,
 			bandera,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
+const getRecordAddress = async (req, res = response) => {
+	let { address } = req.query;
+	try {
+		let adopters = await Adopter.findOne({
+			address,
+		});
+
+		adopters = {
+			address: adopters.address,
+			name: adopters.name,
+			secondName: adopters.secondName,
+			lastName: adopters.lastName,
+			mLastName: adopters.mLastName,
+		};
+
+		res.json({
+			ok: true,
+			adopters,
 		});
 	} catch (error) {
 		console.log(error);
@@ -70,7 +107,7 @@ const getRecord = async (req, res = response) => {
 			country,
 			document,
 			documentNumber,
-		}).select('-privateKey');
+		});
 
 		const compare = await User.findById(
 			String(adopters.user).toString()
@@ -122,12 +159,19 @@ const getRecord = async (req, res = response) => {
 
 const saveRecord = async (req, res = response) => {
 	delete req.body._id;
+	if (req.body?.password) {
+		req.body.passwordText = req.body.password;
+		req.body.password = passwordEncrypt(req.body.password, 10);
+	}
+	req.body.created_for = req.body.userAddress;
 	const adopter = new Adopter(req.body);
+
 	let msg = "";
 	let find = await Adopter.findOne({ email: req.body.email });
-	find = await Adopter.findOne({ address: req.body.address });
 	if (find) msg = "app.errorPost.emailDuplicate";
+	find = await Adopter.findOne({ address: req.body.address });
 	if (find) msg = "app.errorPost.addressDuplicate";
+
 	find = await Adopter.findOne({
 		country: req.body.country,
 		document: req.body.document,
@@ -136,7 +180,7 @@ const saveRecord = async (req, res = response) => {
 	if (find) msg = "warOffice.form.adopterForm.register";
 	try {
 		adopter.user = req.uid;
-		if (msg!="") {
+		if (msg != "") {
 			return res.status(400).json({
 				ok: false,
 				msg: msg,
@@ -144,10 +188,20 @@ const saveRecord = async (req, res = response) => {
 		}
 
 		const record = await adopter.save();
+		let sendEmail = false;
+		if (req.body?.sendEmail) {
+			sendEmail = await mail({
+				email: req.body.email,
+				password: req.body.passwordText,
+				address: req.body.address,
+				privateKey: req.body.privateKey,
+			});
+		}
 
 		res.status(201).json({
 			ok: true,
 			data: record,
+			sendEmail,
 		});
 	} catch (error) {
 		console.log(error);
@@ -181,19 +235,19 @@ const updateRecord = async (req, res = response) => {
 			country: req.body.country,
 			document: req.body.document,
 			documentNumber: req.body.documentNumber,
-			_id: { $ne: req.params.id},
+			_id: { $ne: req.params.id },
 		});
 		if (validate) msg = "warOffice.form.adopterForm.register";
 
-		 validate = await Adopter.findOne({
+		validate = await Adopter.findOne({
 			address: req.body.address,
-			_id: { $ne: req.params.id},
+			_id: { $ne: req.params.id },
 		});
 		if (validate) msg = "app.errorPost.addressDuplicate";
 
 		validate = await Adopter.findOne({
 			email: req.body.email,
-			_id: { $ne: req.params.id},
+			_id: { $ne: req.params.id },
 		});
 		if (validate) msg = "app.errorPost.emailDuplicate";
 
@@ -213,6 +267,8 @@ const updateRecord = async (req, res = response) => {
 				req.params.id,
 				{
 					...req.body,
+					update_for: req.body.userAddress,
+					update_at: new Date(),
 					user:
 						req.body.idRegisteringEntity == find.idRegisteringEntity
 							? req.uid
@@ -274,6 +330,23 @@ const deleteRecord = async (req, res = response) => {
 	}
 };
 
+const getHistory = async (req, res = response) => {
+	try {
+		const { created_for } = req.query.created_for;
+		let adopters = await Adopter.find({ created_for });
+		res.status(201).json({
+			ok: true,
+			adopters,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
 module.exports = {
 	getPublic,
 	getAddress,
@@ -282,4 +355,6 @@ module.exports = {
 	saveRecord,
 	updateRecord,
 	deleteRecord,
+	getRecordAddress,
+	getHistory,
 };
