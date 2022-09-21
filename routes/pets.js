@@ -18,7 +18,7 @@ const router = Router();
 
 router.post("/status", statusRecord);
 
-router.get("/", [validateJWT], getRecord);
+router.get("/",  getRecord);
 
 router.post("/", [validateJWT], saveRecord);
 router.put("/", [validateJWT], updateRecord);

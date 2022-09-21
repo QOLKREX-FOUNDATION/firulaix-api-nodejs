@@ -19,12 +19,15 @@ app.use(fileUpload())
 //Routes
 app.use("/api/auth", require("./routes/auth"));
 
-//data
+//data Firulaix
 app.use("/api/adopters", require("./routes/adopters"));
 app.use("/api/pets", require("./routes/pets"));
 
 //Registro Plataforma
 app.use("/api/users", require("./routes/users"));
+
+
+//Renian
 app.use("/api/renian", require("./routes/renian"));
 
 process.env.TZ = "America/Lima";

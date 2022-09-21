@@ -1,19 +1,24 @@
-// const mysql = require("mysql");
-// const conexion = mysql.createConnection({
-// 	host: "localhost",
-// 	database: "empleados",
-// 	user: "USUARIO",
-// 	password: "PASS",
-// });
+const mysql = require("mysql");
+const mysqlConexion = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    database: process.env.MYSQL_DATABASE,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    port: process.env.MYSQL_PORT,
 
-// conexion.connect(function (err) {
-// 	if (err) {
-// 		console.error("Error de conexion: " + err.stack);
-// 		return;
-// 	}
-// 	console.log("Conectado con el identificador " + conexion.threadId);
-// });
+});
 
-// module.exports = {
-// 	conexion,
-// };
+mysqlConexion.connect(function (err) {
+    if (err) {
+        console.log(err)
+        // console.error("Error de mysqlConexion: " + err.stack);
+        // return;
+    } else {
+        console.log("Conectado con el identificador " + mysqlConexion.threadId);
+    }
+});
+
+
+module.exports = {
+    mysqlConexion,
+};

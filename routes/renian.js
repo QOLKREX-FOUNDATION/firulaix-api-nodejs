@@ -1,10 +1,9 @@
 const { Router } = require("express");
-const { validateJWT } = require("../middlewares/validateJWT");
 
 const { getRecord } = require("../controllers/renian");
 
 const router = Router();
 
-router.get("/", [validateJWT], getRecord);
+router.get("/search/", getRecord);
 
 module.exports = router;
