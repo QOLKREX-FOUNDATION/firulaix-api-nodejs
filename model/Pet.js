@@ -11,16 +11,16 @@ const SchemaVaccines = new Schema({
     type: String,
   },
   date: {
-    type: String,
+    type: Date,
   },
   next: {
-    type: String,
+    type: Date,
   },
   image: {
     type: String,
   },
-  illness:{
-	type:Map,
+  illness: {
+    type: Map,
   },
 });
 
