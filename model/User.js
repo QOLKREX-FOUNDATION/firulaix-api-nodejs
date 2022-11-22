@@ -23,14 +23,9 @@ const UserSchema = new Schema({
 		default:false
     },
 	user: {
-		type: Boolean,
-		default:false
-    },
-	created: {
-        type: Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
-    }
+    },
 });
 
 module.exports = model("User", UserSchema);

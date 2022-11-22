@@ -4,6 +4,7 @@ const {
 	updateRecord,
 	saveRecord,
 	getRecord,
+	getRecords,
 	deleteRecord,
 	statusRecord,
 	getHistory,
@@ -19,6 +20,7 @@ const router = Router();
 router.post("/status", statusRecord);
 
 router.get("/",  getRecord);
+router.get("/all",  getRecords);
 
 router.post("/", [validateJWT], saveRecord);
 router.put("/", [validateJWT], updateRecord);

@@ -4,7 +4,7 @@ const validateRol = (rolNew) => {
 	}else if(rolNew=="er"){
 		return {er:true};
 	}else if (rolNew == "us"){
-		return {user:true};
+		return {us:true};
 	}else{
 		return {}
 	}

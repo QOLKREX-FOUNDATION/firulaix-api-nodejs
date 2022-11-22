@@ -3,6 +3,22 @@ const { validateJWT } = require("../middlewares/validateJWT");
 const Pet = require("../model/Pet");
 const Adopter = require("../model/Adopter");
 
+const getRecords = async (req, res = response) => {
+	try {
+		let pet = await Pet.find();
+		res.json({
+			ok: true,
+			pet,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
 const getRecord = async (req, res = response) => {
 	const { chip } = req.query;
 	try {
@@ -150,9 +166,15 @@ const statusRecord = async (req, res = response) => {
 };
 
 const getHistory = async (req, res = response) => {
+	let { idRegisteringEntity } = req.query;
+	// idRegisteringEntity = JSON.parse(idRegisteringEntity);
+	// idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+
 	try {
-		const { idRegisteringEntity } = req.query;
-		let pets = await Pet.find({ idRegisteringEntity }).sort("create_at");
+		let pets = await Pet.find({
+			// idRegisteringEntity: { $in: idRegisteringEntity },
+			idRegisteringEntity,
+		}).sort("create_at");
 
 		let adopters = await Adopter.find({ idRegisteringEntity });
 
@@ -211,6 +233,7 @@ const getAdopterPets = async (req, res = response) => {
 
 module.exports = {
 	getRecord,
+	getRecords,
 	saveRecord,
 	updateRecord,
 	deleteRecord,

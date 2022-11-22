@@ -2,6 +2,7 @@ const { response } = require("express");
 const util = require("util");
 const { mysqlConexion } = require("../database/mysql");
 const Pet = require("../model/Pet");
+const { mail } = require("../helpers/mail");
 
 // 991003001934415
 // 9910030015595702
@@ -48,6 +49,28 @@ const getRecord = async (req, res = response) => {
 	}
 };
 
+const postDataEmail = async (req, res) => {
+	try {
+
+		sendEmail = await mail({
+			adopter: req.body.adopter,
+			pet: req.body.pet,
+			tx: req.body.tx,
+		});
+
+		res.status(200).json({
+			ok: true,
+			msg: "Datos enviados correctamente",
+		});
+	} catch (error) {
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
 module.exports = {
 	getRecord,
+	postDataEmail,
 };

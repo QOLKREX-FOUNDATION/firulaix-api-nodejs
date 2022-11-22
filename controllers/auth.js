@@ -28,28 +28,29 @@ const createRecord = async (req, res = response) => {
 		req.body.publicAddress = String(req.body.publicAddress).toUpperCase();
 
 		let user = await User.findOne({ _id: req.uid });
-		if (!user[req.body.rol]) {
-			return res.status(403).json({
-				ok: false,
-				errors: "No permit",
-			});
-		}
+		// if (!user[req.body.rol]) {
+		// 	return res.status(403).json({
+		// 		ok: false,
+		// 		errors: "No permit",
+		// 	});
+		// }
 
 		const { publicAddress } = req.body;
 		let newUser = await User.findOne({ publicAddress });
+		const rolNew = validateRol(req.body.rolNew);
 
 		if (newUser) {
 			await User.findByIdAndUpdate(
 				newUser._id,
 				{
 					...req.body,
-					...validateRol(req.body.rolNew),
+					...rolNew,
 				},
 				{ new: true }
 			);
 		} else {
-			newUser = new User({ ...req.body, ...validateRol(req.body.rolNew) });
-			newUser.user = req.uid;
+			newUser = new User({ ...req.body, ...rolNew });
+			newUser.created = req.uid;
 			await newUser.save();
 		}
 		res.status(201).json({
