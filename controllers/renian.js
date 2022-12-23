@@ -55,7 +55,6 @@ const postDataEmail = async (req, res) => {
 		sendEmail = await mail({
 			adopter: req.body.adopter,
 			pet: req.body.pet,
-			tx: req.body.tx,
 		});
 
 		res.status(200).json({

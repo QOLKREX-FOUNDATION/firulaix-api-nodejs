@@ -35,4 +35,6 @@ router.put("/:id",[validateJWT], updateRecord);
 
 router.delete("/:id",[validateJWT], deleteRecord);
 
+
+
 module.exports = router;

@@ -8,26 +8,71 @@ const UserSchema = new Schema({
 	},
 	nonce: {
 		type: String,
-        default:  () => Math.floor(Math.random() * 1000000),
+		default: () => Math.floor(Math.random() * 1000000),
 	},
-	ad: {
+	admin: {
 		type: Boolean,
-		default:false
-    },
-	er: {
-		type: Boolean,
-		default:false
-    },
-	us: {
-		type: Boolean,
-		default:false
-    },
+		default: false,
+	},
+	entityRegister: {
+		country: {
+			type: String,
+		},
+		document: {
+			type: String,
+		},
+		documentNumber: {
+			type: String,
+		},
+		name: {
+			type: String,
+		},
+		direction: {
+			type: String,
+		},
+		phone: {
+			type: String,
+		},
+		email: {
+			type: String,
+		},
+		idPermission: {
+			type: [String],
+		},
+		accessValues:{
+			type: [[String]],
+		}
+	},
 	user: {
-		type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
+		name: {
+			type: String,
+		},
+		lastName: {
+			type: String,
+		},
+		local: {
+			type: String,
+		},
+		position: {
+			type: String,
+		},
+		accessValues:{
+			type: [[String]],
+		}
+	},
+	created_for: {
+		type: String,
+	},
+	created_at: {
+		type: Date,
+		default: new Date(),
+	},
+	update_for: {
+		type: String,
+	},
+	update_at: {
+		type: String,
+	},
 });
 
 module.exports = model("User", UserSchema);
-
-

@@ -3,7 +3,6 @@ const { generateJWT } = require("../helpers/jwt");
 const User = require("../model/User");
 const ethUtil = require("ethereumjs-util");
 const web3Util = require("web3-utils");
-const { validateRol } = require("../helpers/validateRol");
 
 const getRecord = async (req, res = response) => {
 	req.query.publicAddress = String(req.query.publicAddress).toUpperCase();
@@ -27,36 +26,24 @@ const createRecord = async (req, res = response) => {
 	try {
 		req.body.publicAddress = String(req.body.publicAddress).toUpperCase();
 
-		let user = await User.findOne({ _id: req.uid });
-		// if (!user[req.body.rol]) {
-		// 	return res.status(403).json({
-		// 		ok: false,
-		// 		errors: "No permit",
-		// 	});
-		// }
-
 		const { publicAddress } = req.body;
 		let newUser = await User.findOne({ publicAddress });
-		const rolNew = validateRol(req.body.rolNew);
 
 		if (newUser) {
 			await User.findByIdAndUpdate(
 				newUser._id,
 				{
 					...req.body,
-					...rolNew,
 				},
 				{ new: true }
 			);
 		} else {
-			newUser = new User({ ...req.body, ...rolNew });
-			newUser.created = req.uid;
+			newUser = new User({ ...req.body});
+			newUser.created_for = publicAddress;
 			await newUser.save();
 		}
 		res.status(201).json({
 			ok: true,
-			uid: user.id,
-			publicAddress: user.publicAddress,
 		});
 	} catch (error) {
 		console.log(error);

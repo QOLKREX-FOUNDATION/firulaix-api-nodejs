@@ -25,7 +25,6 @@ router.post(
 	[
 		validateJWT,
 		check("publicAddress", "publicAddress is obliged").not().isEmpty(),
-		check("rol", "is obliged").not().isEmpty(),
 		validateFields,
 	],
 	createRecord

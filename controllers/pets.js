@@ -3,21 +3,6 @@ const { validateJWT } = require("../middlewares/validateJWT");
 const Pet = require("../model/Pet");
 const Adopter = require("../model/Adopter");
 
-const getRecords = async (req, res = response) => {
-	try {
-		let pet = await Pet.find();
-		res.json({
-			ok: true,
-			pet,
-		});
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			ok: false,
-			msg: "Error, contact Admin",
-		});
-	}
-};
 
 const getRecord = async (req, res = response) => {
 	const { chip } = req.query;
@@ -167,13 +152,13 @@ const statusRecord = async (req, res = response) => {
 
 const getHistory = async (req, res = response) => {
 	let { idRegisteringEntity } = req.query;
-	// idRegisteringEntity = JSON.parse(idRegisteringEntity);
-	// idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+	idRegisteringEntity = JSON.parse(idRegisteringEntity);
+	idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
 
 	try {
 		let pets = await Pet.find({
-			// idRegisteringEntity: { $in: idRegisteringEntity },
-			idRegisteringEntity,
+			idRegisteringEntity: { $in: idRegisteringEntity },
+			// idRegisteringEntity,
 		}).sort("create_at");
 
 		let adopters = await Adopter.find({ idRegisteringEntity });
@@ -231,9 +216,78 @@ const getAdopterPets = async (req, res = response) => {
 	}
 };
 
+
+
+// const getRecords = async (req, res = response) => {
+// 	try {
+// 		const { query, hash = null } = req.query;
+// 		const initial = 0 + Number(query);
+// 		const end = 10 + Number(query);
+
+// 		let find = await Pet.find();
+
+// 		find.map(async (pet) => {
+// 			let idRegisteringEntity = pet.idRegisteringEntity;
+
+// 			if (
+// 				(pet.userAddress === "0XDDD166057ACFCE35F236B771CEB62C8ADE9E71DA",
+// 				pet.userAddress === "0X9A1E9669109C244ABAB7162AECFBA239C34572AB",
+// 				pet.userAddress === "0XBA3309A2823DD1FC2DE44473C78F4B911806A17E")
+// 			) {
+// 				idRegisteringEntity = pet.idRegisteringEntity;
+// 			} else if (pet.idRegisteringEntity === 3) {
+// 				idRegisteringEntity = 2;
+// 			} else if (pet.idRegisteringEntity === 4) {
+// 				idRegisteringEntity = 3;
+// 			}
+
+// 			await Pet.findByIdAndUpdate(
+// 				pet._id,
+// 				{
+// 					idRegisteringEntity,
+// 				},
+// 				{ new: true }
+// 			);
+// 		});
+
+// 		// const pet = [];
+
+// 		// find.map((p, i) => {
+// 		// 	if (i >= initial && i < end) {
+// 		// 		pet.push(p);
+// 		// 	}
+// 		// });
+
+// 		// if (hash) {
+// 		// 	pet.map(async (p) => {
+// 		// 		await Pet.findByIdAndUpdate(
+// 		// 			p._id,
+// 		// 			{
+// 		// 				hash,
+// 		// 			},
+// 		// 			{ new: true }
+// 		// 		);
+// 		// 	});
+// 		// }
+
+// 		res.json({
+// 			ok: true,
+// 			// pet,
+// 			// initial,
+// 			// end,
+// 		});
+// 	} catch (error) {
+// 		console.log(error);
+// 		res.status(500).json({
+// 			ok: false,
+// 			msg: "Error, contact Admin",
+// 		});
+// 	}
+// };
+
 module.exports = {
 	getRecord,
-	getRecords,
+	// getRecords,
 	saveRecord,
 	updateRecord,
 	deleteRecord,
