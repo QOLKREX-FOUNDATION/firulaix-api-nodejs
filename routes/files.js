@@ -10,7 +10,7 @@ router.get("/", [validateFile], getFile);
 router.put(
   "/",
   [
-    // validateJWT,
+    validateJWT,
     validateFile,
     check("name", "El nombre es requerido").not().isEmpty(),
     check("chip", "El chip es requerido").not().isEmpty(),
