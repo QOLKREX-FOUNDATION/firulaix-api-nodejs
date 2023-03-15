@@ -1,15 +1,15 @@
 const { Router } = require("express");
-const { validateJWT } = require("../middlewares/validateJWT");
+const { validateJWT, validateFile } = require("../middlewares");
 const {
-	updateRecord,
-	saveRecord,
-	getRecord,
-	// getRecords,
-	deleteRecord,
-	statusRecord,
-	getHistory,
-	getAdopterPets,
-	upload,
+  updateRecord,
+  saveRecord,
+  getRecord,
+  // getRecords,
+  deleteRecord,
+  statusRecord,
+  getHistory,
+  getAdopterPets,
+  upload,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -19,13 +19,13 @@ const router = Router();
 
 router.post("/status", statusRecord);
 
-router.get("/",  getRecord);
+router.get("/", getRecord);
 // router.get("/all",  getRecords);
 
 router.post("/", [validateJWT], saveRecord);
 router.put("/", [validateJWT], updateRecord);
 
-router.post("/upload", [validateJWT], upload);
+router.post("/upload", [validateJWT, validateFile], upload);
 
 router.delete("/", [validateJWT], deleteRecord);
 
