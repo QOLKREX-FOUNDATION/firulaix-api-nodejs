@@ -4,24 +4,31 @@ const cloudinary = require("cloudinary").v2;
 // const path = require("path");
 // const fs = require("fs").promises;
 // config cloudinary
-
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
 cloudinary.config(process.env.CLOUDINARY_URL);
 
 const getFile = async (req = request, res = response) => {
   const { name, chip } = req.body;
   // const urlCloudinary = `https://res.cloudinary.com/worldanireg/image/upload/v1678821563/petimg/${chip}.png`;
-  const urlCloudinary = `https://res.cloudinary.com/worldanireg/images/${name}/${chip}.png`;
+  // const urlCloudinary = `https://res.cloudinary.com/worldanireg/images/${name}/${chip}.png`;
+
+  if (!name || !chip) {
+    return res.status(400).json({
+      ok: false,
+      msg: "name and chip are required",
+    });
+  }
+
+  // get image from cloudinary
+
+  const image = await cloudinary.url(`images/${name}/${chip}`, {
+    max_results: 1,
+  });
 
   try {
     res.status(201).json({
       ok: true,
       message: "File upload",
-      urlCloudinary,
+      image,
     });
   } catch (error) {
     console.log(error);
@@ -65,10 +72,13 @@ const uploadFile = async (req = request, res = response) => {
 };
 
 const deleteFile = async (req = request, res = response) => {
-  const { public_id } = req.body;
+  const { name, chip } = req.body;
 
   try {
-    const { secure_url } = await cloudinary.uploader.destroy(public_id);
+    const { secure_url } = await cloudinary.uploader.destroy(
+      `images/${name}/${chip}`
+    );
+    console.log(secure_url);
 
     res.status(201).json({
       ok: true,
