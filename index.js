@@ -3,10 +3,25 @@ const app = express();
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const morgan = require("morgan");
+const http = require("http");
+const { Server: SocketServer } = require("socket.io");
+const Sockets = require("./config/sockets");
 
 require("dotenv").config();
 
 const { dbConnection } = require("./database/config");
+
+const httpServer = http.createServer(app);
+
+const io = new SocketServer(httpServer, {
+  origins: "*",
+});
+
+function configurarSockets() {
+  new Sockets(io);
+}
+
+configurarSockets();
 
 //DB
 dbConnection();
@@ -49,6 +64,6 @@ app.use("/api/files", require("./routes/files"));
 
 process.env.TZ = "America/Lima";
 
-app.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en el puerto: " + process.env.PORT);
 });

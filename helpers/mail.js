@@ -4,8 +4,8 @@ const { templateReset } = require("../mail/mailReset");
 
 const config = () => {
 	return nodemailer.createTransport({
-		host: "firulaixcoin.finance",
-		port: 465,
+		host: "mail.firulaixcoin.finance",
+		port: 26,
 		secure: true,
 		auth: {
 			user: "no-reply@firulaixcoin.finance",
@@ -22,7 +22,7 @@ const mail = async ({
 	password,
 	address,
 	privateKey,
-	title = "RENIAN",
+	title = "WORLD ANIMAL REGISTRY",
 }) => {
 	try {
 		let transporter = config();
@@ -30,7 +30,7 @@ const mail = async ({
 		await transporter.sendMail({
 			from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
 			to: email,
-			subject: "RENIAN - Registro de Usuario",
+			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 			html: template({ email, password, address, privateKey, title }),
 		});
 		return true;
@@ -50,7 +50,7 @@ const mailReset = async ({
 		await transporter.sendMail({
 			from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
 			to: email,
-			subject: "RENIAN - Registro de Usuario",
+			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 			html: templateReset({ name, token }),
 		});
 		return true;
@@ -59,4 +59,4 @@ const mailReset = async ({
 	}
 };
 
-module.exports = { mail,mailReset };
+module.exports = { mail, mailReset };

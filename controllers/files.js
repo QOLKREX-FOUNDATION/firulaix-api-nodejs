@@ -20,7 +20,7 @@ const getFile = async (req = request, res = response) => {
 
   // get image from cloudinary
 
-  const image = await cloudinary.url(`images/${name}/${chip}`, {
+  const image = await cloudinary.url(`images/${ name }/${ chip }`, {
     max_results: 1,
   });
 
@@ -46,11 +46,61 @@ const uploadFile = async (req = request, res = response) => {
   // console.log("url", url);
   // const url = path.join(__dirname, `../${file.name}`);
   try {
+    // find chip in cloudinary and delete
+
+    const imageDelete = await cloudinary.uploader.destroy(
+      `images/${ name }/${ chip }`
+    );
+
+    console.log("imageDelete", imageDelete);
+
+    // Create a temporary file path
+
     const { tempFilePath } = file;
 
     // Upload the temporary file to Cloudinary
     const result = await cloudinary.uploader.upload(tempFilePath, {
-      public_id: `images/${name}/${chip}`,
+      public_id: `images/${ name }/${ chip }`,
+    });
+
+    // Delete the temporary file
+    // fs.unlink(tempFilePath);
+    const secure_url = result.secure_url;
+
+    res.status(201).json({
+      ok: true,
+      message: "File upload",
+      secure_url,
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
+const uploadFileEr = async (req = request, res = response) => {
+  const { folder, name } = req.body;
+  const file = req.files.file;
+  // const url = path.join(__dirname, `../${file.name}`);
+  try {
+    // find chip in cloudinary and delete
+
+    const imageDelete = await cloudinary.uploader.destroy(
+      `images/${ folder }/${ name }`
+    );
+
+    // console.log("imageDelete", imageDelete);
+
+    // Create a temporary file path
+
+    const { tempFilePath } = file;
+
+    // Upload the temporary file to Cloudinary
+    const result = await cloudinary.uploader.upload(tempFilePath, {
+      public_id: `images/${ folder }/${ name }`,
     });
 
     // Delete the temporary file
@@ -76,7 +126,7 @@ const deleteFile = async (req = request, res = response) => {
 
   try {
     const { secure_url } = await cloudinary.uploader.destroy(
-      `images/${name}/${chip}`
+      `images/${ name }/${ chip }`
     );
     console.log(secure_url);
 
@@ -96,5 +146,6 @@ const deleteFile = async (req = request, res = response) => {
 module.exports = {
   getFile,
   uploadFile,
+  uploadFileEr,
   deleteFile,
 };

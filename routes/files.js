@@ -1,7 +1,7 @@
 // routes upload and delte files (cloudinary)
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { getFile, uploadFile, deleteFile } = require("../controllers/files");
+const { getFile, uploadFile, deleteFile, uploadFileEr } = require("../controllers/files");
 const { validateFile, validateFields, validateJWT } = require("../middlewares");
 const router = Router();
 
@@ -26,6 +26,18 @@ router.put(
     validateFields,
   ],
   uploadFile
+);
+
+router.put(
+  "/images",
+  [
+    validateJWT,
+    validateFile,
+    check("name", "El nombre es requerido").not().isEmpty(),
+    check("folder", "El folder es requerido").not().isEmpty(),
+    validateFields,
+  ],
+  uploadFileEr
 );
 
 router.delete(

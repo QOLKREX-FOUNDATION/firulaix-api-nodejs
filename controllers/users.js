@@ -44,7 +44,7 @@ const login = async (req, res = response) => {
 		res.status(200).json({
 			ok: true,
 			token,
-			adopter:find,
+			adopter: find,
 		});
 	} catch (error) {
 		console.log(error);
@@ -119,7 +119,7 @@ const resetSendEmail = async (req, res = response) => {
 
 		sendEmail = await mailReset({
 			email: req.body.email,
-			name: `${find.name} ${find.secondName} ${find.lastName} ${find.mLastName}`,
+			name: `${ find.name } ${ find.secondName } ${ find.lastName } ${ find.mLastName }`,
 			token,
 		});
 
@@ -168,6 +168,13 @@ const passwordReset = async (req, res = response) => {
 		});
 	}
 };
+
+// const updateDataEr = (req, res = response) => {
+// 	res.status(200).json({
+// 		ok: true,
+// 		msg: 'updateDataEr'
+// 	})
+// }
 
 module.exports = {
 	login,
