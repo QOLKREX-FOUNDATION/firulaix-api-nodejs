@@ -1,5 +1,5 @@
 const templateReset = ({ name, token }) => {
-	return `
+    return `
     <!DOCTYPE html>
     <html lang="es">
         <head>
@@ -261,7 +261,7 @@ const templateReset = ({ name, token }) => {
                                     "
                                 >
                                     <p class="text-line text-color" style="padding: 20px 10px 0">
-                                        Estimado(a): ${name}
+                                        Estimado(a): ${ name }
                                     </p>
     
                                     <p class="text-line text-color" style="padding: 20px 10px 0">
@@ -273,7 +273,7 @@ const templateReset = ({ name, token }) => {
                                     </p>
     
                                     <p class="text-line text-color" style="padding: 20px 10px 0">
-									<a href="https://registro.firulaixcoin.finance/restore?token=${token}"
+									<a href="https://registro.firulaixcoin.finance/restore?token=${ token }"
 									style="
 									background-color: #039be5;
 									border: none;

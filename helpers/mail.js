@@ -53,6 +53,8 @@ const mailReset = async ({
 }) => {
 	try {
 		let transporter = config();
+		// console.log("email", email.toLowerCase())
+		// const emailLower = email.toLowerCase()
 
 		await transporter.sendMail({
 			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
@@ -63,6 +65,7 @@ const mailReset = async ({
 		});
 		return true;
 	} catch (error) {
+		console.log(error)
 		return false;
 	}
 };
