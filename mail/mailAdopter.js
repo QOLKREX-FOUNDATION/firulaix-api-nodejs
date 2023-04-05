@@ -1,17 +1,18 @@
-const template = ({email, password, address, privateKey="", title=""}) => {
-    let message=""; 
-    if(privateKey!="" && privateKey!=null && privateKey!=undefined){
-        message=`Importe su  LLave Privada para   conectar su dirección pública, recuerde no compartirla con ninguna entidad, está es única y no guardamos una copia por motivos de privacidad y seguridad.`;
+const template = ({ email, password, address, privateKey = "", title = "" }) => {
+    let message = "";
+    console.log("template")
+    if (privateKey != "" && privateKey != null && privateKey != undefined) {
+        message = `Importe su  LLave Privada para   conectar su dirección pública, recuerde no compartirla con ninguna entidad, está es única y no guardamos una copia por motivos de privacidad y seguridad.`;
     }
 
-	return `
+    return `
     <!DOCTYPE html>
     <html lang="es">
     
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <title>${title} - Registrado Correctamente</title>
+        <title>${ title } - Registrado Correctamente</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style type="text/css">
             @media screen {
@@ -259,7 +260,7 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                                     </center>
                                 </h1>
                                 <p class="text-line text-color" style="padding: 20px 10px">
-                                    Su registro fue realizado exitosamente por ${title} ! Por favor revise sus credenciales de registro a continuación. No comparta esta información con niguna entidad, su llave private es de suma importancia.
+                                    Su registro fue realizado exitosamente por ${ title } ! Por favor revise sus credenciales de registro a continuación. No comparta esta información con niguna entidad, su llave private es de suma importancia.
                                 </p>
                             </td>
                         </tr>
@@ -279,29 +280,27 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                             <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                             <p>
-                                <b>Usuario:</b> ${email}<br>
-                                <span style="font-size: 12px;">Su usuario para iniciar sesión en la <a href="https://registro.firulaixcoin.finance/" target="_blank"
-                                rel="noopener noreferrer"> Plataforma de ${title}</a></span>
+                                <b>Usuario:</b> ${ email }<br>
+                                
                             </p>
                         </div>
                         <div class="flex-item text-color">
                         <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                                 <p>
-                                    <b>Contraseña:</b> ${password}<br>
+                                    <b>Contraseña:</b> ${ password }<br>
                                     <span style="font-size: 12px;">Su contraseña para iniciar sesión en la <a href="https://registro.firulaixcoin.finance/" target="_blank"
-                                    rel="noopener noreferrer"> Plataforma de ${title}</a></span>
+                                    rel="noopener noreferrer"> Plataforma de ${ title }</a></span>
                                 </p>
                         </div>
-                        ${
-                            message!="" ?
-                            `<div class="flex-item text-color">
+                        ${ message != "" ?
+            `<div class="flex-item text-color">
                             <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                                 <p>
-                                    <b> LLave Privada</b>:  <br>${privateKey}  <br> 
-                                    <span style="font-size: 12px;">Sus mascotas serán registrada de manera desentralizada en la siguiente dirección pública(public address) ${address}.<br/>
-                                    ${message}
+                                    <b> LLave Privada</b>:  <br>${ privateKey }  <br> 
+                                    <span style="font-size: 12px;">Sus mascotas serán registrada de manera desentralizada en la siguiente dirección pública(public address) ${ address }.<br/>
+                                    ${ message }
                                     <br/>
                                     <br/>
                                          <span style="font-size: 12px;">Puedes ir a nuestra documentación para más información de como importar tu llave privada.<br/>
@@ -310,8 +309,8 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                                 </p>
                             </div>
                             `
-                            : ``
-                        }
+            : ``
+        }
                     </td>
                         </tr>
                         <tr>

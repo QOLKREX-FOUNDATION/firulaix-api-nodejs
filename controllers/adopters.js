@@ -54,6 +54,9 @@ const getEmail = async (req, res = response) => {
 	const { email, id } = req.query;
 	try {
 		let find = await Adopter.findOne({ email });
+		console.log(find.email)
+		console.log(find?._id)
+		console.log(find.email && String(find?._id).toUpperCase())
 		let bandera =
 			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
 				? true
@@ -116,7 +119,7 @@ const getRecord = async (req, res = response) => {
 
 		if (
 			String(user?.user?._id).toUpperCase() ==
-				String(compare?.user?._id).toUpperCase() ||
+			String(compare?.user?._id).toUpperCase() ||
 			String(adopters.user).toString() == "000000000000000000000000"
 		) {
 			adopters = {
@@ -190,6 +193,7 @@ const saveRecord = async (req, res = response) => {
 		const record = await adopter.save();
 		let sendEmail = false;
 		if (req.body?.sendEmail) {
+			console.log("sendEmail")
 			sendEmail = await mail({
 				email: req.body.email,
 				password: req.body.passwordText,
@@ -260,7 +264,7 @@ const updateRecord = async (req, res = response) => {
 
 		if (
 			String(user?.user?._id).toUpperCase() ==
-				String(compare?.user?._id).toUpperCase() ||
+			String(compare?.user?._id).toUpperCase() ||
 			String(find.user).toString() == "000000000000000000000000"
 		) {
 			await Adopter.findByIdAndUpdate(
@@ -314,7 +318,7 @@ const deleteRecord = async (req, res = response) => {
 
 	if (
 		String(user?.user?._id).toUpperCase() ==
-			String(compare?.user?._id).toUpperCase() ||
+		String(compare?.user?._id).toUpperCase() ||
 		String(find.user).toString() == "000000000000000000000000"
 	) {
 		await Adopter.findByIdAndRemove(req.params.id);
