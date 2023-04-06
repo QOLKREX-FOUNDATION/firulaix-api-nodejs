@@ -1,12 +1,4 @@
-const template = ({ email, password, address, privateKey = "", title = "" }) => {
-    let message = "";
-    console.log("template")
-    if (privateKey != "" && privateKey != null && privateKey != undefined) {
-        message = `Importe su  LLave Privada para   conectar su dirección pública, recuerde no compartirla con ninguna entidad, está es única y no guardamos una copia por motivos de privacidad y seguridad.`;
-    }
-
-    return `
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="es">
     
     <head>
@@ -447,8 +439,4 @@ const template = ({ email, password, address, privateKey = "", title = "" }) => 
     </body>
     
     </html>
-      
-    `;
-};
-
-module.exports = { template };
+    
