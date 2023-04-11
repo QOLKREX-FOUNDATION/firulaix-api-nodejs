@@ -7,21 +7,25 @@ const cloudinary = require("cloudinary").v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
 
 const getFile = async (req = request, res = response) => {
-  const { name, chip } = req.body;
+  const { name, folder } = req.body;
   // const urlCloudinary = `https://res.cloudinary.com/worldanireg/image/upload/v1678821563/petimg/${chip}.png`;
   // const urlCloudinary = `https://res.cloudinary.com/worldanireg/images/${name}/${chip}.png`;
 
-  if (!name || !chip) {
+  if (!name || !folder) {
     return res.status(400).json({
       ok: false,
-      msg: "name and chip are required",
+      msg: "name and folder are required",
     });
   }
 
   // get image from cloudinary
 
-  const image = await cloudinary.url(`images/${ name }/${ chip }`, {
+  const image = cloudinary.url(`images/${ folder }/${ name }`, {
     max_results: 1,
+    type: "upload",
+    format: "png",
+    secure: true,
+    default_image: "default",
   });
 
   try {

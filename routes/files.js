@@ -5,12 +5,12 @@ const { getFile, uploadFile, deleteFile, uploadFileEr } = require("../controller
 const { validateFile, validateFields, validateJWT } = require("../middlewares");
 const router = Router();
 
-router.get(
+router.post(
   "/",
   [
     validateJWT,
-    check("name", "El nombre es requerido").not().isEmpty(),
-    check("chip", "El chip es requerido").not().isEmpty(),
+    check("folder", "El folder es requerido").not().isEmpty(),
+    check("name", "El name es requerido").not().isEmpty(),
     validateFields,
   ],
   getFile
