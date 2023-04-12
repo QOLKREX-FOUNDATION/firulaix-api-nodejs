@@ -1,6 +1,7 @@
 // controller upload and delte files (cloudinary)
 const { request, response } = require("express");
 const cloudinary = require("cloudinary").v2;
+const Image = require("../model/Image");
 // const path = require("path");
 // const fs = require("fs").promises;
 // config cloudinary
@@ -20,19 +21,29 @@ const getFile = async (req = request, res = response) => {
 
   // get image from cloudinary
 
-  const image = cloudinary.url(`images/${ folder }/${ name }`, {
-    max_results: 1,
-    type: "upload",
-    format: "png",
-    secure: true,
-    default_image: "default",
-  });
+  // const image = cloudinary.url(`images/${ folder }/${ name }`, {
+  //   max_results: 1,
+  //   type: "upload",
+  //   format: "png",
+  //   secure: true,
+  // });
+
 
   try {
+
+    const findImage = await Image.findOne({ name })
+
+    if (!findImage) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Image not found",
+      });
+    }
+    const { url } = findImage;
     res.status(201).json({
       ok: true,
       message: "File upload",
-      image,
+      image: url,
     });
   } catch (error) {
     console.log(error);
@@ -92,7 +103,7 @@ const uploadFileEr = async (req = request, res = response) => {
   try {
     // find chip in cloudinary and delete
 
-    const imageDelete = await cloudinary.uploader.destroy(
+    await cloudinary.uploader.destroy(
       `images/${ folder }/${ name }`
     );
 
@@ -107,14 +118,57 @@ const uploadFileEr = async (req = request, res = response) => {
       public_id: `images/${ folder }/${ name }`,
     });
 
+    const findImage = await Image.findOne({ name })
+    // console.log(findImage)
+
+    if (!findImage) {
+      // insert and update image in database
+      const newImage = await Image({
+        name,
+        address: folder,
+        path: result.public_id,
+        url: result.secure_url,
+      })
+
+      // console.log("newImage", imageDB)
+      const imageDB = await newImage.save();
+
+      return res.status(201).json({
+        ok: true,
+        message: "File upload",
+        image: imageDB
+      });
+    }
+
+    const updateImage = await Image.findOneAndUpdate(
+      { name },
+      {
+        name,
+        address: folder,
+        path: result.public_id,
+        url: result.secure_url,
+      }
+    );
+
+    // console.log("newImage", updateImage)
+
+    // const newImage = new Image({
+    //   name,
+    //   address: folder,
+    //   path: result.public_id,
+    //   url: result.secure_url,
+    // });
+
+    // const imageDB = await newImage.save();
+
     // Delete the temporary file
     // fs.unlink(tempFilePath);
-    const secure_url = result.secure_url;
+    // const secure_url = result.secure_url;
 
     res.status(201).json({
       ok: true,
-      message: "File upload",
-      secure_url,
+      message: "File update",
+      image: updateImage
     });
   } catch (error) {
     console.log("error", error);
