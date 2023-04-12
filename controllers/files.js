@@ -9,8 +9,6 @@ cloudinary.config(process.env.CLOUDINARY_URL);
 
 const getFile = async (req = request, res = response) => {
   const { name, folder } = req.body;
-  // const urlCloudinary = `https://res.cloudinary.com/worldanireg/image/upload/v1678821563/petimg/${chip}.png`;
-  // const urlCloudinary = `https://res.cloudinary.com/worldanireg/images/${name}/${chip}.png`;
 
   if (!name || !folder) {
     return res.status(400).json({
@@ -31,7 +29,19 @@ const getFile = async (req = request, res = response) => {
 
   try {
 
-    const findImage = await Image.findOne({ name })
+    const findImage = await Image.findOne({
+      $or: [
+        {
+          name: name,
+        },
+        {
+          address: name
+        }
+      ]
+    })
+
+    // console.log(name)
+    // console.log(findImage)
 
     if (!findImage) {
       return res.status(400).json({
@@ -42,7 +52,7 @@ const getFile = async (req = request, res = response) => {
     const { url } = findImage;
     res.status(201).json({
       ok: true,
-      message: "File upload",
+      message: "File find",
       image: url,
     });
   } catch (error) {
