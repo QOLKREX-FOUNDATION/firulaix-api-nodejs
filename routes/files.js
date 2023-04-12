@@ -35,6 +35,7 @@ router.put(
     validateFile,
     check("name", "El nombre es requerido").not().isEmpty(),
     check("folder", "El folder es requerido").not().isEmpty(),
+    check("address", "La address es requerida").not().isEmpty(),
     validateFields,
   ],
   uploadFileEr

@@ -97,7 +97,7 @@ const uploadFile = async (req = request, res = response) => {
 };
 
 const uploadFileEr = async (req = request, res = response) => {
-  const { folder, name } = req.body;
+  const { folder, name, address } = req.body;
   const file = req.files.file;
   // const url = path.join(__dirname, `../${file.name}`);
   try {
@@ -125,7 +125,7 @@ const uploadFileEr = async (req = request, res = response) => {
       // insert and update image in database
       const newImage = await Image({
         name,
-        address: folder,
+        address,
         path: result.public_id,
         url: result.secure_url,
       })
@@ -139,12 +139,12 @@ const uploadFileEr = async (req = request, res = response) => {
         image: imageDB
       });
     }
-
+    console.log(address)
     const updateImage = await Image.findOneAndUpdate(
       { name },
       {
         name,
-        address: folder,
+        address,
         path: result.public_id,
         url: result.secure_url,
       }
