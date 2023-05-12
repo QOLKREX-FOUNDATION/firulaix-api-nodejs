@@ -59,6 +59,10 @@ app.use("/api/renian", require("./routes/renian"));
 
 app.use("/api/files", require("./routes/files"));
 
+// Admin Routes
+
+app.use("/api/races", require("./routes/races"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 

@@ -6,6 +6,7 @@ const {
 const Adopter = require("../model/Adopter");
 const { generateJWT } = require("../helpers/jwt");
 const { mailReset } = require("../helpers/mail");
+const bcryptjs = require("bcryptjs");
 
 const getRecord = async (req, res = response) => {
 	try {
@@ -31,7 +32,11 @@ const login = async (req, res = response) => {
 		const find = await Adopter.findOne({ email: req.body.email }).select(
 			"password email name lastName idRegisteringEntity"
 		);
-		const response = passwordDencrypt(req.body.password, find.password);
+		console.log(find)
+		console.log(req.body.password)
+		// const response = passwordDencrypt(req.body.password, find.password);
+		const response = bcryptjs.compareSync(req.body.password, find.password);
+		console.log(passwordDencrypt("ENCVNxvS", "ENCVNxvS"))
 
 		if (!response) {
 			return res.status(400).json({
