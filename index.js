@@ -63,6 +63,10 @@ app.use("/api/files", require("./routes/files"));
 
 app.use("/api/races", require("./routes/races"));
 
+// Quantity Routes
+
+app.use("/api/quantity", require("./routes/quantity"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
