@@ -1,6 +1,7 @@
 // controller for quantity
 // getQuantityPets
 // getQuantityEntityRegister
+const Adopter = require("../model/Adopter");
 const Pet = require("../model/Pet");
 const User = require("../model/User");
 
@@ -37,9 +38,26 @@ const getQuantityEntityRegister = async (req, res) => {
         });
     }
 }
+const getQuantityAdopters = async (req, res) => {
+
+    try {
+        const quantityEntityRegister = await Adopter.countDocuments({ status: true, entity_register: true });
+        res.status(200).json({
+            ok: true,
+            quantityEntityRegister,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error, contact Admin",
+        });
+    }
+}
 
 module.exports = {
     getQuantityPets,
-    getQuantityEntityRegister
+    getQuantityEntityRegister,
+    getQuantityAdopters
 }
 // Compare this snippet from controllers\users.js:

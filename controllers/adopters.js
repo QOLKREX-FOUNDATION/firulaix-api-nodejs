@@ -30,14 +30,19 @@ const getPublic = async (req, res = response) => {
 	const { address } = req.query;
 	try {
 		let find = await Adopter.findOne({ address });
-
-		if (!find.status) {
-			res.status(400).json({
+		if (!find) {
+			return res.status(400).json({
 				ok: false,
 			});
 		}
 
-		res.status(201).json({
+		if (!find?.status) {
+			return res.status(400).json({
+				ok: false,
+			});
+		}
+
+		return res.status(201).json({
 			ok: true,
 			phone: find.phone,
 		});
