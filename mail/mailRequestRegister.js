@@ -1,5 +1,5 @@
-const template = ({ registry }) => {
-    return `<!DOCTYPE html>
+const templateRequestRegistry = ({ registry }) => {
+  return `<!DOCTYPE html>
     <html lang="es">
       <head>
         <meta charset="utf-8" />
@@ -275,7 +275,10 @@ const template = ({ registry }) => {
                         line-height: 48px;
                       "
                     >
-                      <center>Gracias por enviar su solicitud de registro</center>
+                      <center>
+                        Gracias por enviar su solicitud de registro ( Entidad
+                        Registradora )
+                      </center>
                     </h1>
                     <p class="text-line text-color" style="padding: 20px 10px">
                       Su registro fue exitoso e! Por favor revise su información de
@@ -340,13 +343,12 @@ const template = ({ registry }) => {
                     >
                       <tr>
                         <td class="text-color text-line">
-                          <h4>TX: ${ tx }</h4>
     
                           <h4>Datos del Adoptante</h4>
     
                           <p>
                             <span class="bold">Nombres y Apellidos: </span>
-                            ${ registry.fullname }
+                            ${ registry.fullName }
                           </p>
     
                           <p>
@@ -364,15 +366,15 @@ const template = ({ registry }) => {
                           <br />
                           <p>
                             <span class="bold">Dirección:</span>
-                            ${ registry.direction }
+                            ${ registry.address }
                           </p>
                           <p>
                             <span class="bold">Empresa:</span>
-                            ${ registry.empresa }
+                            ${ registry.company }
                           </p>
                           <p>
                             <span class="bold">Descripción:</span>
-                            ${ registry.description }
+                            ${ registry.message }
                           </p>
                         </td>
                       </tr>
@@ -391,67 +393,6 @@ const template = ({ registry }) => {
                     "
                   >
                     <hr />
-    
-                    <table
-                      border="0"
-                      cellpadding="0"
-                      cellspacing="0"
-                      style="max-width: 600px"
-                    >
-                      <tr>
-                        <td class="text-color text-line">
-                          <h4>Datos de la Mascota</h4>
-    
-                          <p>
-                            <span class="bold">Microchip:</span>
-                            ${ pet.chip ? pet.chip : "I don't have a microchip" }
-                          </p>
-                          ${ pet.chip && (
-            <p>
-                <span class="bold"> Fecha del Chip: </span>
-                ${pet.chipDate}
-            </p>
-        ) }
-    
-                          <p>
-                            <span class="bold">Nombre:</span>
-                            ${ pet.name }
-                          </p>
-    
-                          <p>
-                            <span class="bold">País (ISO 3166‑1; alfa‑2):</span>
-                            ${ pet.country }
-                          </p>
-                          <p><span class="bold">Animal:</span> ${ pet.type }</p>
-                          <p><span class="bold">Raza:</span> ${ pet.race }</p>
-                          <br />
-                          <p>
-                            <span class="bold">Fecha de Nacimiento:</span> ${ pet.date }
-                          </p>
-                          <p>
-                            <span class="bold">Fecha de Adopción:</span> ${ pet.dateAdoption }
-                          </p>
-                          <p><span class="bold">Sexo:</span> ${ pet.gender }</p>
-                          <p><span class="bold">Color:</span> ${ pet.colour }</p>
-                          <p>
-                            <span class="bold">Esterilizado:</span>
-                            ${ pet.sterilized }
-                          </p>
-    
-                          ${ pet.chipFather && (
-            <p>
-                <br />
-                <span class="bold"> Padre Chip: </span>
-                ${pet.chipFather}
-            </p>
-        ) } ${ pet.chipMother && (
-            <p>
-                <span class="bold">Madre Chip:</span>${pet.chipMother}
-            </p>
-        ) }
-                        </td>
-                      </tr>
-                    </table>
                   </td>
                 </tr>
     
@@ -572,4 +513,4 @@ const template = ({ registry }) => {
 `;
 };
 
-module.exports = { template };
+module.exports = { templateRequestRegistry };

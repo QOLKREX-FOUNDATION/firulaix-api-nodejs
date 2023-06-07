@@ -67,6 +67,10 @@ app.use("/api/races", require("./routes/races"));
 
 app.use("/api/quantity", require("./routes/quantity"));
 
+// Request Email
+
+app.use("/api/request", require("./routes/request"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
