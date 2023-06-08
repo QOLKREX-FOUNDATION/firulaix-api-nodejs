@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
 const { template } = require("../mail/mailAdopter");
 const { templateReset } = require("../mail/mailReset");
-const { templateRequestRegistry } = require("../mail/mailRequestRegister");
+const { templateRequestUser } = require("../mail/mailRequestRegisterUser");
+const { templateRequestEntity } = require("../mail/mailRequestRegisterEntity");
 
 const config = () => {
 	return nodemailer.createTransport({
@@ -93,7 +94,7 @@ const mailRegisterEntity = async ({
 			from: 'solicitudderegistro@worldanimalregistry.org',
 			to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
 			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateRequestRegistry({ registry }),
+			html: templateRequestEntity({ registry }),
 		});
 		return true;
 	} catch (error) {
@@ -102,4 +103,33 @@ const mailRegisterEntity = async ({
 	}
 };
 
-module.exports = { mail, mailReset, mailRegisterEntity };
+const mailRegisterUser = async ({
+	registry,
+}) => {
+	try {
+		let transporter = config();
+		// console.log("email", email.toLowerCase())
+		// const emailLower = email.toLowerCase()
+		// console.log("plantilla", JSON.parse(registry))
+
+		await transporter.sendMail({
+			from: 'solicitudderegistro@worldanimalregistry.org',
+			to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+			html: templateRequestUser({ registry }),
+			attachments: [
+				{
+					filename: 'voucher.png',
+					path: registry.image,
+					contentType: 'application/png'
+				},
+			]
+		});
+		return true;
+	} catch (error) {
+		console.log(error)
+		return false;
+	}
+};
+
+module.exports = { mail, mailReset, mailRegisterEntity, mailRegisterUser };

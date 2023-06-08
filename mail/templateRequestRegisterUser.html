@@ -274,10 +274,7 @@
                     line-height: 48px;
                   "
                 >
-                  <center>
-                    Gracias por enviar su solicitud de registro ( Entidad
-                    Registradora )
-                  </center>
+                  <center>Gracias por enviar su solicitud de registro</center>
                 </h1>
                 <p class="text-line text-color" style="padding: 20px 10px">
                   Su registro fue exitoso e! Por favor revise su información de
@@ -343,11 +340,17 @@
                   <tr>
                     <td class="text-color text-line">
                       <h4>Datos del Adoptante</h4>
-
                       <p>
-                        <span class="bold">Nombres y Apellidos: </span>
-                        ${registry.fullName}
+                        <span class="bold">E-mail:</span> ${ registry.email }
                       </p>
+                      <p>
+                        <span class="bold">Teléfono:</span> ${ registry.phone }
+                      </p>
+                      <p>
+                        <span class="bold">Tipo de Persona:</span> ${
+                        registry.person }
+                      </p>
+                      <p><span class="bold">Tipo:</span> ${ registry.type }</p>
 
                       <p>
                         <span class="bold">País (ISO 3166‑1; alfa‑2):</span>
@@ -356,23 +359,16 @@
 
                       <br />
                       <p>
-                        <span class="bold">E-mail:</span> ${ registry.email }
+                        <span class="bold">Tipo de Documento:</span>
+                        ${registry.document}
                       </p>
                       <p>
-                        <span class="bold">Teléfono:</span> ${ registry.phone }
-                      </p>
-                      <br />
-                      <p>
-                        <span class="bold">Dirección:</span>
-                        ${registry.address}
+                        <span class="bold">Número de Documento:</span>
+                        ${registry.documentNumber}
                       </p>
                       <p>
-                        <span class="bold">Empresa:</span>
-                        ${registry.company}
-                      </p>
-                      <p>
-                        <span class="bold">Descripción:</span>
-                        ${registry.message}
+                        <span class="bold">Tipo de Servicio:</span>
+                        ${registry.typeService}
                       </p>
                     </td>
                   </tr>
