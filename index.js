@@ -71,6 +71,10 @@ app.use("/api/quantity", require("./routes/quantity"));
 
 app.use("/api/request", require("./routes/request"));
 
+// payment mercadopago
+
+app.use("/api/payment", require("./routes/payment"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 

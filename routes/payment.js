@@ -1,0 +1,16 @@
+const { Router } = require("express");
+const { createOrder, createOrder2, reciveWebhook } = require("../controllers/payment");
+
+const router = Router();
+
+router.post("/create-order", createOrder);
+
+router.post("/create-order-2", createOrder2);
+
+router.post("/webhook", reciveWebhook)
+
+router.get("/", (req, res) => {
+    res.send("Pagos")
+})
+
+module.exports = router;
