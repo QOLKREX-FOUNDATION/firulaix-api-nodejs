@@ -3,6 +3,8 @@ const { template } = require("../mail/mailAdopter");
 const { templateReset } = require("../mail/mailReset");
 const { templateRequestUser } = require("../mail/mailRequestRegisterUser");
 const { templateRequestEntity } = require("../mail/mailRequestRegisterEntity");
+const { templateRequestUserCard } = require("../mail/mailRequestRegisterUserCard");
+const path = require("path");
 
 const config = () => {
 	return nodemailer.createTransport({
@@ -111,20 +113,42 @@ const mailRegisterUser = async ({
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 		// console.log("plantilla", JSON.parse(registry))
+		// console.log(path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'))
 
-		await transporter.sendMail({
-			from: 'solicitudderegistro@worldanimalregistry.org',
-			to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateRequestUser({ registry }),
-			attachments: [
-				{
-					filename: 'voucher.png',
-					path: registry.image,
-					contentType: 'application/png'
-				},
-			]
-		});
+		registry.image === "" ?
+			await transporter.sendMail({
+				from: 'solicitudderegistro@worldanimalregistry.org',
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+				html: templateRequestUserCard({ registry }),
+				attachments: [
+					{
+						filename: 'Solicituda_de_Registro.pdf',
+						path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+						contentType: 'application/pdf'
+					},
+				]
+			})
+			:
+			await transporter.sendMail({
+				from: 'solicitudderegistro@worldanimalregistry.org',
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+				html: templateRequestUser({ registry }),
+				attachments: [
+					{
+						filename: 'Solicituda_de_Registro.pdf',
+						path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+						contentType: 'application/pdf'
+					},
+					{
+						filename: 'voucher.png',
+						path: registry.image,
+						contentType: 'application/png'
+					},
+				]
+			});
+
 		return true;
 	} catch (error) {
 		console.log(error)

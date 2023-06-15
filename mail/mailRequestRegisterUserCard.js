@@ -1,4 +1,4 @@
-const templateRequestUser = ({ registry }) => {
+const templateRequestUserCard = ({ registry }) => {
   return `<!DOCTYPE html>
   <html lang="es">
     <head>
@@ -278,7 +278,7 @@ const templateRequestUser = ({ registry }) => {
                     <center>Gracias por enviar su solicitud de registro</center>
                   </h1>
                   <p class="text-line text-color" style="padding: 20px 10px">
-                    Su registro fue exitoso e! Por favor revise su información de
+                    Su registro fue exitoso! Por favor revise su información de
                     registro a continuación. Te enviaremos otro correo
                     electrónico. cuando se verifiquen los datos.
                   </p>
@@ -306,12 +306,12 @@ const templateRequestUser = ({ registry }) => {
                   "
                 >
                   <div class="flex-item text-color">
-                  <img
-                  src="https://media.discordapp.net/attachments/839620709517230081/1119025761693749300/check.png"
-                  alt="checked"
-                  border="0"
-                  style="display: block; width: 20px; height: 20px"
-                />
+                    <img
+                      src="https://media.discordapp.net/attachments/839620709517230081/1119025761693749300/check.png"
+                      alt="checked"
+                      border="0"
+                      style="display: block; width: 20px; height: 20px"
+                    />
                     <p>
                       En caso de inconsistencia con los datos estaremos
                       escribiendo usted por los datos proporcionados.
@@ -383,6 +383,26 @@ const templateRequestUser = ({ registry }) => {
                           <span class="bold">Tipo de Servicio:</span>
                           ${ registry.type_service }
                         </p>
+                        <p>
+                          <span class="bold"> Id del pago:</span>
+                          ${ registry.id_payment }
+                        </p>
+                        <p>
+                          <span class="bold"> Estado:</span>
+                          ${ registry.status === 'approved' ? 'Aprobado' : 'Pendiente' }
+                        </p>
+                        <p>
+                          <span class="bold"> Fecha de Creación:</span>
+                          ${ new Date(registry.date_created).toLocaleDateString() }
+                        </p>
+                        <p>
+                          <span class="bold"> Fecha de Aprobación:</span>
+                          ${ new Date(registry.date_approved).toLocaleDateString() }
+                        </p>
+                        <p>
+                          <span class="bold"> Tipo de Moneda:</span>
+                          ${ registry.currency_id }
+                        </p>
                       </td>
                     </tr>
                   </table>
@@ -402,7 +422,6 @@ const templateRequestUser = ({ registry }) => {
                   <hr />
                 </td>
               </tr>
-  
             </table>
           </td>
         </tr>
@@ -428,8 +447,8 @@ const templateRequestUser = ({ registry }) => {
                   "
                 >
                   <p style="margin: 0">
-                    Recibió este correo electrónico porque acaba de registrar una
-                    aplicación en Renian.pe
+                    Recibió este correo electrónico porque se acaba de registrar
+                    en una aplicación o sitio web de Firulaix Finance.
                   </p>
                 </td>
               </tr>
@@ -484,4 +503,4 @@ const templateRequestUser = ({ registry }) => {
 `;
 };
 
-module.exports = { templateRequestUser };
+module.exports = { templateRequestUserCard };
