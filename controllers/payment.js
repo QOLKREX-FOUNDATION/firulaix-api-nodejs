@@ -35,9 +35,9 @@ const createOrder = async (req, res) => {
         ],
         back_urls: {
             // success: `${ process.env.HOST }/es/request`,
-            success: `${ process.env.HOST }/es/request/success`,
+            success: `https://war-website.vercel.app/es/request/success`,
             // failure: `${ process.env.HOST }/es/request`,
-            failure: `${ process.env.HOST }/es/request/failure`,
+            failure: `https://war-website.vercel.app/es/request/failure`,
         },
         notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
         auto_return: "approved",
@@ -130,9 +130,9 @@ const createOrder2 = async (req, res) => {
         ],
         back_urls: {
             // success: `${ process.env.HOST }/es/request`,
-            success: `${ process.env.HOST }/es/request/success`,
+            success: `https://war-website.vercel.app/es/request/success`,
             // failure: `${ process.env.HOST }/es/request`,
-            failure: `${ process.env.HOST }/es/request/failure`,
+            failure: `https://war-website.vercel.app/es/request/failure`,
         },
         notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
         auto_return: "approved",
