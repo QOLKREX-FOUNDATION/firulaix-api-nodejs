@@ -121,13 +121,13 @@ const mailRegisterUser = async ({
 				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
 				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 				html: templateRequestUserCard({ registry }),
-				attachments: [
-					{
-						filename: 'Solicituda_de_Registro.pdf',
-						path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
-						contentType: 'application/pdf'
-					},
-				]
+				// attachments: [
+				// 	{
+				// 		filename: 'Solicituda_de_Registro.pdf',
+				// 		path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+				// 		contentType: 'application/pdf'
+				// 	},
+				// ]
 			})
 			:
 			await transporter.sendMail({
@@ -136,11 +136,11 @@ const mailRegisterUser = async ({
 				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 				html: templateRequestUser({ registry }),
 				attachments: [
-					{
-						filename: 'Solicituda_de_Registro.pdf',
-						path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
-						contentType: 'application/pdf'
-					},
+					// {
+					// 	filename: 'Solicituda_de_Registro.pdf',
+					// 	path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+					// 	contentType: 'application/pdf'
+					// },
 					{
 						filename: 'voucher.png',
 						path: registry.image,
