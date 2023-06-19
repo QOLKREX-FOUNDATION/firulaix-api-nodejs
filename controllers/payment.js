@@ -213,7 +213,7 @@ const reciveWebhook = async (req, res) => {
                 // email de confirmacion de pago
                 console.log("approved");
 
-                mailRegisterUser({
+                await mailRegisterUser({
                     registry: {
                         ...paymentInfo.body.metadata,
                         id_payment: paymentInfo.body.id,
