@@ -361,7 +361,8 @@ const templateRequestUserCard = ({ registry }) => {
                           <span class="bold">Teléfono:</span> ${ registry.phone }
                         </p>
                         <p>
-                          <span class="bold">Tipo de Persona:</span> ${ registry.person }
+                          <span class="bold">Tipo de Persona:</span> ${ registry.person
+    }
                         </p>
                         <p><span class="bold">Tipo:</span> ${ registry.type }</p>
   
@@ -389,19 +390,37 @@ const templateRequestUserCard = ({ registry }) => {
                         </p>
                         <p>
                           <span class="bold"> Estado:</span>
-                          ${ registry.status === 'approved' ? 'Aprobado' : 'Pendiente' }
+                          ${ registry.status === "approved"
+      ? "Aprobado"
+      : "Pendiente"
+    }
                         </p>
                         <p>
                           <span class="bold"> Fecha de Creación:</span>
-                          ${ new Date(registry.date_created).toLocaleDateString() }
+                          ${ new Date(
+      registry.date_created
+    ).toLocaleDateString() }
                         </p>
                         <p>
                           <span class="bold"> Fecha de Aprobación:</span>
-                          ${ new Date(registry.date_approved).toLocaleDateString() }
+                          ${ new Date(
+      registry.date_approved
+    ).toLocaleDateString() }
                         </p>
                         <p>
                           <span class="bold"> Tipo de Moneda:</span>
                           ${ registry.currency_id }
+                        </p>
+                        <br />
+                        <p>
+                          <span class="bold"
+                            >descargue su ficha haciendo click aquí:</span
+                          >
+                          <a
+                            href="https://cdn.discordapp.com/attachments/839620709517230081/1120371602467598336/solicitud_de_registro.pdf"
+                            target="_blank"
+                            >Descargar</a
+                          >
                         </p>
                       </td>
                     </tr>
@@ -499,7 +518,6 @@ const templateRequestUserCard = ({ registry }) => {
       </table>
     </body>
   </html>
-  
 `;
 };
 

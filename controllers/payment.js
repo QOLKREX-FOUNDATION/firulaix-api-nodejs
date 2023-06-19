@@ -22,7 +22,6 @@ const createOrder = async (req, res) => {
     } = req.body;
 
     const preference = {
-
         items: [
             {
                 title: "Registro Completo",
@@ -34,25 +33,25 @@ const createOrder = async (req, res) => {
             },
         ],
         back_urls: {
-            // success: `${ process.env.HOST }/es/request`,
-            success: `https://war-website.vercel.app/es/request/success`,
-            // failure: `${ process.env.HOST }/es/request`,
-            failure: `https://war-website.vercel.app/es/request/failure`,
+            success: `${ process.env.HOST }/es/request/success`,
+            // success: `https://war-website.vercel.app/es/request/success`,
+            failure: `${ process.env.HOST }/es/request/failure`,
+            // failure: `https://war-website.vercel.app/es/request/failure`,
         },
-        notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
+        notification_url: `https://firulaix-api-test.vercel.app/api/payment/webhook`,
         auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
                 {
-                    id: "amex"
-                }
+                    id: "amex",
+                },
             ],
             excluded_payment_types: [
                 {
-                    id: "atm"
-                }
+                    id: "atm",
+                },
             ],
-            installments: 6
+            installments: 6,
         },
         binary_mode: true,
         payer: {
@@ -60,12 +59,11 @@ const createOrder = async (req, res) => {
             email,
             phone: {
                 // area_code: "51",
-                number: Number(phone)
-
+                number: Number(phone),
             },
             identification: {
                 type: type,
-                number: documentNumber
+                number: documentNumber,
             },
             // address: {
             //     country_name: country,
@@ -82,17 +80,15 @@ const createOrder = async (req, res) => {
             document,
             documentNumber,
             paymentMethod,
-        }
+        },
     };
 
     try {
-
         const response = await mercadopago.preferences.create(preference);
         // console.log("response", response.body)
         res.status(200).json({ data: response.body });
-    }
-    catch (error) {
-        console.log("error", error)
+    } catch (error) {
+        console.log("error", error);
         res.status(500).json({ error });
     }
 };
@@ -101,7 +97,7 @@ const createOrder2 = async (req, res) => {
     mercadopago.configure({
         access_token: process.env.MP_ACCESS_TOKEN,
     });
-    console.log("req.body", JSON.stringify(req.body))
+    console.log("req.body", JSON.stringify(req.body));
 
     const {
         country,
@@ -117,7 +113,6 @@ const createOrder2 = async (req, res) => {
     } = req.body;
 
     const preference = {
-
         items: [
             {
                 title: "Solo Registro",
@@ -129,25 +124,25 @@ const createOrder2 = async (req, res) => {
             },
         ],
         back_urls: {
-            // success: `${ process.env.HOST }/es/request`,
-            success: `https://war-website.vercel.app/es/request/success`,
-            // failure: `${ process.env.HOST }/es/request`,
-            failure: `https://war-website.vercel.app/es/request/failure`,
+            success: `${ process.env.HOST }/es/request/success`,
+            //   success: `https://war-website.vercel.app/es/request/success`,
+            failure: `${ process.env.HOST }/es/request/failure`,
+            //   failure: `https://war-website.vercel.app/es/request/failure`,
         },
         notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
         auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
                 {
-                    id: "amex"
-                }
+                    id: "amex",
+                },
             ],
             excluded_payment_types: [
                 {
-                    id: "atm"
-                }
+                    id: "atm",
+                },
             ],
-            installments: 6
+            installments: 6,
         },
         binary_mode: true,
         payer: {
@@ -155,11 +150,11 @@ const createOrder2 = async (req, res) => {
             email,
             phone: {
                 // area_code: "51",
-                number: Number(phone)
+                number: Number(phone),
             },
             identification: {
                 type: type,
-                number: documentNumber
+                number: documentNumber,
             },
             // address: {
             //     country_name: country,
@@ -176,17 +171,15 @@ const createOrder2 = async (req, res) => {
             document,
             documentNumber,
             paymentMethod,
-        }
+        },
     };
 
     try {
-
         const response = await mercadopago.preferences.create(preference);
         // console.log("response", response.body)
         res.status(200).json({ data: response.body });
-    }
-    catch (error) {
-        console.log("error", error)
+    } catch (error) {
+        console.log("error", error);
         res.status(500).json({ error });
     }
 };
@@ -198,19 +191,27 @@ const reciveWebhook = async (req, res) => {
     });
 
     const payment = req.query;
-    console.log("payment reciveWebhook", payment)
+    console.log("payment reciveWebhook", payment);
 
     try {
         if (payment.type === "payment") {
-            const paymentInfo = await mercadopago.payment.findById(payment["data.id"]);
+            const paymentInfo = await mercadopago.payment.findById(
+                payment["data.id"]
+            );
             console.log("paymentInfo reciveWebhook", paymentInfo);
-            console.log("paymentInfo reciveWebhook", paymentInfo.body.additional_info.items[0].title);
-            console.log("paymentInfo reciveWebhook", paymentInfo.body.additional_info.payer);
+            console.log(
+                "paymentInfo reciveWebhook",
+                paymentInfo.body.additional_info.items[0].title
+            );
+            console.log(
+                "paymentInfo reciveWebhook",
+                paymentInfo.body.additional_info.payer
+            );
 
             if (paymentInfo.body.status === "approved") {
                 // store in DB
                 // email de confirmacion de pago
-                console.log("approved")
+                console.log("approved");
 
                 mailRegisterUser({
                     registry: {
@@ -220,24 +221,24 @@ const reciveWebhook = async (req, res) => {
                         date_created: paymentInfo.body.date_created,
                         date_approved: paymentInfo.body.date_approved,
                         currency_id: paymentInfo.body.currency_id,
-                    }
-                })
+                    },
+                });
 
                 return res.status(200).json({
                     ok: true,
-                    data: "approved"
+                    data: "approved",
                 });
             }
             if (paymentInfo.body.status === "pending") {
                 return res.status(200).json({
                     ok: true,
-                    data: "pending"
+                    data: "pending",
                 });
             }
             if (paymentInfo.body.status === "rejected") {
                 return res.status(200).json({
                     ok: true,
-                    data: "rejected"
+                    data: "rejected",
                 });
             }
         }
@@ -285,20 +286,19 @@ const getInfoOrder = async (req, res) => {
         if (paymentInfo.status === "rejected") {
             return res.status(200).json({
                 ok: true,
-                data: "rejected"
+                data: "rejected",
             });
         }
 
         return res.status(200).json({
             ok: false,
-            data: "pending"
+            data: "pending",
         });
-
     } catch (error) {
         console.log("error", error);
         return res.status(500).json({
             ok: false,
-            error
+            error,
         });
     }
 };
@@ -307,5 +307,5 @@ module.exports = {
     createOrder,
     createOrder2,
     reciveWebhook,
-    getInfoOrder
-}
+    getInfoOrder,
+};

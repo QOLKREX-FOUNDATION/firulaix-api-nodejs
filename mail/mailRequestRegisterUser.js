@@ -306,28 +306,15 @@ const templateRequestUser = ({ registry }) => {
                   "
                 >
                   <div class="flex-item text-color">
-                  <img
-                  src="https://media.discordapp.net/attachments/839620709517230081/1119025761693749300/check.png"
-                  alt="checked"
-                  border="0"
-                  style="display: block; width: 20px; height: 20px"
-                />
+                    <img
+                      src="https://firulaixcoin.finance/images/email/checked.png"
+                      alt="checked"
+                      border="0"
+                      style="display: block; width: 20px; height: 20px"
+                    />
                     <p>
                       En caso de inconsistencia con los datos estaremos
                       escribiendo usted por los datos proporcionados.
-                    </p>
-                  </div>
-                  <div class="flex-item text-color">
-                  <img
-                  src="https://media.discordapp.net/attachments/839620709517230081/1119025761693749300/check.png"
-                  alt="checked"
-                  border="0"
-                  style="display: block; width: 20px; height: 20px"
-                />
-                    <p>
-                      Por favor rellene y reenvie el formulario de registro con datos
-                      reales. En caso de inconsistencia con los datos
-                      estaremos escribiendo usted por los datos proporcionados.
                     </p>
                   </div>
                 </td>
@@ -377,11 +364,22 @@ const templateRequestUser = ({ registry }) => {
                         </p>
                         <p>
                           <span class="bold">Número de Documento:</span>
-                          ${ registry.document_number }
+                          ${ registry.documentNumber }
                         </p>
                         <p>
                           <span class="bold">Tipo de Servicio:</span>
-                          ${ registry.type_service }
+                          ${ registry.typeService }
+                        </p>
+                        <br />
+                        <p>
+                          <span class="bold"
+                            >descargue su ficha haciendo click aquí:</span
+                          >
+                          <a
+                            href="https://cdn.discordapp.com/attachments/839620709517230081/1120371602467598336/solicitud_de_registro.pdf"
+                            target="_blank"
+                            >Descargar</a
+                          >
                         </p>
                       </td>
                     </tr>
@@ -403,6 +401,42 @@ const templateRequestUser = ({ registry }) => {
                 </td>
               </tr>
   
+              <tr>
+                <td bgcolor="#e9ecef" style="padding: 24px">
+                  <div
+                    style="
+                      font-size: 10px;
+                      padding: 10px;
+                      border: 1px solid #aaa;
+                      background: #eee;
+                    "
+                  >
+                    <p>
+                      En Renian estamos comprometidos con tu seguridad y la de los
+                      tuyos, todo el proceso es transparente y descentralizado.
+                    </p>
+  
+                    <p style="margin: 0">
+                      Para cualquier inquietud comunicarse a nuestro grupo de
+                      <a
+                        href="https://t.me/firulaixcoin"
+                        target="_blank"
+                        ref="noreferrer noopener "
+                        >TELEGRAM
+                      </a>
+                    </p>
+                    <p style="margin: 0">
+                      Para cualquier soporte comuníquese con los siguientes
+                      <a href="mail:info@qolkrex.foundation">E-MAIL </a>
+                    </p>
+                    <br />
+                    <p style="margin: 0">
+                      RENIAN,<br />
+                      Soporte
+                    </p>
+                  </div>
+                </td>
+              </tr>
             </table>
           </td>
         </tr>
