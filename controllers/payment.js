@@ -1,7 +1,9 @@
 const mercadopago = require("mercadopago");
-const { mailRegisterUserWar, mailRegisterUserRenian } = require("../helpers/mail");
+const {
+    mailRegisterUserWar,
+    mailRegisterUserRenian,
+} = require("../helpers/mail");
 
-// response emails war
 const createOrder = async (req, res) => {
     mercadopago.configure({
         access_token: process.env.MP_ACCESS_TOKEN,
@@ -10,6 +12,7 @@ const createOrder = async (req, res) => {
     console.log("req.body", JSON.stringify(req.body));
 
     const {
+        platform,
         country,
         person,
         email,
@@ -34,9 +37,15 @@ const createOrder = async (req, res) => {
             },
         ],
         back_urls: {
-            success: `${ process.env.HOST }/es/request/success`,
+            success:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/success`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/success`,
             // success: `https://war-website.vercel.app/es/request/success`,
-            failure: `${ process.env.HOST }/es/request/failure`,
+            failure:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/failure`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
             // failure: `https://war-website.vercel.app/es/request/failure`,
         },
         notification_url: `https://firulaix-api-test.vercel.app/api/payment/webhook`,
@@ -71,6 +80,7 @@ const createOrder = async (req, res) => {
             // }
         },
         metadata: {
+            platform,
             country,
             person,
             email,
@@ -101,6 +111,7 @@ const createOrder2 = async (req, res) => {
     console.log("req.body", JSON.stringify(req.body));
 
     const {
+        platform,
         country,
         person,
         email,
@@ -125,12 +136,18 @@ const createOrder2 = async (req, res) => {
             },
         ],
         back_urls: {
-            success: `${ process.env.HOST }/es/request/success`,
-            //   success: `https://war-website.vercel.app/es/request/success`,
-            failure: `${ process.env.HOST }/es/request/failure`,
-            //   failure: `https://war-website.vercel.app/es/request/failure`,
+            success:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/success`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/success`,
+            // success: `https://war-website.vercel.app/es/request/success`,
+            failure:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/failure`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
+            // failure: `https://war-website.vercel.app/es/request/failure`,
         },
-        notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
+        notification_url: `https://firulaix-api-test.vercel.app/api/payment/webhook`,
         auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
@@ -162,6 +179,7 @@ const createOrder2 = async (req, res) => {
             // }
         },
         metadata: {
+            platform,
             country,
             person,
             email,
@@ -184,7 +202,6 @@ const createOrder2 = async (req, res) => {
         res.status(500).json({ error });
     }
 };
-
 
 const reciveWebhook = async (req, res) => {
     // console.log("webhook", req.query);
@@ -226,16 +243,14 @@ const reciveWebhook = async (req, res) => {
                             currency_id: paymentInfo.body.currency_id,
                         },
                     });
-
                 }
                 if (paymentInfo.body.metadata.platform === "renian") {
-
                     await mailRegisterUserRenian({
                         registry: {
                             ...paymentInfo.body.metadata,
                             id_payment: paymentInfo.body.id,
                             status: paymentInfo.body.status,
-                            date_created: paymentInfo.body.date_created,
+                            date_created: paymentInfo.bsody.date_created,
                             date_approved: paymentInfo.body.date_approved,
                             currency_id: paymentInfo.body.currency_id,
                         },
