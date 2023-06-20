@@ -1,6 +1,7 @@
 const mercadopago = require("mercadopago");
-const { mailRegisterUser } = require("../helpers/mail");
+const { mailRegisterUserWar, mailRegisterUserRenian } = require("../helpers/mail");
 
+// response emails war
 const createOrder = async (req, res) => {
     mercadopago.configure({
         access_token: process.env.MP_ACCESS_TOKEN,
@@ -184,6 +185,7 @@ const createOrder2 = async (req, res) => {
     }
 };
 
+
 const reciveWebhook = async (req, res) => {
     // console.log("webhook", req.query);
     mercadopago.configure({
@@ -213,16 +215,32 @@ const reciveWebhook = async (req, res) => {
                 // email de confirmacion de pago
                 console.log("approved");
 
-                await mailRegisterUser({
-                    registry: {
-                        ...paymentInfo.body.metadata,
-                        id_payment: paymentInfo.body.id,
-                        status: paymentInfo.body.status,
-                        date_created: paymentInfo.body.date_created,
-                        date_approved: paymentInfo.body.date_approved,
-                        currency_id: paymentInfo.body.currency_id,
-                    },
-                });
+                if (paymentInfo.body.metadata.platform === "war") {
+                    await mailRegisterUserWar({
+                        registry: {
+                            ...paymentInfo.body.metadata,
+                            id_payment: paymentInfo.body.id,
+                            status: paymentInfo.body.status,
+                            date_created: paymentInfo.body.date_created,
+                            date_approved: paymentInfo.body.date_approved,
+                            currency_id: paymentInfo.body.currency_id,
+                        },
+                    });
+
+                }
+                if (paymentInfo.body.metadata.platform === "renian") {
+
+                    await mailRegisterUserRenian({
+                        registry: {
+                            ...paymentInfo.body.metadata,
+                            id_payment: paymentInfo.body.id,
+                            status: paymentInfo.body.status,
+                            date_created: paymentInfo.body.date_created,
+                            date_approved: paymentInfo.body.date_approved,
+                            currency_id: paymentInfo.body.currency_id,
+                        },
+                    });
+                }
 
                 return res.status(200).json({
                     ok: true,

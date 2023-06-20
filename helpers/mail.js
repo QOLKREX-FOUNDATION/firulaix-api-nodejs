@@ -105,7 +105,7 @@ const mailRegisterEntity = async ({
 	}
 };
 
-const mailRegisterUser = async ({
+const mailRegisterUserWar = async ({
 	registry,
 }) => {
 	try {
@@ -156,4 +156,55 @@ const mailRegisterUser = async ({
 	}
 };
 
-module.exports = { mail, mailReset, mailRegisterEntity, mailRegisterUser };
+const mailRegisterUserRenian = async ({
+	registry,
+}) => {
+	try {
+		let transporter = config();
+		// console.log("email", email.toLowerCase())
+		// const emailLower = email.toLowerCase()
+		// console.log("plantilla", JSON.parse(registry))
+		// console.log(path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'))
+
+		registry.image === "" ?
+			await transporter.sendMail({
+				from: 'solicitudderegistro@worldanimalregistry.org',
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+				html: templateRequestUserCard({ registry }),
+				// attachments: [
+				// 	{
+				// 		filename: 'Solicituda_de_Registro.pdf',
+				// 		path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+				// 		contentType: 'application/pdf'
+				// 	},
+				// ]
+			})
+			:
+			await transporter.sendMail({
+				from: 'solicitudderegistro@worldanimalregistry.org',
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+				html: templateRequestUser({ registry }),
+				attachments: [
+					// {
+					// 	filename: 'Solicituda_de_Registro.pdf',
+					// 	path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
+					// 	contentType: 'application/pdf'
+					// },
+					{
+						filename: 'voucher.png',
+						path: registry.image,
+						contentType: 'application/png'
+					},
+				]
+			});
+
+		return true;
+	} catch (error) {
+		console.log(error)
+		return false;
+	}
+};
+
+module.exports = { mail, mailReset, mailRegisterEntity, mailRegisterUserWar, mailRegisterUserRenian };
