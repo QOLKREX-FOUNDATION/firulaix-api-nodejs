@@ -48,7 +48,7 @@ const createOrder = async (req, res) => {
                     : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
             // failure: `https://war-website.vercel.app/es/request/failure`,
         },
-        notification_url: `https://firulaix-api-test.vercel.app/api/payment/webhook`,
+        notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
         auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
@@ -147,7 +147,7 @@ const createOrder2 = async (req, res) => {
                     : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
             // failure: `https://war-website.vercel.app/es/request/failure`,
         },
-        notification_url: `https://firulaix-api-test.vercel.app/api/payment/webhook`,
+        notification_url: `https://firulaix-api-nodejs.vercel.app/api/payment/webhook`,
         auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
