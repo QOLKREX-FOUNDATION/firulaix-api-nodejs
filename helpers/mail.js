@@ -4,9 +4,16 @@ const { templateReset } = require("../mail/mailReset");
 const { templateRequestUser } = require("../mail/mailRequestRegisterUser");
 const { templateRequestEntity } = require("../mail/mailRequestRegisterEntity");
 const { templateRequestUserCard } = require("../mail/mailRequestRegisterUserCard");
+const {
+	templateRequestUserCardRenian,
+} = require("../mail/mailRequestRegisterUserCardRenian");
+const {
+	templateRequestUserRenian,
+} = require("../mail/mailRequestRegisterUserRenian");
 const path = require("path");
 
-const config = () => {
+// configuracion mail war
+const configWar = () => {
 	return nodemailer.createTransport({
 		// host: "mail.firulaixcoin.finance",
 		// port: 26,
@@ -24,12 +31,27 @@ const config = () => {
 		},
 	});
 };
+
+// configuracion mail renian
+const configRenian = () => {
+	return nodemailer.createTransport({
+		host: "mail.renian.pe",
+		port: 465,
+		secure: true,
+		auth: {
+			user: "solicitudderegistro@renian.pe",
+			pass: "Solicitud_23",
+		},
+		tls: {
+			rejectUnauthorized: false,
+		},
+	});
+};
+
 // host: "qolkrex.foundation",
 // 		port: 465,
 // 		secure: true,
 // 		auth: {
-// 			// user: "no-reply@firulaixcoin.finance",
-// 			// pass: "No_reply_23",
 // 			user: "no-reply@qolkrex.foundation",
 // 			pass: "Noreplyqolkrex_23",
 // 		},
@@ -43,7 +65,7 @@ const mail = async ({
 }) => {
 	console.log("email", email)
 	try {
-		let transporter = config();
+		let transporter = configWar();
 
 		await transporter.sendMail({
 			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
@@ -65,7 +87,7 @@ const mailReset = async ({
 	token,
 }) => {
 	try {
-		let transporter = config();
+		let transporter = configWar();
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 
@@ -87,7 +109,7 @@ const mailRegisterEntity = async ({
 	registry,
 }) => {
 	try {
-		let transporter = config();
+		let transporter = configWar();
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 		// console.log("plantilla", registry)
@@ -109,7 +131,7 @@ const mailRegisterUserWar = async ({
 	registry,
 }) => {
 	try {
-		let transporter = config();
+		let transporter = configWar();
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 		// console.log("plantilla", JSON.parse(registry))
@@ -160,44 +182,27 @@ const mailRegisterUserRenian = async ({
 	registry,
 }) => {
 	try {
-		let transporter = config();
-		// console.log("email", email.toLowerCase())
-		// const emailLower = email.toLowerCase()
-		// console.log("plantilla", JSON.parse(registry))
-		// console.log(path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'))
+		let transporter = configRenian();
 
-		registry.image === "" ?
-			await transporter.sendMail({
-				from: 'solicitudderegistro@worldanimalregistry.org',
-				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
-				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-				html: templateRequestUserCard({ registry }),
-				// attachments: [
-				// 	{
-				// 		filename: 'Solicituda_de_Registro.pdf',
-				// 		path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
-				// 		contentType: 'application/pdf'
-				// 	},
-				// ]
+		registry.image === ""
+			? await transporter.sendMail({
+				from: "solicitudderegistro@renian.pe",
+				to: [registry.email, "solicitudderegistro@renian.pe"],
+				subject: "RENIAN - Registro de Usuario",
+				html: templateRequestUserCardRenian({ registry }),
 			})
-			:
-			await transporter.sendMail({
-				from: 'solicitudderegistro@worldanimalregistry.org',
-				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
-				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-				html: templateRequestUser({ registry }),
+			: await transporter.sendMail({
+				from: "solicitudderegistro@renian.pe",
+				to: [registry.email, "solicitudderegistro@renian.pe"],
+				subject: "RENIAN - Registro de Usuario",
+				html: templateRequestUserRenian({ registry }),
 				attachments: [
-					// {
-					// 	filename: 'Solicituda_de_Registro.pdf',
-					// 	path: path.join(__dirname, '../public/pdf/solicitud_de_registro.pdf'),
-					// 	contentType: 'application/pdf'
-					// },
 					{
-						filename: 'voucher.png',
+						filename: "voucher.png",
 						path: registry.image,
-						contentType: 'application/png'
+						contentType: "application/png",
 					},
-				]
+				],
 			});
 
 		return true;

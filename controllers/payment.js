@@ -250,7 +250,7 @@ const reciveWebhook = async (req, res) => {
                             ...paymentInfo.body.metadata,
                             id_payment: paymentInfo.body.id,
                             status: paymentInfo.body.status,
-                            date_created: paymentInfo.bsody.date_created,
+                            date_created: paymentInfo.body.date_created,
                             date_approved: paymentInfo.body.date_approved,
                             currency_id: paymentInfo.body.currency_id,
                         },
