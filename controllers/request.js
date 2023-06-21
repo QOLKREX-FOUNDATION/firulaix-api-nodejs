@@ -1,5 +1,5 @@
 
-const { mailRegisterEntity, mailRegisterUser } = require("../helpers/mail");
+const { mailRegisterEntity, mailRegisterUserWar } = require("../helpers/mail");
 
 const requestRegisterEntity = async (req, res) => {
     try {
@@ -27,7 +27,7 @@ const requestRegisterUser = async (req, res) => {
     try {
         // console.log(JSON.stringify(req.body));
         if (req.body) {
-            const sendEmail = await mailRegisterUser({
+            const sendEmail = await mailRegisterUserWar({
                 registry: req.body,
             });
         }
