@@ -3,6 +3,7 @@ const util = require("util");
 const { mysqlConexion } = require("../database/mysql");
 const Pet = require("../model/Pet");
 const { mail } = require("../helpers/mail");
+const Adopter = require("../model/Adopter");
 
 // 991003001934415
 // 9910030015595702
@@ -13,6 +14,8 @@ const getRecord = async (req = request, res = response) => {
 	let type = "WAR";
 	try {
 		const pet = await Pet.findOne({ chip: req.query.id });
+
+		const adopter = await Adopter.findOne({ address: pet.adopter });
 		// if (!!!pet) {
 		// 	const query = util.promisify(mysqlConexion.query).bind(mysqlConexion);
 		// 	pet = await query(
@@ -111,6 +114,7 @@ const getRecord = async (req = request, res = response) => {
 			ok: true,
 			type,
 			pet,
+			adopter,
 			vaccines,
 		});
 	} catch (error) {
