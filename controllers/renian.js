@@ -15,7 +15,6 @@ const getRecord = async (req = request, res = response) => {
 	try {
 		const pet = await Pet.findOne({ chip: req.query.id });
 
-		const adopter = await Adopter.findOne({ address: pet.adopter });
 		// if (!!!pet) {
 		// 	const query = util.promisify(mysqlConexion.query).bind(mysqlConexion);
 		// 	pet = await query(
@@ -108,6 +107,8 @@ const getRecord = async (req = request, res = response) => {
 				},
 			});
 		}
+
+		const adopter = await Adopter.findOne({ address: pet.adopter });
 
 		// console.log("pet", pet)
 		return res.status(200).json({
