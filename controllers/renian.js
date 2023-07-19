@@ -98,13 +98,13 @@ const getRecord = async (req = request, res = response) => {
 					idRegisteringEntity: 1,
 					created_for: "",
 					created_at: result.usuario_registrado,
-					vaccines,
 					user: result.usuario_id,
 					__v: 0,
 					update_at:
 						"Tue Mar 21 2023 11:08:37 GMT-0500 (hora estándar de Perú)",
 					update_for: "0X365665CD4D15887314E608A0E6DB0A9C1C922710",
 				},
+				vaccines,
 			});
 		}
 
