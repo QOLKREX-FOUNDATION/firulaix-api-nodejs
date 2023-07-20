@@ -4,6 +4,7 @@ const { mysqlConexion } = require("../database/mysql");
 const Pet = require("../model/Pet");
 const { mail } = require("../helpers/mail");
 const Adopter = require("../model/Adopter");
+const { default: mongoose } = require("mongoose");
 
 // 991003001934415
 // 9910030015595702
