@@ -1,11 +1,15 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateJWT, validateFields } = require("../middlewares");
-const { getRaces, createRace, updateRace, deleteRace } = require("../controllers/races");
+const { getRaces, createRace, updateRace, deleteRace, getRacesByType, getRacesByTypeSearch } = require("../controllers/races");
 
 const router = Router();
 
 router.get("/", [], getRaces);
+
+router.get("/type", [], getRacesByType);
+
+router.get("/type-search", [], getRacesByTypeSearch);
 
 router.post("/",
     [

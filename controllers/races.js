@@ -33,6 +33,83 @@ const getRaces = async (req, res = response) => {
     }
 };
 
+const getRacesByType = async (req, res = response) => {
+    try {
+        // Obtener los parámetros de consulta limit y offset
+        const { limit = 5, offset = 0, page = 1, type } = req.query;
+
+        const races = await Race.find({ animal: type.toUpperCase() });
+
+        if (races.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: "No se encontraron razas",
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            total: races.length,
+            races,
+            // pagination: {
+            // limit: Number(limit),
+            // offset: Number(offset),
+            // offset: Number(newOffset),
+            // currentPage: Math.ceil(offset / limit) + 1,
+            // prevPage: Math.ceil(offset / limit),
+            // nextPage: Math.ceil(offset / limit) + 2,
+            // currentPage: Number(page),
+            // totalPages: Math.ceil(racesTotal.length / Number(limit)),
+            // },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error al obtener las razas",
+        });
+    }
+};
+
+const getRacesByTypeSearch = async (req, res = response) => {
+    try {
+        // Obtener los parámetros de consulta limit y offset
+        const { type, search } = req.query;
+
+        if (!type || !search) {
+            return res.status(404).json({
+                ok: false,
+                msg: "No se encontraron razas",
+                race: [],
+            });
+        }
+
+        const races = await Race.find({
+            animal: type.toUpperCase(),
+            name: { $regex: search.toUpperCase(), $options: "i" },
+        });
+
+        if (races.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: "No se encontraron razas",
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            total: races.length,
+            race: races[0],
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error al obtener las razas",
+        });
+    }
+};
+
 const getRace = async (req, res = response) => {
     const { id } = req.params;
 
@@ -152,6 +229,8 @@ const deleteRace = async (req, res) => {
 
 module.exports = {
     getRaces,
+    getRacesByType,
+    getRacesByTypeSearch,
     getRace,
     createRace,
     updateRace,
