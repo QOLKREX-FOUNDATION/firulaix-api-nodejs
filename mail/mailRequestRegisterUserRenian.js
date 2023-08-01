@@ -355,43 +355,43 @@ const templateRequestUserRenian = ({ registry }) => {
                       <td class="text-color text-line">
                         <h4>Datos del Adoptante</h4>
                         <p>
-                          <span class="bold">E-mail:</span> ${registry.email}
+                          <span class="bold">E-mail:</span> ${ registry.email }
                         </p>
                         <p>
-                          <span class="bold">Teléfono:</span> ${registry.phone}
+                          <span class="bold">Teléfono:</span> ${ registry.phone }
                         </p>
                         <p>
-                          <span class="bold">Tipo de Persona:</span> ${registry.person}
+                          <span class="bold">Tipo de Persona:</span> ${ registry.person }
                         </p>
-                        <p><span class="bold">Tipo:</span> ${registry.type}</p>
+                        <p><span class="bold">Tipo:</span> ${ registry.type }</p>
   
                         <p>
                           <span class="bold">País (ISO 3166‑1; alfa‑2):</span>
-                          ${registry.country}
+                          ${ registry.country }
                         </p>
   
                         <br />
                         <p>
                           <span class="bold">Tipo de Documento:</span>
-                          ${registry.document}
+                          ${ registry.document }
                         </p>
                         <p>
                           <span class="bold">Número de Documento:</span>
-                          ${registry.document_number}
+                          ${ registry.document_number }
                         </p>
                         <p>
                           <span class="bold">Tipo de Servicio:</span>
-                          ${registry.type_service}
+                          ${ registry.type_service }
                         </p>
                         <br />
                         <p>
                           <span class="bold"
-                            >descargue su ficha haciendo click aquí:</span
+                            >LLENE LA FICHA DE SOLICITUD DE REGISTRO</span
                           >
                           <a
-                            href="https://cdn.discordapp.com/attachments/839620709517230081/1120371602467598336/solicitud_de_registro.pdf"
+                            href="https://forms.gle/XE9k6fCbh6EsVCVb7"
                             target="_blank"
-                            >Descargar</a
+                            >AQUÍ</a
                           >
                         </p>
                       </td>

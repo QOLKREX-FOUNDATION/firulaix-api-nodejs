@@ -373,12 +373,12 @@ const templateRequestUser = ({ registry }) => {
                         <br />
                         <p>
                           <span class="bold"
-                            >descargue su ficha haciendo click aquí:</span
+                            >LLENE LA FICHA DE SOLICITUD DE REGISTRO</span
                           >
                           <a
-                            href="https://cdn.discordapp.com/attachments/839620709517230081/1120371602467598336/solicitud_de_registro.pdf"
+                            href="https://forms.gle/XE9k6fCbh6EsVCVb7"
                             target="_blank"
-                            >Descargar</a
+                            >AQUÍ</a
                           >
                         </p>
                       </td>
