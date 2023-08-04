@@ -63,6 +63,10 @@ app.use("/api/files", require("./routes/files"));
 
 app.use("/api/races", require("./routes/races"));
 
+app.use("/api/animals", require("./routes/animal"));
+
+app.use("/api/colors", require("./routes/color"));
+
 // Quantity Routes
 
 app.use("/api/quantity", require("./routes/quantity"));
