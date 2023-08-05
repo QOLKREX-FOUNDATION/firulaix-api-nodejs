@@ -42,72 +42,72 @@ const getRecord = async (req = request, res = response) => {
 		// esto lo puse yo
 		// if (!pet) return res.status(404).json({ ok: false, msg: "No se encontro el microchip" })
 
-		if (!pet) {
-			const db = mongoose.connection;
-			const collectionName = "renian_old";
+		// if (!pet) {
+		// 	const db = mongoose.connection;
+		// 	const collectionName = "renian_old";
 
-			const collection = db.collection(collectionName);
-			const query = { usuario_cargo: req.query.id };
-			const options = {};
+		// 	const collection = db.collection(collectionName);
+		// 	const query = { usuario_cargo: req.query.id };
+		// 	const options = {};
 
-			const result = await collection.findOne(query, options);
+		// 	const result = await collection.findOne(query, options);
 
-			const query2 = { id_microchip: req.query.id };
-			const vaccines = await collection.find(query2, options).toArray();
-			//   if (result) {
-			// 	pet = result;
-			// 	vaccines = result.vacunas || [];
-			// 	delete pet?.vacunas;
-			// 	type = "RENIAN";
-			//   }
+		// 	const query2 = { id_microchip: req.query.id };
+		// 	const vaccines = await collection.find(query2, options).toArray();
+		// 	//   if (result) {
+		// 	// 	pet = result;
+		// 	// 	vaccines = result.vacunas || [];
+		// 	// 	delete pet?.vacunas;
+		// 	// 	type = "RENIAN";
+		// 	//   }
 
-			if (!result) {
-				return res.status(400).json({
-					ok: false,
-					message: "No se encontro el registro",
-				});
-			}
+		// 	if (!result) {
+		// 		return res.status(400).json({
+		// 			ok: false,
+		// 			message: "No se encontro el registro",
+		// 		});
+		// 	}
 
-			return res.status(200).json({
-				ok: true,
-				type: "RENIAN",
-				pet: {
-					_id: result._id,
-					addressEr: "",
-					userAddress: "",
-					userName: result.usuario_nombre,
-					adopter: "",
-					adopterName: result.usuario_nombre,
-					adopterLastName: result.usuario_apellidos,
-					dateRegistring: result.usuario_registrado,
-					name: result.usuario_empresa,
-					race: result.usuario_telefax,
-					gender: result.usuario_url,
-					date: result.usuario_registrado,
-					dateAdoption: result.usuario_registrado,
-					dateIssue: result.usuario_registrado,
-					chip: result.usuario_cargo,
-					chipDate: result.usuario_registrado,
-					colour: result.usuario_interes,
-					image: `https://consultwar.renian.foundation/public/images/petimg/${ result.usuario_foto }`,
-					pedigree: "",
-					country: "PE",
-					type: "DOG",
-					sterilized: result.usuario_esteril,
-					hash: "",
-					status: "",
-					idRegisteringEntity: 1,
-					created_for: "",
-					created_at: result.usuario_registrado,
-					user: result.usuario_id,
-					__v: 0,
-					update_at:
-						"Tue Mar 21 2023 11:08:37 GMT-0500 (hora estándar de Perú)",
-					update_for: "0X365665CD4D15887314E608A0E6DB0A9C1C922710",
-				},
-				vaccines,
-			});
-		}
+		// 	return res.status(200).json({
+		// 		ok: true,
+		// 		type: "RENIAN",
+		// 		pet: {
+		// 			_id: result._id,
+		// 			addressEr: "",
+		// 			userAddress: "",
+		// 			userName: result.usuario_nombre,
+		// 			adopter: "",
+		// 			adopterName: result.usuario_nombre,
+		// 			adopterLastName: result.usuario_apellidos,
+		// 			dateRegistring: result.usuario_registrado,
+		// 			name: result.usuario_empresa,
+		// 			race: result.usuario_telefax,
+		// 			gender: result.usuario_url,
+		// 			date: result.usuario_registrado,
+		// 			dateAdoption: result.usuario_registrado,
+		// 			dateIssue: result.usuario_registrado,
+		// 			chip: result.usuario_cargo,
+		// 			chipDate: result.usuario_registrado,
+		// 			colour: result.usuario_interes,
+		// 			image: `https://consultwar.renian.foundation/public/images/petimg/${ result.usuario_foto }`,
+		// 			pedigree: "",
+		// 			country: "PE",
+		// 			type: "DOG",
+		// 			sterilized: result.usuario_esteril,
+		// 			hash: "",
+		// 			status: "",
+		// 			idRegisteringEntity: 1,
+		// 			created_for: "",
+		// 			created_at: result.usuario_registrado,
+		// 			user: result.usuario_id,
+		// 			__v: 0,
+		// 			update_at:
+		// 				"Tue Mar 21 2023 11:08:37 GMT-0500 (hora estándar de Perú)",
+		// 			update_for: "0X365665CD4D15887314E608A0E6DB0A9C1C922710",
+		// 		},
+		// 		vaccines,
+		// 	});
+		// }
 
 		const adopter = await Adopter.findOne({ address: pet.adopter });
 
