@@ -17,13 +17,33 @@ const configWar = () => {
 	return nodemailer.createTransport({
 		// host: "mail.firulaixcoin.finance",
 		// port: 26,
-		host: "mail.worldanimalregistry.org",
+		host: "worldanimalregistry.org",
 		port: 465,
 		secure: true,
 		auth: {
 			// user: "no-reply@firulaixcoin.finance",
 			// pass: "No_reply_23",
 			user: "no-reply@worldanimalregistry.org",
+			pass: "Noreply_23",
+		},
+		tls: {
+			rejectUnauthorized: false,
+		},
+	});
+};
+
+// configuracion mail war
+const configWarSolicitud = () => {
+	return nodemailer.createTransport({
+		// host: "mail.firulaixcoin.finance",
+		// port: 26,
+		host: "worldanimalregistry.org",
+		port: 465,
+		secure: true,
+		auth: {
+			// user: "no-reply@firulaixcoin.finance",
+			// pass: "No_reply_23",
+			user: "solicitudderegistro@worldanimalregistry.org",
 			pass: "Noreply_23",
 		},
 		tls: {
@@ -109,7 +129,7 @@ const mailRegisterEntity = async ({
 	registry,
 }) => {
 	try {
-		let transporter = configWar();
+		let transporter = configWarSolicitud();
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 		// console.log("plantilla", registry)
