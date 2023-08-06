@@ -207,7 +207,7 @@ const saveRecord = async (req, res = response) => {
 			});
 		}
 
-		return(201).json({
+		return res.status(201).json({
 			ok: true,
 			data: record,
 			sendEmail,

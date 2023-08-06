@@ -17,7 +17,7 @@ const configWar = () => {
 	return nodemailer.createTransport({
 		// host: "mail.firulaixcoin.finance",
 		// port: 26,
-		host: "worldanimalregistry.org",
+		host: "mail.worldanimalregistry.org",
 		port: 465,
 		secure: true,
 		auth: {
@@ -37,7 +37,7 @@ const configWarSolicitud = () => {
 	return nodemailer.createTransport({
 		// host: "mail.firulaixcoin.finance",
 		// port: 26,
-		host: "worldanimalregistry.org",
+		host: "mail.worldanimalregistry.org",
 		port: 465,
 		secure: true,
 		auth: {
