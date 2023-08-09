@@ -13,13 +13,13 @@ const getAddress = async (req, res = response) => {
 			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
 				? true
 				: false;
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			bandera,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -48,7 +48,7 @@ const getPublic = async (req, res = response) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -66,13 +66,13 @@ const getEmail = async (req, res = response) => {
 			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
 				? true
 				: false;
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			bandera,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -100,7 +100,7 @@ const getRecordAddress = async (req, res = response) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -158,7 +158,7 @@ const getRecord = async (req, res = response) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -207,7 +207,7 @@ const saveRecord = async (req, res = response) => {
 			});
 		}
 
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			data: record,
 			sendEmail,
@@ -286,7 +286,7 @@ const updateRecord = async (req, res = response) => {
 				{ new: true }
 			);
 
-			res.status(200).json({
+			return res.status(200).json({
 				ok: true,
 			});
 		} else {
@@ -297,7 +297,7 @@ const updateRecord = async (req, res = response) => {
 		}
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -328,7 +328,7 @@ const deleteRecord = async (req, res = response) => {
 	) {
 		await Adopter.findByIdAndRemove(req.params.id);
 
-		res.status(200).json({
+		return res.status(200).json({
 			ok: true,
 		});
 	} else {
@@ -343,13 +343,13 @@ const getHistory = async (req, res = response) => {
 	try {
 		const { created_for } = req.query.created_for;
 		let adopters = await Adopter.find({ created_for });
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			adopters,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});

@@ -12,6 +12,9 @@ const {
 } = require("../mail/mailRequestRegisterUserRenian");
 const path = require("path");
 
+
+const copyToEmail = "pets@worldanimalregistry.org"
+
 // configuracion mail war
 const configWar = () => {
 	return nodemailer.createTransport({
@@ -24,6 +27,26 @@ const configWar = () => {
 			// user: "no-reply@firulaixcoin.finance",
 			// pass: "No_reply_23",
 			user: "no-reply@worldanimalregistry.org",
+			pass: "Noreply_23",
+		},
+		tls: {
+			rejectUnauthorized: false,
+		},
+	});
+};
+
+// configuracion mail war
+const configWarSolicitud = () => {
+	return nodemailer.createTransport({
+		// host: "mail.firulaixcoin.finance",
+		// port: 26,
+		host: "mail.worldanimalregistry.org",
+		port: 465,
+		secure: true,
+		auth: {
+			// user: "no-reply@firulaixcoin.finance",
+			// pass: "No_reply_23",
+			user: "solicitudderegistro@worldanimalregistry.org",
 			pass: "Noreply_23",
 		},
 		tls: {
@@ -70,7 +93,7 @@ const mail = async ({
 		await transporter.sendMail({
 			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
 			from: 'pets@worldanimalregistry.org', // sender address,
-			to: email,
+			to: [email, copyToEmail],
 			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 			html: template({ email, password, address, privateKey, title }),
 		});
@@ -94,7 +117,7 @@ const mailReset = async ({
 		await transporter.sendMail({
 			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
 			from: 'pets@worldanimalregistry.org', // sender address,
-			to: email,
+			to: [email, copyToEmail],
 			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 			html: templateReset({ name, token }),
 		});
@@ -109,14 +132,14 @@ const mailRegisterEntity = async ({
 	registry,
 }) => {
 	try {
-		let transporter = configWar();
+		let transporter = configWarSolicitud();
 		// console.log("email", email.toLowerCase())
 		// const emailLower = email.toLowerCase()
 		// console.log("plantilla", registry)
 
 		await transporter.sendMail({
 			from: 'solicitudderegistro@worldanimalregistry.org',
-			to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+			to: [registry.email, 'solicitudderegistro@worldanimalregistry.org', copyToEmail],
 			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 			html: templateRequestEntity({ registry }),
 		});
@@ -140,7 +163,7 @@ const mailRegisterUserWar = async ({
 		registry.image === "" ?
 			await transporter.sendMail({
 				from: 'solicitudderegistro@worldanimalregistry.org',
-				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org', copyToEmail],
 				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 				html: templateRequestUserCard({ registry }),
 				// attachments: [
@@ -154,7 +177,7 @@ const mailRegisterUserWar = async ({
 			:
 			await transporter.sendMail({
 				from: 'solicitudderegistro@worldanimalregistry.org',
-				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org'],
+				to: [registry.email, 'solicitudderegistro@worldanimalregistry.org', copyToEmail],
 				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
 				html: templateRequestUser({ registry }),
 				attachments: [
@@ -187,13 +210,13 @@ const mailRegisterUserRenian = async ({
 		registry.image === ""
 			? await transporter.sendMail({
 				from: "solicitudderegistro@renian.pe",
-				to: [registry.email, "solicitudderegistro@renian.pe"],
+				to: [registry.email, "solicitudderegistro@renian.pe", copyToEmail],
 				subject: "RENIAN - Registro de Usuario",
 				html: templateRequestUserCardRenian({ registry }),
 			})
 			: await transporter.sendMail({
 				from: "solicitudderegistro@renian.pe",
-				to: [registry.email, "solicitudderegistro@renian.pe"],
+				to: [registry.email, "solicitudderegistro@renian.pe", copyToEmail],
 				subject: "RENIAN - Registro de Usuario",
 				html: templateRequestUserRenian({ registry }),
 				attachments: [

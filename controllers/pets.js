@@ -38,9 +38,8 @@ const saveRecord = async (req, res = response) => {
 
     let find = await Pet.findOne({ chip: req.body.chip });
     if (find) msg = "warOffice.drawers.petsRegistry.modal.chipValidate";
-
     if (msg) {
-      res.status(400).json({
+      return res.status(400).json({
         ok: false,
         msg: msg,
       });
@@ -152,11 +151,8 @@ const statusRecord = async (req, res = response) => {
 
 const getHistory = async (req, res = response) => {
   let { idRegisteringEntity } = req.query;
-  console.log(idRegisteringEntity);
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
-  console.log(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
-  console.log(idRegisteringEntity);
 
   try {
     let pets = await Pet.find({
