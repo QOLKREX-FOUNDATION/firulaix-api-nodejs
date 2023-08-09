@@ -152,8 +152,11 @@ const statusRecord = async (req, res = response) => {
 
 const getHistory = async (req, res = response) => {
   let { idRegisteringEntity } = req.query;
+  console.log(idRegisteringEntity);
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
+  console.log(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+  console.log(idRegisteringEntity);
 
   try {
     let pets = await Pet.find({
@@ -177,12 +180,74 @@ const getHistory = async (req, res = response) => {
   }
 };
 
+const getHistoryPagination = async (req, res = response) => {
+  const { idRegisteringEntity, limit = 5, offset = 0 } = req.query;
+
+  if (!idRegisteringEntity)
+    return res
+      .status(400)
+      .json({ ok: false, msg: "idRegisteringEntity is required" });
+
+  const idRegisteringEntityParse = JSON.parse(idRegisteringEntity);
+  console.log(idRegisteringEntityParse);
+  const idRegisteringEntityArray = idRegisteringEntityParse?.map((id) => Number(id));
+  console.log(idRegisteringEntityArray);
+
+  try {
+    const petsTotal = await Pet.find({
+      idRegisteringEntity: { $in: idRegisteringEntityArray },
+      // idRegisteringEntity,
+    }).sort("create_at");
+
+    const pets = await Pet.find({
+      idRegisteringEntity: { $in: idRegisteringEntityArray },
+      // idRegisteringEntity,
+    })
+      .limit(Number(limit))
+      .skip(Number(offset))
+      .sort("create_at");
+
+
+    const adoptersTotal = await Adopter.find({ idRegisteringEntity: idRegisteringEntityArray })
+      .sort("create_at");
+
+    const adopters = await Adopter.find({ idRegisteringEntity: idRegisteringEntityArray })
+      .limit(Number(limit))
+      .skip(Number(offset))
+      .sort("create_at");
+
+
+    return res.status(201).json({
+      ok: true,
+      totalPets: petsTotal.length,
+      totalAdopters: adoptersTotal.length,
+      pets,
+      adopters,
+      pagination: {
+        limit: Number(limit),
+        offset: Number(offset),
+        currentPage: Math.ceil(offset / limit) + 1,
+        prevPage: Math.ceil(offset / limit),
+        nextPage: Math.ceil(offset / limit) + 2,
+        totalPages: Math.ceil(petsTotal.length / Number(limit)),
+        totalPages2: Math.ceil(adoptersTotal.length / Number(limit)),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const upload = async (req, res = response) => {
   try {
     const { name, chip } = req.body;
     const file = req.files.file;
     // console.log(file, name, chip);
-    const url = path.join(__dirname, `../public/images/${name}/${chip}.jpg`);
+    const url = path.join(__dirname, `../public/images/${ name }/${ chip }.jpg`);
     // console.log("url", url);
     // file.mv(`./public/images/${name}/${chip}.jpg`, (err) => {
     file.mv(url, (err) => {
@@ -296,6 +361,7 @@ module.exports = {
   deleteRecord,
   statusRecord,
   getHistory,
+  getHistoryPagination,
   getAdopterPets,
   upload,
 };

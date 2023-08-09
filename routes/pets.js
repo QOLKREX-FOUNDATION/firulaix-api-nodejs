@@ -10,6 +10,7 @@ const {
   getHistory,
   getAdopterPets,
   upload,
+  getHistoryPagination,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -29,7 +30,9 @@ router.post("/upload", [validateJWT, validateFile], upload);
 
 router.delete("/", [validateJWT], deleteRecord);
 
-router.get("/getHistory", [validateJWT], getHistory);
+router.get("/getHistory", [], getHistory);
+
+router.get("/get-history-pagination", [], getHistoryPagination);
 
 router.get("/getAdopterPets", [validateJWT], getAdopterPets);
 
