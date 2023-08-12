@@ -4,6 +4,6 @@ const { getRecord } = require("../controllers/renian");
 
 const router = Router();
 
-router.get("/search/", getRecord);
+router.get("/search", getRecord);
 
 module.exports = router;
