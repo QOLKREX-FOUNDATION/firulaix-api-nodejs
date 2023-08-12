@@ -1,5 +1,5 @@
 const templateRequestUser = ({ registry }) => {
-  return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
   <html lang="es">
     <head>
       <meta charset="utf-8" />
@@ -306,8 +306,8 @@ const templateRequestUser = ({ registry }) => {
                   "
                 >
                   <div class="flex-item text-color">
-                    <img
-                      src="https://firulaixcoin.finance/images/email/checked.png"
+                    <img 
+                      src="https://media.discordapp.net/attachments/839620709517230081/1119025761693749300/check.png"
                       alt="checked"
                       border="0"
                       style="display: block; width: 20px; height: 20px"
@@ -342,33 +342,33 @@ const templateRequestUser = ({ registry }) => {
                       <td class="text-color text-line">
                         <h4>Datos del Adoptante</h4>
                         <p>
-                          <span class="bold">E-mail:</span> ${ registry.email }
+                          <span class="bold">E-mail:</span> ${registry.email}
                         </p>
                         <p>
-                          <span class="bold">Teléfono:</span> ${ registry.phone }
+                          <span class="bold">Teléfono:</span> ${registry.phone}
                         </p>
                         <p>
-                          <span class="bold">Tipo de Persona:</span> ${ registry.person }
+                          <span class="bold">Tipo de Persona:</span> ${registry.person}
                         </p>
-                        <p><span class="bold">Tipo:</span> ${ registry.type }</p>
+                        <p><span class="bold">Tipo:</span> ${registry.type}</p>
   
                         <p>
                           <span class="bold">País (ISO 3166‑1; alfa‑2):</span>
-                          ${ registry.country }
+                          ${registry.country}
                         </p>
   
                         <br />
                         <p>
                           <span class="bold">Tipo de Documento:</span>
-                          ${ registry.document }
+                          ${registry.document}
                         </p>
                         <p>
                           <span class="bold">Número de Documento:</span>
-                          ${ registry.documentNumber }
+                          ${registry.documentNumber}
                         </p>
                         <p>
                           <span class="bold">Tipo de Servicio:</span>
-                          ${ registry.typeService }
+                          ${registry.typeService}
                         </p>
                         <br />
                         <p>
