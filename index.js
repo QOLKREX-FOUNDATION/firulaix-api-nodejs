@@ -79,6 +79,26 @@ app.use("/api/request", require("./routes/request"));
 
 app.use("/api/payment", require("./routes/payment"));
 
+// reports
+
+app.use("/api/reports", require("./routes/reports"));
+
+// statistics
+
+app.use("/api/statistics", require("./routes/statistics"));
+
+// notifications
+
+app.use("/api/notification", require("./routes/notification"));
+
+// Entity Register
+
+app.use("/api/entity-register", require("./routes/entityRegister"));
+
+// forms
+
+app.use("/api/form", require("./routes/forms"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
