@@ -2,20 +2,125 @@ const { response } = require("express");
 const Race = require("../model/Race");
 
 const getRaces = async (req, res = response) => {
-	// get races from database mongo with moongose
-	// with query params limit and offset
+	// // get races from database mongo with moongose
+	// // with query params limit and offset
+	// try {
+	// 	// Obtener los parámetros de consulta limit y offset
+	// 	const { limit = 5, offset = 0 } = req.query;
+
+	// 	const races = await Race.find().skip(Number(offset)).limit(Number(limit));
+
+	// 	res.json({
+	// 		ok: true,
+	// 		races,
+	// 		pagination: {
+	// 			limit: Number(limit),
+	// 			offset: Number(offset),
+	// 		},
+	// 	});
+	// } catch (error) {
+	// 	console.error(error);
+	// 	res.status(500).json({
+	// 		ok: false,
+	// 		msg: "Error al obtener las razas",
+	// 	});
+	// }
 	try {
 		// Obtener los parámetros de consulta limit y offset
-		const { limit = 5, offset = 0 } = req.query;
+		const { limit = 5, offset = 0, page = 1, type, search } = req.query;
 
-		const races = await Race.find().skip(Number(offset)).limit(Number(limit));
+		// const newOffset = (Number(page) - 1) * Number(limit);
+		const newOffset = offset;
 
-		res.json({
+		// Construir el objeto de consulta para buscar las razas
+		const query = {};
+
+		// Realizar la consulta a la base de datos utilizando Mongoose
+		// const races = await Race.find(query)
+		//   .skip(Number(offset))
+		//   .limit(Number(limit))
+		//   .sort({ name: 1 });
+		const races = await Race.find(query)
+			.skip(Number(newOffset))
+			.limit(Number(limit))
+			.sort({ name: 1 });
+
+		const racesTotal = await Race.find();
+
+		// races searched
+		if (search) {
+			const racesSearched = await Race.find({
+				name: { $regex: search.toUpperCase(), $options: "i" },
+			})
+				.skip(Number(newOffset))
+				.limit(Number(limit))
+				.sort({ name: 1 });
+			// console.log(search);
+			// console.log(racesSearched);
+
+			const racesSearchedTotal = await Race.find({
+				$or: [
+					{ name: { $regex: search.toUpperCase(), $options: "i" } },
+					{ nameSpanish: { $regex: search.toUpperCase(), $options: "i" } },
+					{ nameEnglish: { $regex: search.toUpperCase(), $options: "i" } },
+				],
+			});
+
+			return res.status(200).json({
+				ok: true,
+				total: racesSearched.length,
+				races: racesSearched,
+				pagination: {
+					limit: Number(limit),
+					// offset: Number(offset),
+					offset: Number(newOffset),
+					currentPage: Math.ceil(offset / limit) + 1,
+					prevPage: Math.ceil(offset / limit),
+					nextPage: Math.ceil(offset / limit) + 2,
+					// currentPage: Number(page),
+					totalPages: Math.ceil(racesSearchedTotal.length / Number(limit)),
+				},
+			});
+		}
+
+		// races filtered by type
+		if (type) {
+			const racesFiltered = await Race.find({ animal: type })
+				.skip(Number(newOffset))
+				.limit(Number(limit))
+				.sort({ name: 1 });
+
+			const racesFilteredTotal = await Race.find({ animal: type });
+			return res.status(200).json({
+				ok: true,
+				total: racesFiltered.length,
+				races: racesFiltered,
+				pagination: {
+					limit: Number(limit),
+					// offset: Number(offset),
+					offset: Number(newOffset),
+					currentPage: Math.ceil(offset / limit) + 1,
+					prevPage: Math.ceil(offset / limit),
+					nextPage: Math.ceil(offset / limit) + 2,
+					// currentPage: Number(page),
+					totalPages: Math.ceil(racesFilteredTotal.length / Number(limit)),
+				},
+			});
+		}
+
+		return res.status(200).json({
 			ok: true,
+			total: racesTotal.length,
 			races,
 			pagination: {
 				limit: Number(limit),
-				offset: Number(offset),
+				// offset: Number(offset),
+				offset: Number(newOffset),
+				currentPage: Math.ceil(offset / limit) + 1,
+				prevPage: Math.ceil(offset / limit),
+				nextPage: Math.ceil(offset / limit) + 2,
+				// currentPage: Number(page),
+				totalPages: Math.ceil(racesTotal.length / Number(limit)),
 			},
 		});
 	} catch (error) {
