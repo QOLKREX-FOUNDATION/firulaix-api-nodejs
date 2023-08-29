@@ -84,10 +84,10 @@ const UserSchema = new Schema({
 		direction: {
 			type: String,
 		},
-	},
-	typePerson: {
-		type: String,
-		default: "juridic",
+		typePerson: {
+			type: String,
+			default: "juridic",
+		},
 	},
 	created_for: {
 		type: String,
