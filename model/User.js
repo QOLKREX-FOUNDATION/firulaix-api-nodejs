@@ -86,7 +86,6 @@ const UserSchema = new Schema({
 		},
 		typePerson: {
 			type: String,
-			default: "juridic",
 		},
 	},
 	created_for: {
