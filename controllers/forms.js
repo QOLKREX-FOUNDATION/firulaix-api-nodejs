@@ -50,7 +50,16 @@ const createQr = async (req, res = response) => {
 };
 
 const getForms = async (req, res = response) => {
+  const { uid } = req;
+
+  console.log("uid", uid);
+
   try {
+    const userById = await User.findById(uid);
+    console.log("userById", userById);
+    // const user = await User.find();
+    // console.log("user", user);
+
     // const { limit = 10, offset = 0, page = 1, type, search } = req.query;
     // const newOffset = offset;
     // const query = { status: true };
@@ -120,12 +129,37 @@ const getForms = async (req, res = response) => {
     //   },
     // });
 
+    // son todos los formularios de registro
+
+    // total forms
     const forms = await Request.find();
 
-    res.status(200).json({
+    // filtramos los formularios por entidad
+    // const entities = forms.map(async (form) => {
+    //   const entity = await User.findById(form.adopter.regiterEntity);
+    //   console.log("entity", entity);
+    //   return form.adopter.regiterEntity;
+    // });
+
+    // forms by entity
+    const formsByUid = forms.filter((form) => {
+      return form.adopter.regiterEntity === uid;
+    });
+
+    console.log("formsByUid", formsByUid);
+
+    if (userById.user.position === "DEV") {
+      return res.status(200).json({
+        ok: true,
+        total: forms.length,
+        forms,
+      });
+    }
+
+    return res.status(200).json({
       ok: true,
-      total: forms.length,
-      forms,
+      total: formsByUid.length,
+      forms: formsByUid,
     });
   } catch (error) {
     console.log(error);

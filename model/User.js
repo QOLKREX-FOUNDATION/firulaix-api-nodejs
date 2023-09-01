@@ -47,7 +47,13 @@ const UserSchema = new Schema({
 		name: {
 			type: String,
 		},
+		secondName: {
+			type: String,
+		},
 		lastName: {
+			type: String,
+		},
+		secondLastName: {
 			type: String,
 		},
 		local: {
