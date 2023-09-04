@@ -1,6 +1,10 @@
 const User = require("../model/User");
 
 const getEntityRegister = async (req, res) => {
+  const { department, province, district } = req.query;
+  console.log(req.query);
+  console.log({ department, province, district });
+
   try {
     const entityRegister = await User.find();
 
@@ -14,9 +18,10 @@ const getEntityRegister = async (req, res) => {
       (entity) => {
         // console.log(entity.user.position);
         // console.log(typeof entity.user.position);
-        if (entity.user?.position !== "REGISTRANTE - VET") {
-          return;
-        }
+
+        // if (entity.user?.position !== "REGISTRANTE - VET") {
+        //   return;
+        // }
 
         return {
           id: entity._id,
@@ -24,6 +29,10 @@ const getEntityRegister = async (req, res) => {
           // nameEntity: entity.entityRegister.name,
           lastName: entity.user.lastName,
           local: entity.user.local,
+          phone: entity.user.phone,
+          department: entity.user.department,
+          province: entity.user?.province,
+          district: entity.user?.district,
         };
       }
 
@@ -37,14 +46,48 @@ const getEntityRegister = async (req, res) => {
       // }
     );
 
+    console.log(responseEntityRegister.length);
+    // console.log("responseEntityRegister", responseEntityRegister);
+
+    // filter entities without name
     const filteredEntities = responseEntityRegister.filter((entity) => {
       return entity !== undefined;
     });
 
+    // filter entities by department
+    const filteredEntitiesByDepartment = filteredEntities.filter((entity) => {
+      return entity?.department === department;
+    });
+
+    // filter entities by province
+    const filteredEntitiesByProvince = filteredEntitiesByDepartment.filter(
+      (entity) => {
+        return entity?.province === province;
+      }
+    );
+
+    // filter entities by district
+    const filteredEntitiesByDistrict = filteredEntitiesByProvince.filter(
+      (entity) => {
+        // console.log("entity", entity.local);
+        // console.log("district", district);
+        // return entity?.district === district;
+        return entity?.local.trim() === district.trim();
+      }
+    );
+
+    // console.log("filteredEntitiesByDistrict", filteredEntitiesByDistrict);
+
+
+    // res.status(200).json({
+    //   ok: true,
+    //   total: filteredEntities.length,
+    //   entityRegister: filteredEntities,
+    // });
     res.status(200).json({
       ok: true,
-      total: filteredEntities.length,
-      entityRegister: filteredEntities,
+      total: filteredEntitiesByDistrict.length,
+      entityRegister: filteredEntitiesByDistrict,
     });
   } catch (error) {
     console.log(error);

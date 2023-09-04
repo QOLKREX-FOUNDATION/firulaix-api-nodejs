@@ -20,7 +20,7 @@ const getAnimals = async (req, res = response) => {
 			.limit(Number(limit))
 			.sort({ name: 1 });
 
-		console.log({ Animals });
+		// console.log({ Animals });
 
 		const AnimalsTotal = await Animal.find();
 
