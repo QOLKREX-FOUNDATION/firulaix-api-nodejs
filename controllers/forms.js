@@ -12,6 +12,7 @@ const {
   templateRequestRegisterForm,
 } = require("../mail/templateRequestRegister");
 const { generateSequence } = require("../helpers/generateSquence");
+const User = require("../model/User");
 
 const createQr = async (req, res = response) => {
   const url = req.body.url;
@@ -52,86 +53,23 @@ const createQr = async (req, res = response) => {
 const getForms = async (req, res = response) => {
   const { uid } = req;
 
+  // console.log("req", req);
   console.log("uid", uid);
 
   try {
+
+    if (!uid) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The uid is required",
+      });
+    }
+
     const userById = await User.findById(uid);
     console.log("userById", userById);
-    // const user = await User.find();
-    // console.log("user", user);
-
-    // const { limit = 10, offset = 0, page = 1, type, search } = req.query;
-    // const newOffset = offset;
-    // const query = { status: true };
-
-    // const Forms = await Request.find()
-    //   .skip(Number(newOffset))
-    //   .limit(Number(limit))
-    //   .sort({
-    //     createdAt: -1,
-    //   });
-
-    // const FormsTotal = await Request.find();
-
-    // if (search) {
-    //   const FormSearched = await Request.find({
-    //     $or: [
-    //       {
-    //         "adopter.firstName": {
-    //           $regex: search.toUpperCase(),
-    //           $options: "i",
-    //         },
-    //       },
-    //       { "adopter.dni": { $regex: search.toUpperCase(), $options: "i" } },
-    //       { "adopter.email": { $regex: search.toUpperCase(), $options: "i" } },
-    //     ],
-    //   })
-    //     .skip(Number(newOffset))
-    //     .limit(Number(limit))
-    //     .sort({ name: 1 });
-
-    //   const FormsSearchedTotal = await Request.find({
-    //     $or: [
-    //       { name: { $regex: search.toUpperCase(), $options: "i" } },
-    //       { nameSpanish: { $regex: search.toUpperCase(), $options: "i" } },
-    //       { nameEnglish: { $regex: search.toUpperCase(), $options: "i" } },
-    //     ],
-    //   });
-
-    //   return res.status(200).json({
-    //     ok: true,
-    //     total: FormSearched.length,
-    //     colors: FormSearched,
-    //     pagination: {
-    //       limit: Number(limit),
-    //       // offset: Number(offset),
-    //       offset: Number(newOffset),
-    //       currentPage: Math.ceil(offset / limit) + 1,
-    //       prevPage: Math.ceil(offset / limit),
-    //       nextPage: Math.ceil(offset / limit) + 2,
-    //       // currentPage: Number(page),
-    //       totalPages: Math.ceil(FormsSearchedTotal.length / Number(limit)),
-    //     },
-    //   });
-    // }
-
-    // return res.status(200).json({
-    //   ok: true,
-    //   total: FormsTotal.length,
-    //   forms: Forms,
-    //   pagination: {
-    //     limit: Number(limit),
-    //     offset: Number(newOffset),
-    //     currentPage: Math.ceil(offset / limit) + 1,
-    //     prevPage: Math.ceil(offset / limit),
-    //     nextPage: Math.ceil(offset / limit) + 2,
-    //     totalPages: Math.ceil(FormsTotal.length / Number(limit)),
-    //   },
-    // });
-
-    // son todos los formularios de registro
 
     // total forms
+
     const forms = await Request.find();
 
     // filtramos los formularios por entidad
@@ -147,6 +85,13 @@ const getForms = async (req, res = response) => {
     });
 
     console.log("formsByUid", formsByUid);
+
+    if (!userById) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The user does not exist",
+      });
+    }
 
     if (userById.user.position === "DEV") {
       return res.status(200).json({

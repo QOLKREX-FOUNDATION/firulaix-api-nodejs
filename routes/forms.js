@@ -19,7 +19,7 @@ router.post(
   createQr
 );
 
-router.get("/", [], getForms);
+router.get("/", [validateJWT, validateFields], getForms);
 
 router.post(
   "/",
