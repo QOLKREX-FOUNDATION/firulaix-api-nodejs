@@ -55,36 +55,37 @@ const getEntityRegister = async (req, res) => {
     });
 
     // filter entities by department
-    const filteredEntitiesByDepartment = filteredEntities.filter((entity) => {
-      return entity?.department === department;
-    });
+    const filteredEntitiesByDepartment = department
+      ? filteredEntities.filter((entity) => {
+        return entity?.department === department;
+      })
+      : filteredEntities;
 
     // filter entities by province
-    const filteredEntitiesByProvince = filteredEntitiesByDepartment.filter(
-      (entity) => {
+    const filteredEntitiesByProvince = province
+      ? filteredEntitiesByDepartment.filter((entity) => {
         return entity?.province === province;
-      }
-    );
+      })
+      : filteredEntitiesByDepartment;
 
     // filter entities by district
-    const filteredEntitiesByDistrict = filteredEntitiesByProvince.filter(
-      (entity) => {
-        // console.log("entity", entity.local);
+    const filteredEntitiesByDistrict = district
+      ? filteredEntitiesByProvince.filter((entity) => {
+        // console.log("entity", entity.district);
         // console.log("district", district);
         // return entity?.district === district;
-        return entity?.local.trim() === district.trim();
-      }
-    );
+        return entity?.district === district.toUpperCase();
+      })
+      : filteredEntitiesByProvince;
 
     // console.log("filteredEntitiesByDistrict", filteredEntitiesByDistrict);
-
 
     // res.status(200).json({
     //   ok: true,
     //   total: filteredEntities.length,
     //   entityRegister: filteredEntities,
     // });
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       total: filteredEntitiesByDistrict.length,
       entityRegister: filteredEntitiesByDistrict,
@@ -98,6 +99,63 @@ const getEntityRegister = async (req, res) => {
   }
 };
 
+const getEntityRegisterById = async (req = request, res = response) => {
+  const { id } = req.params;
+  // console.log(req.query);
+  // console.log({ department, province, district });
+
+  try {
+    if (id === "undefined") {
+      return res.status(200).json({
+        ok: true,
+        total: 0,
+        entityRegister: [],
+      });
+    }
+
+    const entityRegister = await User.find({
+      _id: id,
+    });
+
+    // filter entities without name
+    const responseEntityRegisterFilter = entityRegister.filter((entity) => {
+      // console.log(entity.user.name);
+      return entity.user.name !== undefined;
+    });
+
+    const responseEntityRegister = responseEntityRegisterFilter.map(
+      (entity) => {
+        return {
+          id: entity._id,
+          address: entity.publicAddress,
+          name: entity.user.name,
+          lastName: entity.user.lastName,
+          local: entity.user.local,
+          phone: entity.user.phone,
+          department: entity.user.department,
+          province: entity.user?.province,
+          district: entity.user?.district,
+        };
+      }
+    );
+
+    console.log(responseEntityRegister.length);
+
+    return res.status(200).json({
+      ok: true,
+      total: responseEntityRegister.length,
+      entityRegister: responseEntityRegister,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
 module.exports = {
   getEntityRegister,
+  getEntityRegisterById,
 };
