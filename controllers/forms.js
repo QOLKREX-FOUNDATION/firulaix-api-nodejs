@@ -1,18 +1,19 @@
-const { request, response } = require("express");
-// const { generatePdf } = require("../helpers/generatePdf");
 // const { createCanvasQr } = require("../helpers/generateQrCanvas");
+// const fs = require("fs");
+const { request: requestExpress, response } = require("express");
 const Request = require("../model/Request");
 const {
   createFormSchema,
   updateFormSchema,
 } = require("../schemas/form.schema");
-// const fs = require("fs");
-const qrCode = require("qrcode");
 const {
   templateRequestRegisterForm,
 } = require("../mail/templateRequestRegister");
 const { generateSequence } = require("../helpers/generateSquence");
 const User = require("../model/User");
+const qrCode = require("qrcode");
+const jwt = require("jsonwebtoken");
+const { uploadImage, destroyImage } = require("../helpers/uploadImage");
 
 const createQr = async (req, res = response) => {
   const url = req.body.url;
@@ -53,23 +54,86 @@ const createQr = async (req, res = response) => {
 const getForms = async (req, res = response) => {
   const { uid } = req;
 
-  // console.log("req", req);
   console.log("uid", uid);
 
   try {
-
-    if (!uid) {
-      return res.status(400).json({
-        ok: false,
-        msg: "The uid is required",
-      });
-    }
-
     const userById = await User.findById(uid);
     console.log("userById", userById);
+    // const user = await User.find();
+    // console.log("user", user);
+
+    // const { limit = 10, offset = 0, page = 1, type, search } = req.query;
+    // const newOffset = offset;
+    // const query = { status: true };
+
+    // const Forms = await Request.find()
+    //   .skip(Number(newOffset))
+    //   .limit(Number(limit))
+    //   .sort({
+    //     createdAt: -1,
+    //   });
+
+    // const FormsTotal = await Request.find();
+
+    // if (search) {
+    //   const FormSearched = await Request.find({
+    //     $or: [
+    //       {
+    //         "adopter.firstName": {
+    //           $regex: search.toUpperCase(),
+    //           $options: "i",
+    //         },
+    //       },
+    //       { "adopter.dni": { $regex: search.toUpperCase(), $options: "i" } },
+    //       { "adopter.email": { $regex: search.toUpperCase(), $options: "i" } },
+    //     ],
+    //   })
+    //     .skip(Number(newOffset))
+    //     .limit(Number(limit))
+    //     .sort({ name: 1 });
+
+    //   const FormsSearchedTotal = await Request.find({
+    //     $or: [
+    //       { name: { $regex: search.toUpperCase(), $options: "i" } },
+    //       { nameSpanish: { $regex: search.toUpperCase(), $options: "i" } },
+    //       { nameEnglish: { $regex: search.toUpperCase(), $options: "i" } },
+    //     ],
+    //   });
+
+    //   return res.status(200).json({
+    //     ok: true,
+    //     total: FormSearched.length,
+    //     colors: FormSearched,
+    //     pagination: {
+    //       limit: Number(limit),
+    //       // offset: Number(offset),
+    //       offset: Number(newOffset),
+    //       currentPage: Math.ceil(offset / limit) + 1,
+    //       prevPage: Math.ceil(offset / limit),
+    //       nextPage: Math.ceil(offset / limit) + 2,
+    //       // currentPage: Number(page),
+    //       totalPages: Math.ceil(FormsSearchedTotal.length / Number(limit)),
+    //     },
+    //   });
+    // }
+
+    // return res.status(200).json({
+    //   ok: true,
+    //   total: FormsTotal.length,
+    //   forms: Forms,
+    //   pagination: {
+    //     limit: Number(limit),
+    //     offset: Number(newOffset),
+    //     currentPage: Math.ceil(offset / limit) + 1,
+    //     prevPage: Math.ceil(offset / limit),
+    //     nextPage: Math.ceil(offset / limit) + 2,
+    //     totalPages: Math.ceil(FormsTotal.length / Number(limit)),
+    //   },
+    // });
+
+    // son todos los formularios de registro
 
     // total forms
-
     const forms = await Request.find();
 
     // filtramos los formularios por entidad
@@ -84,14 +148,14 @@ const getForms = async (req, res = response) => {
       return form.adopter.regiterEntity === uid;
     });
 
-    console.log("formsByUid", formsByUid);
-
     if (!userById) {
       return res.status(400).json({
         ok: false,
         msg: "The user does not exist",
       });
     }
+
+    console.log("formsByUid", formsByUid);
 
     if (userById.user.position === "DEV") {
       return res.status(200).json({
@@ -115,7 +179,44 @@ const getForms = async (req, res = response) => {
   }
 };
 
-const createForm = async (req, res = response) => {
+const getFormsByCorrelative = async (req, res = response) => {
+  const { correlative: correlativeToken } = req.params;
+
+  console.log("correlativeToken", correlativeToken);
+
+  try {
+    const { correlative } = jwt.verify(
+      correlativeToken,
+      process.env.SECRET_JWT_SEED
+    );
+
+    if (!correlative) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The correlative is required",
+      });
+    }
+
+    // total forms
+    const form = await Request.find({
+      correlativeNumber: correlative,
+    });
+    console.log("form", form);
+    return res.status(200).json({
+      ok: true,
+      total: form.length,
+      form,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
+const createForm = async (req, requestExpress = response) => {
   const {
     country,
     person,
@@ -241,50 +342,171 @@ const createForm = async (req, res = response) => {
   }
 };
 
-// const createPdfForm = async (req = request, res = response) => {
-//   const { id } = req.params;
-//   console.log(id);
-//   // console.log("query", req.params.id);
-//   try {
-//     if (!id) {
-//       console.log("formData", id);
-//       return res.status(400).json({
-//         ok: false,
-//         msg: "The id is required",
-//       });
-//     }
+const updateForm = async (req = req, res = response) => {
+  const { id } = req.params;
 
-//     const formData = await Request.findById(id);
+  if (!id) {
+    return res.status(400).json({ ok: false, error: "The id is required" });
+  }
 
-//     if (!formData) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: "The form does not exist",
-//       });
-//     }
+  const { error, value } = updateFormSchema.validate(req.body[0]);
 
-//     const pdfBuffer = await generatePdf(
-//       templateRequestRegisterForm({
-//         data: formData,
-//       }),
-//       {}
-//     );
+  // console.log("req", req);
+  // console.log("value", value);
 
-//     res.status(200).setHeader("Content-Type", "application/pdf");
-//     res
-//       .status(200)
-//       .setHeader("Content-Disposition", `attachment; filename=generated.pdf`);
-//     res.status(200).send(pdfBuffer);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       ok: false,
-//       msg: "Error creating form",
-//     });
-//   }
-// };
+  if (error) {
+    console.log(error);
+    return res.status(400).json({
+      ok: false,
+      error: error.details[0].message,
+    });
+  }
 
-const updateForm = async (req, res = response) => {
+  const {
+    country,
+    person,
+    documentType,
+    documentNumber,
+    adopterType,
+    isAddressPublic,
+    addressPublic,
+    // dni,
+    firstName,
+    secondName,
+    firstLastName,
+    secondLastName,
+    birthDate,
+    gender,
+    cellphone,
+    email,
+    department,
+    province,
+    district,
+    address,
+    regiterEntity,
+    jurament1,
+    jurament2,
+    jurament3,
+    microchip,
+    dateMicrochip,
+    firstNamePet,
+    countryPet,
+    birthDatePet,
+    adoptionDate,
+    genderPet,
+    specie,
+    race,
+    color,
+    isSterilized,
+    fatherMicrochip,
+    motherMicrochip,
+    isPayment,
+    // imagePet,
+  } = req.body;
+
+  // const uploadedFiles = req.files;
+
+  console.log("req.body", req.body);
+
+  console.log("req.files", req.files);
+  // console.log("req.file", req.file);
+
+  const files = req.files?.files;
+  // console.log("imagePet", imagePet);
+
+  // console.log("value", value);
+
+  // si la imagen existe, la borramos y subimos la nueva imagen
+
+  const findImage = await Request.findById(id);
+
+  console.log("findImage", findImage);
+
+  if (findImage.imagePet) {
+    // find cloduinaryId in cloudinary and delete
+    // await cloudinary.uploader.destroy(
+    //   `images/form-register/${findImage.imagePet.cloduinaryId}`
+    // );
+    console.log("id image", findImage.imagePet?.cloduinaryId);
+    if (findImage.imagePet?.cloduinaryId) {
+      await destroyImage(findImage.imagePet.cloduinaryId, "form-register");
+    }
+  }
+
+  const imageData =
+    req.files !== null
+      ? await uploadImage(files, "form-register")
+      : {
+        cloduinaryId: "",
+        imageUrl: "",
+      };
+
+  // console.log({ imageData });
+
+  try {
+    const updatedForm = await Request.findByIdAndUpdate(id, {
+      adopter: {
+        country,
+        person,
+        documentType,
+        documentNumber,
+        adopterType,
+        isAddressPublic,
+        addressPublic,
+        // dni,
+        firstName: firstName.toUpperCase(),
+        secondName: secondName.toUpperCase(),
+        firstLastName: firstLastName.toUpperCase(),
+        secondLastName: secondLastName.toUpperCase(),
+        birthDate,
+        gender,
+        cellphone,
+        email,
+        department,
+        province,
+        district,
+        address: address.toUpperCase(),
+        regiterEntity,
+        jurament1,
+        jurament2,
+        jurament3,
+      },
+      pet: {
+        microchip,
+        dateMicrochip,
+        firstNamePet: firstNamePet.toUpperCase(),
+        countryPet,
+        birthDatePet,
+        adoptionDate,
+        genderPet,
+        specie,
+        race,
+        color,
+        isSterilized,
+        fatherMicrochip,
+        motherMicrochip,
+      },
+      isPayment,
+      imagePet: {
+        cloduinaryId: imageData?.cloduinaryId,
+        imageUrl: imageData?.imageUrl,
+      },
+    });
+
+    res.status(200).json({
+      ok: true,
+      msg: "Form updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error updating form",
+    });
+  }
+};
+
+const updateFormWithCorrelative = async (req, res = response) => {
   const { id } = req.params;
 
   if (!id) {
@@ -338,7 +560,8 @@ const updateForm = async (req, res = response) => {
     isSterilized,
     fatherMicrochip,
     motherMicrochip,
-    isPayment
+    isPayment,
+    status,
   } = req.body;
 
   console.log("value", value);
@@ -387,6 +610,7 @@ const updateForm = async (req, res = response) => {
         motherMicrochip,
       },
       isPayment,
+      status,
     });
 
     res.status(200).json({
@@ -428,7 +652,9 @@ const deleteForm = async (req, res = response) => {
 module.exports = {
   createQr,
   getForms,
+  getFormsByCorrelative,
   createForm,
   updateForm,
+  updateFormWithCorrelative,
   deleteForm,
 };

@@ -1,11 +1,13 @@
 const { Router } = require("express");
-const { validateJWT, validateFields } = require("../middlewares");
+const { validateJWT, validateFields, validateJWTCorrelative } = require("../middlewares");
 const {
   createForm,
   createQr,
   getForms,
   deleteForm,
-  updateForm
+  updateForm,
+  updateFormWithCorrelative,
+  getFormsByCorrelative
 } = require("../controllers/forms");
 const { check } = require("express-validator");
 
@@ -20,6 +22,8 @@ router.post(
 );
 
 router.get("/", [validateJWT, validateFields], getForms);
+
+router.get("/correlative/:correlative", [], getFormsByCorrelative);
 
 router.post(
   "/",
@@ -77,5 +81,7 @@ router.delete(
 // );
 
 router.put("/:id", [validateJWT], updateForm);
+
+router.put("/correlative/:id", [validateJWTCorrelative], updateFormWithCorrelative);
 
 module.exports = router;

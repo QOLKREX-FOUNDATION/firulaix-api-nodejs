@@ -124,6 +124,18 @@ const RequestShema = new Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      default: "pending",
+    },
+    imagePet: {
+      cloduinaryId: {
+        type: String,
+      },
+      imageUrl: {
+        type: String,
+      },
+    },
   },
   {
     timestamps: true,

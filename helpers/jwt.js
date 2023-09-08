@@ -21,6 +21,28 @@ const generateJWT = (uid, name, email) => {
 	});
 };
 
+const generateJWTCorrelative = (correlative) => {
+	return new Promise((resolve, reject) => {
+		const payload = { correlative };
+
+		jwt.sign(
+			payload,
+			process.env.SECRET_JWT_SEED,
+			{
+				expiresIn: "72h",
+			},
+			(err, token) => {
+				if (err) {
+					console.log(err);
+					reject("No generate token");
+				}
+				resolve(token);
+			}
+		);
+	});
+};
+
 module.exports = {
 	generateJWT,
+	generateJWTCorrelative
 };

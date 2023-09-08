@@ -1,3 +1,4 @@
+const { generateUrlForm } = require("../helpers/generateUrlForm");
 const {
 	mailRegisterEntity,
 	mailRegisterUserWar,
@@ -28,10 +29,13 @@ const requestRegisterEntity = async (req, res) => {
 
 const requestRegisterUser = async (req, res) => {
 	try {
+		const url = await generateUrlForm();
+		console.log({ url });
 		// console.log(JSON.stringify(req.body));
 		if (req.body) {
 			const sendEmail = await mailRegisterUserWar({
 				registry: req.body,
+				url
 			});
 		}
 

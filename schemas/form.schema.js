@@ -80,6 +80,8 @@ const updateFormSchema = Joi.object({
   fatherMicrochip: Joi.optional(),
   motherMicrochip: Joi.optional(),
   isPayment: Joi.boolean().required(),
+  status: Joi.optional(),
+  files: Joi.optional(),
 });
 
 module.exports = {

@@ -149,7 +149,7 @@ const mailRegisterEntity = async ({ registry }) => {
 	}
 };
 
-const mailRegisterUserWar = async ({ registry }) => {
+const mailRegisterUserWar = async ({ registry, url }) => {
 	try {
 		const transporter = configWar();
 		const to = "solicitudderegistro@worldanimalregistry.org";
@@ -159,7 +159,7 @@ const mailRegisterUserWar = async ({ registry }) => {
 				from: "solicitudderegistro@worldanimalregistry.org",
 				to: [registry.email, to, copyToEmail],
 				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-				html: templateRequestUserCard({ registry }),
+				html: templateRequestUserCard({ registry, url }),
 			});
 			return true;
 		}

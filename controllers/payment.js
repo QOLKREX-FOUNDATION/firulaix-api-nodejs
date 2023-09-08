@@ -3,6 +3,7 @@ const {
     mailRegisterUserWar,
     mailRegisterUserRenian,
 } = require("../helpers/mail");
+const { generateUrlForm } = require("../helpers/generateUrlForm");
 
 const createOrder = async (req, res) => {
     mercadopago.configure({
@@ -232,6 +233,10 @@ const reciveWebhook = async (req, res) => {
                 // email de confirmacion de pago
                 console.log("approved");
 
+                // create url form for register user
+                const url = await generateUrlForm();
+                console.log({ url });
+
                 if (paymentInfo.body.metadata.platform === "war") {
                     await mailRegisterUserWar({
                         registry: {
@@ -242,6 +247,7 @@ const reciveWebhook = async (req, res) => {
                             date_approved: paymentInfo.body.date_approved,
                             currency_id: paymentInfo.body.currency_id,
                         },
+                        url,
                     });
                 }
                 if (paymentInfo.body.metadata.platform === "renian") {

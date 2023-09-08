@@ -1,12 +1,20 @@
 const User = require("../model/User");
 
-const getEntityRegister = async (req, res) => {
+const getEntityRegister = async (req = request, res = response) => {
   const { department, province, district } = req.query;
   console.log(req.query);
   console.log({ department, province, district });
 
   try {
     const entityRegister = await User.find();
+
+    if (district === "") {
+      return res.status(200).json({
+        ok: true,
+        total: 0,
+        entityRegister: [],
+      });
+    }
 
     // filter entities without name
     const responseEntityRegisterFilter = entityRegister.filter((entity) => {
@@ -23,6 +31,10 @@ const getEntityRegister = async (req, res) => {
         //   return;
         // }
 
+        if (entity.user?.typePerson === "NATURAL") {
+          return;
+        }
+
         return {
           id: entity._id,
           name: entity.user.name,
@@ -33,6 +45,8 @@ const getEntityRegister = async (req, res) => {
           department: entity.user.department,
           province: entity.user?.province,
           district: entity.user?.district,
+          phone: entity.user.phone,
+          direction: entity.user.direction,
         };
       }
 
