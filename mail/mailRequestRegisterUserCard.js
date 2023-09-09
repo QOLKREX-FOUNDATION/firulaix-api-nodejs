@@ -413,14 +413,14 @@ const templateRequestUserCard = ({ registry, url }) => {
                         </p>
                         <br />
                         <p>
-                          <span class="bold"
-                            >Ahora puede rellenar nuestro formulario virtual:</span
-                          >
-                          <a
-                            href="${ url }"
-                            target="_blank"
-                            >Ir al Formulario</a
-                          >
+                        <span class="bold"
+                        >LLENE LA FICHA DE SOLICITUD DE REGISTRO</span
+                      >
+                      <a
+                        href="https://forms.gle/XE9k6fCbh6EsVCVb7"
+                        target="_blank"
+                        >AQUÍ</a
+                      >
                         </p>
                       </td>
                     </tr>
