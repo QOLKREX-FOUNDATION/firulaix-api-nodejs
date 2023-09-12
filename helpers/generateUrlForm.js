@@ -12,6 +12,7 @@ const generateUrlForm = async () => {
       "correlativeNumber"
     );
 
+    // crea el formulario en la base de datos
     const newForm = new Request({
       adopter: {
         country: "",
@@ -73,7 +74,7 @@ const generateUrlForm = async () => {
 
     // damos forma al url que enviaremos al correo
 
-    const url = `http://localhost:3001/formulario/solicitud-de-registro?correlative=${tokenCorrelation}`;
+    const url = `http://localhost:3001/formulario/solicitud-de-registro?correlative=${ tokenCorrelation }`;
 
     return url;
     // const url= `https://worldanimalregistry.org/registro/${hash}`

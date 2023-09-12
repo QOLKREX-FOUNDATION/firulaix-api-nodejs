@@ -7,7 +7,8 @@ const {
   deleteForm,
   updateForm,
   updateFormWithCorrelative,
-  getFormsByCorrelative
+  getFormsByCorrelative,
+  getFormsByCorrelativeNumber
 } = require("../controllers/forms");
 const { check } = require("express-validator");
 
@@ -24,6 +25,12 @@ router.post(
 router.get("/", [validateJWT, validateFields], getForms);
 
 router.get("/correlative/:correlative", [], getFormsByCorrelative);
+
+router.get(
+  "/search/:correlative",
+  [validateJWT, validateFields],
+  getFormsByCorrelativeNumber
+);
 
 router.post(
   "/",

@@ -39,6 +39,7 @@ const createFormSchema = Joi.object({
   fatherMicrochip: Joi.optional(),
   motherMicrochip: Joi.optional(),
   isPayment: Joi.optional(),
+  files: Joi.optional(),
 });
 
 const updateFormSchema = Joi.object({

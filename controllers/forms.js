@@ -1,14 +1,9 @@
-// const { createCanvasQr } = require("../helpers/generateQrCanvas");
-// const fs = require("fs");
 const { request: requestExpress, response } = require("express");
 const Request = require("../model/Request");
 const {
   createFormSchema,
   updateFormSchema,
 } = require("../schemas/form.schema");
-const {
-  templateRequestRegisterForm,
-} = require("../mail/templateRequestRegister");
 const { generateSequence } = require("../helpers/generateSquence");
 const User = require("../model/User");
 const qrCode = require("qrcode");
@@ -201,6 +196,7 @@ const getFormsByCorrelative = async (req, res = response) => {
     const form = await Request.find({
       correlativeNumber: correlative,
     });
+
     console.log("form", form);
     return res.status(200).json({
       ok: true,
@@ -216,7 +212,62 @@ const getFormsByCorrelative = async (req, res = response) => {
   }
 };
 
-const createForm = async (req, requestExpress = response) => {
+const getFormsByCorrelativeNumber = async (req, res = response) => {
+  const { correlative } = req.params;
+  console.log("correlative", correlative);
+  try {
+    if (!correlative) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The correlative is required",
+      });
+    }
+
+    // total forms
+    const form = await Request.find({
+      correlativeNumber: correlative,
+    });
+
+    // si no encuentra el formulario
+    if (form.length === 0) {
+      return res.status(200).json({
+        ok: false,
+        msg: "The form does not exist",
+        // msg: "No se encontró el formulario",
+      });
+    }
+
+    // comparamos el dni del formulario con el dni del usuario, enviar mensaje que el usuario ya existe
+    // const user = await User.findOne({
+    //   documentNumber: form[0].adopter.documentNumber,
+    // });
+
+    // console.log({ user });
+
+    // if (user) {
+    //   return res.status(200).json({
+    //     ok: false,
+    //     // msg: "The user already exists",
+    //     msg: "El usuario ya existe",
+    //   });
+    // }
+
+    // console.log("form", form);
+    return res.status(200).json({
+      ok: true,
+      total: form.length,
+      form,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
+const createForm = async (req = requestExpress, res = response) => {
   const {
     country,
     person,
@@ -277,6 +328,20 @@ const createForm = async (req, requestExpress = response) => {
       "correlativeNumber"
     );
 
+    const files = req.files?.files;
+
+    console.log("files", files);
+
+    // si la imagen existe, la borramos y subimos la nueva imagen
+
+    const imageData =
+      req.files !== null
+        ? await uploadImage(files, "form-register")
+        : {
+          cloduinaryId: "",
+          imageUrl: "",
+        };
+
     const newForm = new Request({
       adopter: {
         country,
@@ -322,6 +387,11 @@ const createForm = async (req, requestExpress = response) => {
       },
       correlativeNumber: newCorrelativeNumber,
       isPayment,
+      status: "complete",
+      imagePet: {
+        cloduinaryId: imageData?.cloduinaryId,
+        imageUrl: imageData?.imageUrl,
+      },
     });
 
     await newForm.save();
@@ -342,7 +412,8 @@ const createForm = async (req, requestExpress = response) => {
   }
 };
 
-const updateForm = async (req = req, res = response) => {
+// actualiza el formulario en el dashboard
+const updateForm = async (req = requestExpress, res = response) => {
   const { id } = req.params;
 
   if (!id) {
@@ -506,6 +577,7 @@ const updateForm = async (req = req, res = response) => {
   }
 };
 
+// actualiza el formulario cuando rellena el formulario de registro por correltivo
 const updateFormWithCorrelative = async (req, res = response) => {
   const { id } = req.params;
 
@@ -567,6 +639,16 @@ const updateFormWithCorrelative = async (req, res = response) => {
   console.log("value", value);
 
   try {
+    const files = req.files?.files;
+
+    const imageData =
+      req.files !== null
+        ? await uploadImage(files, "form-register")
+        : {
+          cloduinaryId: "",
+          imageUrl: "",
+        };
+
     const updatedForm = await Request.findByIdAndUpdate(id, {
       adopter: {
         country,
@@ -611,6 +693,10 @@ const updateFormWithCorrelative = async (req, res = response) => {
       },
       isPayment,
       status,
+      imagePet: {
+        cloduinaryId: imageData?.cloduinaryId,
+        imageUrl: imageData?.imageUrl,
+      },
     });
 
     res.status(200).json({
@@ -656,5 +742,6 @@ module.exports = {
   createForm,
   updateForm,
   updateFormWithCorrelative,
+  getFormsByCorrelativeNumber,
   deleteForm,
 };
