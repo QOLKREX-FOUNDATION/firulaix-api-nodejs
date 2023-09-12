@@ -140,7 +140,9 @@ const getForms = async (req, res = response) => {
 
     // forms by entity
     const formsByUid = forms.filter((form) => {
-      return form.adopter.regiterEntity === uid;
+      console.log("form.adopter.registerEntity", form.adopter.registerEntity);
+      console.log({ uid });
+      return form.adopter.registerEntity === uid;
     });
 
     if (!userById) {
