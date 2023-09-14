@@ -13,7 +13,7 @@ const getAnimals = async (req, res = response) => {
 		// const newOffset = (Number(page) - 1) * Number(limit);
 		const newOffset = offset;
 
-		// Construir el objeto de consulta para buscar las razas
+		// Construir el objeto de consulta para buscar las animales
 
 		const Animals = await Animal.find()
 			.skip(Number(newOffset))
@@ -114,7 +114,7 @@ const getAnimals = async (req, res = response) => {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al obtener las razas",
+			msg: "Error al obtener los animales",
 		});
 	}
 };
@@ -129,7 +129,7 @@ const getAnimalsByType = async (req, res = response) => {
 		if (Animals.length === 0) {
 			return res.status(404).json({
 				ok: false,
-				msg: "No se encontraron razas",
+				msg: "No se encontraron animales",
 			});
 		}
 
@@ -152,7 +152,7 @@ const getAnimalsByType = async (req, res = response) => {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al obtener las razas",
+			msg: "Error al obtener las animales",
 		});
 	}
 };
@@ -169,7 +169,7 @@ const getAnimalsByTypeSearch = async (req, res = response) => {
 		if (!type || !search) {
 			return res.status(404).json({
 				ok: false,
-				msg: "No se encontraron razas",
+				msg: "No se encontraron animales",
 				Animal: [],
 			});
 		}
@@ -182,7 +182,7 @@ const getAnimalsByTypeSearch = async (req, res = response) => {
 		if (Animals.length === 0) {
 			return res.status(404).json({
 				ok: false,
-				msg: "No se encontraron razas",
+				msg: "No se encontraron animales",
 			});
 		}
 
@@ -195,7 +195,7 @@ const getAnimalsByTypeSearch = async (req, res = response) => {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al obtener las razas",
+			msg: "Error al obtener las animales",
 		});
 	}
 };
@@ -250,11 +250,11 @@ const createAnimal = async (req, res = response) => {
 
 const insertAnimals = async (req, res = response) => {
 	try {
-		// leer las razas en el json local en la carpeta data
+		// leer las animales en el json local en la carpeta data
 
 		const fileData = fs.readFileSync("./data/animal/Animal.json");
 		const Animals = JSON.parse(fileData);
-		// mapear las razas y insertarlas en la base de datos
+		// mapear las animales y insertarlas en la base de datos
 
 		console.log(Animals);
 
@@ -285,13 +285,13 @@ const insertAnimals = async (req, res = response) => {
 			ok: true,
 			total: Animals.length,
 			Animals: insertAnimals,
-			msg: "Razas insertadas exitosamente",
+			msg: "animales insertadas exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al insertar las razas",
+			msg: "Error al insertar las animales",
 		});
 	}
 };
@@ -374,7 +374,7 @@ const deleteAnimalByType = async (req, res) => {
 		if (!Animals) {
 			return res.status(404).json({
 				ok: false,
-				msg: "Razas no encontrada",
+				msg: "animales no encontrada",
 			});
 		}
 
@@ -406,7 +406,7 @@ const deleteAllAnimal = async (req, res) => {
 
 		res.json({
 			ok: true,
-			msg: "Razas eliminadas exitosamente",
+			msg: "animales eliminadas exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
