@@ -43,26 +43,43 @@ const getRaces = async (req, res = response) => {
 		const races = await Race.find(query)
 			.skip(Number(newOffset))
 			.limit(Number(limit))
-			.sort({ name: 1 });
+			.sort({
+				name: 1,
+				createdAt: -1,
+			});
 
 		const racesTotal = await Race.find();
 
 		// races searched
 		if (search) {
 			const racesSearched = await Race.find({
-				name: { $regex: search.toUpperCase(), $options: "i" },
+				$or: [
+					{ name: { $regex: search.toUpperCase().trim(), $options: "i" } },
+					{ animal: { $regex: search.toUpperCase().trim(), $options: "i" } },
+					{
+						nameSpanish: { $regex: search.toUpperCase().trim(), $options: "i" },
+					},
+					{
+						nameEnglish: { $regex: search.toUpperCase().trim(), $options: "i" },
+					},
+				],
 			})
 				.skip(Number(newOffset))
 				.limit(Number(limit))
-				.sort({ name: 1 });
+				.sort({ name: 1, createdAt: -1 });
 			// console.log(search);
 			// console.log(racesSearched);
 
 			const racesSearchedTotal = await Race.find({
 				$or: [
-					{ name: { $regex: search.toUpperCase(), $options: "i" } },
-					{ nameSpanish: { $regex: search.toUpperCase(), $options: "i" } },
-					{ nameEnglish: { $regex: search.toUpperCase(), $options: "i" } },
+					{ name: { $regex: search.toUpperCase().trim(), $options: "i" } },
+					{ animal: { $regex: search.toUpperCase().trim(), $options: "i" } },
+					{
+						nameSpanish: { $regex: search.toUpperCase().trim(), $options: "i" },
+					},
+					{
+						nameEnglish: { $regex: search.toUpperCase().trim(), $options: "i" },
+					},
 				],
 			});
 
@@ -88,7 +105,10 @@ const getRaces = async (req, res = response) => {
 			const racesFiltered = await Race.find({ animal: type })
 				.skip(Number(newOffset))
 				.limit(Number(limit))
-				.sort({ name: 1 });
+				.sort({
+					name: 1,
+					createdAt: -1,
+				});
 
 			const racesFilteredTotal = await Race.find({ animal: type });
 			return res.status(200).json({

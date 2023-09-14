@@ -176,6 +176,7 @@ const getForms = async (req, res = response) => {
   }
 };
 
+// busca el correlativo por jwt
 const getFormsByCorrelative = async (req, res = response) => {
   const { correlative: correlativeToken } = req.params;
 
@@ -214,6 +215,67 @@ const getFormsByCorrelative = async (req, res = response) => {
   }
 };
 
+const getFormsByAdress = async (req, res = response) => {
+  const { address } = req.params;
+
+  console.log("address", address);
+
+  try {
+    if (!address) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The correlative is required",
+      });
+    }
+
+    // total forms
+    // const firstTenUsers = await User.find().limit(10);
+
+    // console.log("firstTenUsers", firstTenUsers);
+
+    const userData = await User.find({
+      // $nor: [
+      //   { publicAddress: { $regex: address.toUpperCase(), $options: "i" } },
+      // ],
+      publicAddress: address.toUpperCase(),
+    });
+
+    // si no encuentra el formulario
+
+    if (userData.length === 0) {
+      return res.status(200).json({
+        ok: false,
+        msg: "The user does not exist",
+        form: {
+          department: "",
+          province: "",
+          district: "",
+          registerEntity: "",
+        },
+      });
+    }
+
+    console.log("user", userData);
+    return res.status(200).json({
+      ok: true,
+      total: userData.length,
+      form: {
+        department: userData[0].user?.department?.trim() || "",
+        province: userData[0].user?.province?.trim() || "",
+        district: userData[0].user?.district?.trim() || "",
+        registerEntity: userData[0]._id || "",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
+// busca el correlativo por request params
 const getFormsByCorrelativeNumber = async (req, res = response) => {
   const { correlative } = req.params;
   console.log("correlative", correlative);
@@ -741,6 +803,7 @@ module.exports = {
   createQr,
   getForms,
   getFormsByCorrelative,
+  getFormsByAdress,
   createForm,
   updateForm,
   updateFormWithCorrelative,

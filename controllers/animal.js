@@ -22,7 +22,13 @@ const getAnimals = async (req, res = response) => {
 
 		// console.log({ Animals });
 
-		const AnimalsTotal = await Animal.find();
+		const AnimalsTotal = await Animal.find({
+			$or: [
+				{ name: { $regex: search.toUpperCase(), $options: "i" } },
+				{ nameSpanish: { $regex: search.toUpperCase(), $options: "i" } },
+				{ nameEnglish: { $regex: search.toUpperCase(), $options: "i" } },
+			],
+		});
 
 		// Animals searched
 		if (search) {
