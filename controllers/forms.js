@@ -133,9 +133,9 @@ const getForms = async (req, res = response) => {
 
     // filtramos los formularios por entidad
     // const entities = forms.map(async (form) => {
-    //   const entity = await User.findById(form.adopter.regiterEntity);
+    //   const entity = await User.findById(form.adopter.registerEntity);
     //   console.log("entity", entity);
-    //   return form.adopter.regiterEntity;
+    //   return form.adopter.registerEntity;
     // });
 
     // forms by entity
@@ -233,6 +233,10 @@ const getFormsByAdress = async (req, res = response) => {
 
     // console.log("firstTenUsers", firstTenUsers);
 
+    // const allUser = await User.find();
+
+    // console.log(allUser);
+
     const userData = await User.find({
       // $nor: [
       //   { publicAddress: { $regex: address.toUpperCase(), $options: "i" } },
@@ -269,6 +273,11 @@ const getFormsByAdress = async (req, res = response) => {
         local: userData[0].user?.local?.trim() || "",
       },
     });
+    // return res.status(200).json({
+    //   ok: true,
+    //   total: userData.length,
+    //   allUser: allUser
+    // });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -356,7 +365,7 @@ const createForm = async (req = requestExpress, res = response) => {
     province,
     district,
     address,
-    regiterEntity,
+    registerEntity,
     jurament1,
     jurament2,
     jurament3,
@@ -431,7 +440,7 @@ const createForm = async (req = requestExpress, res = response) => {
         province,
         district,
         address: address.toUpperCase(),
-        regiterEntity,
+        registerEntity,
         jurament1,
         jurament2,
         jurament3,
@@ -521,7 +530,7 @@ const updateForm = async (req = requestExpress, res = response) => {
     province,
     district,
     address,
-    regiterEntity,
+    registerEntity,
     jurament1,
     jurament2,
     jurament3,
@@ -604,7 +613,7 @@ const updateForm = async (req = requestExpress, res = response) => {
         province,
         district,
         address: address.toUpperCase(),
-        regiterEntity,
+        registerEntity,
         jurament1,
         jurament2,
         jurament3,
@@ -682,7 +691,7 @@ const updateFormWithCorrelative = async (req, res = response) => {
     province,
     district,
     address,
-    regiterEntity,
+    registerEntity,
     jurament1,
     jurament2,
     jurament3,
@@ -738,7 +747,7 @@ const updateFormWithCorrelative = async (req, res = response) => {
         province,
         district,
         address: address.toUpperCase(),
-        regiterEntity,
+        registerEntity,
         jurament1,
         jurament2,
         jurament3,
