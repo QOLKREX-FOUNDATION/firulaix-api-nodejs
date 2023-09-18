@@ -264,6 +264,9 @@ const getFormsByAdress = async (req, res = response) => {
         province: userData[0].user?.province?.trim() || "",
         district: userData[0].user?.district?.trim() || "",
         registerEntity: userData[0]._id || "",
+        name: userData[0].user?.name?.trim() || "",
+        lastName: userData[0].user?.lastName?.trim() || "",
+        local: userData[0].user?.local?.trim() || "",
       },
     });
   } catch (error) {

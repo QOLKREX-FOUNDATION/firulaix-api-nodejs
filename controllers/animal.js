@@ -210,14 +210,14 @@ const getAnimal = async (req, res = response) => {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al obtener la raza",
+			msg: "Error al obtener la animal",
 		});
 	}
 };
 
 const createAnimal = async (req, res = response) => {
 	try {
-		// Obtener los datos de la nueva raza desde el cuerpo de la solicitud
+		// Obtener los datos de la nueva animal desde el cuerpo de la solicitud
 		const { name, nameSpanish, nameEnglish } = req.body;
 
 		// Crear una instancia del modelo Animal con los datos proporcionados
@@ -227,19 +227,19 @@ const createAnimal = async (req, res = response) => {
 			nameEnglish,
 		});
 
-		// Guardar la nueva raza en la base de datos
+		// Guardar la nueva animal en la base de datos
 		await newAnimal.save();
 
 		res.json({
 			ok: true,
 			animal: newAnimal,
-			msg: "Raza creada exitosamente",
+			msg: "animal creada exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al crear la raza",
+			msg: "Error al crear la animal",
 		});
 	}
 };
@@ -274,7 +274,7 @@ const insertAnimals = async (req, res = response) => {
 			return newAnimal;
 		});
 
-		// Guardar la nueva raza en la base de datos
+		// Guardar la nueva animal en la base de datos
 		await registered;
 
 		return res.status(200).json({
@@ -294,10 +294,10 @@ const insertAnimals = async (req, res = response) => {
 
 const updateAnimal = async (req, res) => {
 	try {
-		const { id } = req.params; // Obtener el ID de la raza a actualizar desde los parámetros de la URL
-		const { name, nameSpanish, nameEnglish } = req.body; // Obtener los nuevos datos de la raza desde el cuerpo de la solicitud
+		const { id } = req.params; // Obtener el ID de la animal a actualizar desde los parámetros de la URL
+		const { name, nameSpanish, nameEnglish } = req.body; // Obtener los nuevos datos de la animal desde el cuerpo de la solicitud
 
-		// Buscar la raza por su ID y actualizar los campos correspondientes
+		// Buscar la animal por su ID y actualizar los campos correspondientes
 		const updatedAnimal = await Animal.findByIdAndUpdate(
 			id,
 			{
@@ -311,29 +311,29 @@ const updateAnimal = async (req, res) => {
 		if (!updatedAnimal) {
 			return res.status(404).json({
 				ok: false,
-				msg: "Raza no encontrada",
+				msg: "animal no encontrada",
 			});
 		}
 
 		res.json({
 			ok: true,
 			animal: updatedAnimal,
-			msg: "Raza actualizada exitosamente",
+			msg: "animal actualizada exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al actualizar la raza",
+			msg: "Error al actualizar la animal",
 		});
 	}
 };
 
 const deleteAnimal = async (req, res) => {
 	try {
-		const { id } = req.params; // Obtener el ID de la raza a eliminar desde los parámetros de la URL
+		const { id } = req.params; // Obtener el ID de la animal a eliminar desde los parámetros de la URL
 
-		// Buscar la raza por su ID y eliminarla
+		// Buscar la animal por su ID y eliminarla
 		const deletedAnimal = await Animal.findByIdAndDelete(id);
 
 		if (!deletedAnimal) {
@@ -345,22 +345,22 @@ const deleteAnimal = async (req, res) => {
 
 		res.json({
 			ok: true,
-			msg: "Raza eliminada exitosamente",
+			msg: "animal eliminada exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al eliminar la raza",
+			msg: "Error al eliminar la animal",
 		});
 	}
 };
 
 const deleteAnimalByType = async (req, res) => {
 	try {
-		const { type } = req.params; // Obtener el ID de la raza a eliminar desde los parámetros de la URL
+		const { type } = req.params; // Obtener el ID de la animal a eliminar desde los parámetros de la URL
 
-		// Buscar la raza por su ID y eliminarla
+		// Buscar la animal por su ID y eliminarla
 		const Animals = await Animal.find({
 			animal: type.toUpperCase(),
 		}).deleteMany();
@@ -376,27 +376,27 @@ const deleteAnimalByType = async (req, res) => {
 
 		res.json({
 			ok: true,
-			msg: "Raza eliminada exitosamente",
+			msg: "animal eliminada exitosamente",
 		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al eliminar la raza",
+			msg: "Error al eliminar la animal",
 		});
 	}
 };
 
 const deleteAllAnimal = async (req, res) => {
 	try {
-		// Buscar la raza por su ID y eliminarla
+		// Buscar la animal por su ID y eliminarla
 		// const deletedAnimal = await Animal.deleteMany({});
 		const deletedAnimal = await Animal.collection.drop();
 
 		// if (!deletedAnimal) {
 		//   return res.status(404).json({
 		//     ok: false,
-		//     msg: "Raza no encontrada",
+		//     msg: "animal no encontrada",
 		//   });
 		// }
 
@@ -408,7 +408,7 @@ const deleteAllAnimal = async (req, res) => {
 		console.error(error);
 		res.status(500).json({
 			ok: false,
-			msg: "Error al eliminar la raza",
+			msg: "Error al eliminar la animal",
 		});
 	}
 };
