@@ -53,7 +53,7 @@ const updateFormSchema = Joi.object({
   // dni: Joi.string().required(),
   firstName: Joi.string().required(),
   firstLastName: Joi.string().required(),
-  secondName: Joi.string().required(),
+  secondName: Joi.optional(),
   secondLastName: Joi.string().required(),
   birthDate: Joi.string().required(),
   gender: Joi.string().required(),
