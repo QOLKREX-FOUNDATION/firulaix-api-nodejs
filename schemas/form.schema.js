@@ -38,7 +38,7 @@ const createFormSchema = Joi.object({
   isSterilized: Joi.string().required(),
   fatherMicrochip: Joi.optional(),
   motherMicrochip: Joi.optional(),
-  isPayment: Joi.optional(),
+  // isPayment: Joi.optional(),
   files: Joi.optional(),
 });
 

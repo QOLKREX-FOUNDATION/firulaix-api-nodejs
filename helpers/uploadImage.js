@@ -1,15 +1,20 @@
+const sharp = require("sharp");
+
 const cloudinary = require("cloudinary").v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
+const DataURIParser = require("datauri/parser");
 
 const uploadImage = async (image, path) => {
   console.log({ image });
   console.log({ path });
   try {
     const { tempFilePath } = image;
+    const optimize = await optimizeImage(tempFilePath);
+    const base64 = await bufferToBase64(optimize);
     const { secure_url, public_id } = await cloudinary.uploader.upload(
-      tempFilePath,
+      base64,
       {
-        folder: `images/${path}`,
+        folder: `images/${ path }`,
       }
     );
     return {
@@ -28,7 +33,7 @@ const destroyImage = async (cloduinaryId, path) => {
   try {
     await cloudinary.uploader.destroy(
       // `images/${path}/${cloduinaryId}`,
-      `${cloduinaryId}`,
+      `${ cloduinaryId }`,
       (error, result) => {
         console.log(result, error);
       }
@@ -46,6 +51,17 @@ const destroyImage = async (cloduinaryId, path) => {
       msg: "Image not deleted",
     };
   }
+};
+
+// optimize image using sharp
+const optimizeImage = async (image) => {
+  return sharp(image).resize(700, 500).toFormat("webp").toBuffer();
+};
+
+const bufferToBase64 = async (buffer) => {
+  const parser = new DataURIParser();
+  return parser.format(".webp", buffer).content;
+  // return buffer.toString("base64");
 };
 
 module.exports = {

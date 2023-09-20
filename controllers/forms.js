@@ -140,8 +140,8 @@ const getForms = async (req, res = response) => {
 
     // forms by entity
     const formsByUid = forms.filter((form) => {
-      console.log("form.adopter.registerEntity", form.adopter.registerEntity);
-      console.log({ uid });
+      // console.log("form.adopter.registerEntity", form.adopter.registerEntity);
+      // console.log({ uid });
       return form.adopter.registerEntity === uid;
     });
 
@@ -382,7 +382,7 @@ const createForm = async (req = requestExpress, res = response) => {
     isSterilized,
     fatherMicrochip,
     motherMicrochip,
-    isPayment,
+    // isPayment,
   } = req.body;
 
   console.log("body", req.body);
@@ -462,7 +462,7 @@ const createForm = async (req = requestExpress, res = response) => {
         motherMicrochip,
       },
       correlativeNumber: newCorrelativeNumber,
-      isPayment,
+      isPayment: false,
       status: "complete",
       imagePet: {
         cloduinaryId: imageData?.cloduinaryId,
@@ -548,6 +548,7 @@ const updateForm = async (req = requestExpress, res = response) => {
     fatherMicrochip,
     motherMicrochip,
     isPayment,
+    files
     // imagePet,
   } = req.body;
 
@@ -558,10 +559,16 @@ const updateForm = async (req = requestExpress, res = response) => {
   console.log("req.files", req.files);
   // console.log("req.file", req.file);
 
-  const files = req.files?.files;
+  const reqFiles = req.files?.files;
   // console.log("imagePet", imagePet);
 
   // console.log("value", value);
+
+  let imageData = {
+    cloduinaryId: "",
+    imageUrl: "",
+  };
+
 
   // si la imagen existe, la borramos y subimos la nueva imagen
 
@@ -569,26 +576,39 @@ const updateForm = async (req = requestExpress, res = response) => {
 
   console.log("findImage", findImage);
 
-  if (findImage.imagePet) {
-    // find cloduinaryId in cloudinary and delete
-    // await cloudinary.uploader.destroy(
-    //   `images/form-register/${findImage.imagePet.cloduinaryId}`
-    // );
-    console.log("id image", findImage.imagePet?.cloduinaryId);
-    if (findImage.imagePet?.cloduinaryId) {
-      await destroyImage(findImage.imagePet.cloduinaryId, "form-register");
+  // si el files que viene en el body es una url, no se sube la imagen y no se borra la imagen anterior
+  console.log({ files });
+  if (files === undefined) {
+    // borrando la imagen
+    if (findImage.imagePet) {
+      // find cloduinaryId in cloudinary and delete
+      // await cloudinary.uploader.destroy(
+      //   `images/form-register/${findImage.imagePet.cloduinaryId}`
+      // );
+      console.log("id image", findImage.imagePet?.cloduinaryId);
+      if (findImage.imagePet?.cloduinaryId) {
+        await destroyImage(findImage.imagePet.cloduinaryId, "form-register");
+      }
     }
+
+    // subiendo la imagen
+    imageData =
+      req.files !== undefined
+        ? await uploadImage(reqFiles, "form-register")
+        : {
+          cloduinaryId: "",
+          imageUrl: "",
+        };
+
   }
-
-  const imageData =
-    req.files !== null
-      ? await uploadImage(files, "form-register")
-      : {
-        cloduinaryId: "",
-        imageUrl: "",
-      };
-
   // console.log({ imageData });
+
+  if (files !== undefined) {
+    imageData = {
+      cloduinaryId: findImage.imagePet?.cloduinaryId || imageData.cloduinaryId,
+      imageUrl: findImage.imagePet?.imageUrl || imageData.imageUrl,
+    };
+  }
 
   try {
     const updatedForm = await Request.findByIdAndUpdate(id, {
