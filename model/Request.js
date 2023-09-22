@@ -63,7 +63,7 @@ const RequestShema = new Schema(
       address: {
         type: String,
       },
-      regiterEntity: {
+      registerEntity: {
         type: String,
       },
       jurament1: {
