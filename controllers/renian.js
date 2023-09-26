@@ -5,6 +5,7 @@ const Pet = require("../model/Pet");
 const { mail } = require("../helpers/mail");
 const Adopter = require("../model/Adopter");
 const { default: mongoose } = require("mongoose");
+const { categorizarAnimal, formatURL } = require("../helpers/formatRenian");
 
 // 991003001934415
 // 9910030015595702
@@ -83,16 +84,18 @@ const getRecord = async (req = request, res = response) => {
 					name: result.usuario_empresa,
 					race: result.usuario_telefax,
 					gender: result.usuario_url,
-					date: result.usuario_registrado,
-					dateAdoption: result.usuario_registrado,
+					// date: result.usuario_registrado,
+					date: result.usuario_empresa_sector,
+					// dateAdoption: result.usuario_registrado,
+					dateAdoption: "",
 					dateIssue: result.usuario_registrado,
 					chip: result.usuario_cargo,
 					chipDate: result.usuario_registrado,
 					colour: result.usuario_interes,
-					image: `https://consultwar.renian.foundation/public/images/petimg/${ result.usuario_foto }`,
+					image: `${ formatURL(result.usuario_foto) }`,
 					pedigree: "",
 					country: "PE",
-					type: "DOG",
+					type: categorizarAnimal(result?.usuario_telefono_anexo.toLowerCase()),
 					sterilized: result.usuario_esteril,
 					hash: "",
 					status: "",
