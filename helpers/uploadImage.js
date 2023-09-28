@@ -55,7 +55,14 @@ const destroyImage = async (cloduinaryId, path) => {
 
 // optimize image using sharp
 const optimizeImage = async (image) => {
-  return sharp(image).resize(700, 500).toFormat("webp").toBuffer();
+  return sharp(image)
+    .resize({
+      width: 1000,
+      height: 600,
+      fit: "cover",
+    })
+    .toFormat("webp")
+    .toBuffer();
 };
 
 const bufferToBase64 = async (buffer) => {
