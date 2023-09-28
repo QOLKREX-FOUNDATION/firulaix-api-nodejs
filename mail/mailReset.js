@@ -1,5 +1,5 @@
 const templateReset = ({ name, token }) => {
-    return `
+  return `
     <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -282,7 +282,7 @@ const templateReset = ({ name, token }) => {
 
                 <p class="text-line text-color" style="padding: 20px 10px 0">
                   <a
-                    href="https://registro.firulaixcoin.finance/restore?token=${ token }"
+                    href="https://registro.worldanimalregistry.org/restore?token=${ token }"
                     style="
                       background-color: #039be5;
                       border: none;
