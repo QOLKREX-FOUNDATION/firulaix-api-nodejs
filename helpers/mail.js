@@ -185,7 +185,7 @@ const mailRegisterUserWar = async ({ registry, url }) => {
 	}
 };
 
-const mailRegisterUserRenian = async ({ registry }) => {
+const mailRegisterUserRenian = async ({ registry, url }) => {
 	try {
 		const transporter = configRenian();
 		const to = "solicitudderegistro@renian.pe";
@@ -196,7 +196,7 @@ const mailRegisterUserRenian = async ({ registry }) => {
 				from: "solicitudderegistro@renian.pe",
 				to: [registry.email, to, copyToEmail],
 				subject: "RENIAN - Registro de Usuario",
-				html: templateRequestUserCardRenian({ registry }),
+				html: templateRequestUserCardRenian({ registry, url }),
 			});
 			return true;
 		}

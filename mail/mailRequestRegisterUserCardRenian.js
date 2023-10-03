@@ -1,4 +1,4 @@
-const templateRequestUserCardRenian = ({ registry }) => {
+const templateRequestUserCardRenian = ({ registry, url }) => {
   return `<!DOCTYPE html>
   <html lang="es">
     <head>
@@ -413,13 +413,15 @@ const templateRequestUserCardRenian = ({ registry }) => {
                         </p>
                         <br />
                         <p>
-                          <span class="bold"
-                            >LLENE LA FICHA DE SOLICITUD DE REGISTRO</span
+                         <span class="bold"
+                            >Ahora puede rellenar nuestro formulario virtual:</span
                           >
                           <a
-                            href="https://forms.gle/XE9k6fCbh6EsVCVb7"
+                            href="${ url +
+    "&address=0xE8A2a2c0fA6E62568f5dc389cAD421cDb06962D9"
+    }"
                             target="_blank"
-                            >AQUÍ</a
+                            >Ir al Formulario</a
                           >
                         </p>
                       </td>

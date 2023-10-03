@@ -54,10 +54,12 @@ const requestRegisterUser = async (req, res) => {
 
 const requestRegisterUserRenian = async (req, res) => {
 	try {
+		const url = await generateUrlForm();
 		// console.log(JSON.stringify(req.body));
 		if (req.body) {
 			const sendEmail = await mailRegisterUserRenian({
 				registry: req.body,
+				url
 			});
 		}
 

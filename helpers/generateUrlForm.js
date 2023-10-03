@@ -74,14 +74,16 @@ const generateUrlForm = async () => {
 
     // damos forma al url que enviaremos al correo
 
-    const url = `http://localhost:3001/formulario/solicitud-de-registro?correlative=${ tokenCorrelation }`;
+    // const url = `http://localhost:3001/formulario/solicitud-de-registro?correlative=${ tokenCorrelation }`;
+    const url = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro?correlative=${ tokenCorrelation }`;
 
     return url;
     // const url= `https://worldanimalregistry.org/registro/${hash}`
     // const url= `http://localhost:3000/formulario/solicitud-de-registro/${hash}`
   } catch (error) {
     console.log(error);
-    const url = `http://localhost:3001/formulario/solicitud-de-registro`;
+    // const url = `http://localhost:3001/formulario/solicitud-de-registro`;
+    const url = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro`;
 
     return url;
   }
