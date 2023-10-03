@@ -831,6 +831,64 @@ const deleteForm = async (req, res = response) => {
   }
 };
 
+const updateStatusForm = async (req = request, res = response) => {
+  const { id } = req.params;
+  const { status } = req.body; //status = pending, complete, rejected, registered , registered-pet, registered-adopter
+
+  console.log({ id, status });
+
+  // pending -> cuando el usuario llena el formulario
+  // complete -> cuando el usuario completa el formulario
+  // rejected -> cuando el usuario es rechazado
+  // registered -> cuando el usuario es registrado
+  // primero se registra el adoptante y luego la mascota
+  // registered-adopter -> cuando el usuario es registrado y se registra el adoptante
+  // registered-pet -> cuando el usuario es registrado y se registra la mascota
+
+  const statusValid = [
+    "pending",
+    "completed",
+    "rejected",
+    "registered",
+    "registered-pet",
+    "registered-adopter",
+  ];
+
+  if (!id) {
+    return res.status(400).json({ error: "The id is required" });
+  }
+
+  if (!status) {
+    return res.status(400).json({ error: "The status is required" });
+  }
+
+  if (!statusValid.includes(status)) {
+    return res.status(400).json({ error: "The status is invalid" });
+  }
+
+  try {
+    const requestUpdated = await Request.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    res.status(200).json({
+      ok: true,
+      msg: "Form updated successfully",
+      form: {
+        ...requestUpdated._doc,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error updating form",
+    });
+  }
+};
+
 module.exports = {
   createQr,
   getForms,
@@ -841,4 +899,5 @@ module.exports = {
   updateFormWithCorrelative,
   getFormsByCorrelativeNumber,
   deleteForm,
+  updateStatusForm,
 };

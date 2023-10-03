@@ -9,7 +9,8 @@ const {
   updateFormWithCorrelative,
   getFormsByCorrelative,
   getFormsByCorrelativeNumber,
-  getFormsByAdress
+  getFormsByAdress,
+  updateStatusForm
 } = require("../controllers/forms");
 const { check } = require("express-validator");
 
@@ -93,5 +94,7 @@ router.delete(
 router.put("/:id", [validateJWT], updateForm);
 
 router.put("/correlative/:id", [validateJWTCorrelative], updateFormWithCorrelative);
+
+router.put("/status/:id", [validateJWT], updateStatusForm);
 
 module.exports = router;
