@@ -30,7 +30,7 @@ class Sockets {
       socket.on("set-location", async (payload) => {
         const { id, coords } = payload;
         // console.log("set-location", id, coords);
-        this.io.emit("set-location", await setGeolocalization(payload));
+        this.io.emit("set-location context", await setGeolocalization(payload));
       });
 
       // socket.on("increment-vote", async (payload) => {
