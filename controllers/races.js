@@ -205,7 +205,8 @@ const getRacesByTypeSearch = async (req, res = response) => {
 
 		const races = await Race.find({
 			animal: type.toUpperCase(),
-			name: { $regex: search.toUpperCase(), $options: "i" },
+			name: search.toUpperCase().trim(),
+			// name: { $regex: search.toUpperCase(), $options: "i" },
 		});
 
 		if (races.length === 0) {
