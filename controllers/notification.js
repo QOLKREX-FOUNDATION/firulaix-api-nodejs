@@ -134,10 +134,28 @@ const deleteNotification = async (req, res) => {
   }
 };
 
+const deleteAllNotifications = async (req, res) => {
+  try {
+
+    Notification.deleteMany({}, function (err) {
+      console.log('collection removed')
+    });
+
+    return res.status(200).json({
+      ok: true,
+      message: "delete all notification",
+    });
+  }
+  catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   getNotifications,
   getNotificationsById,
   createNotification,
   getNotificationsByEntityRegistry,
   deleteNotification,
+  deleteAllNotifications
 };

@@ -1,5 +1,7 @@
 // const Item = require("../item/item.model");
 // const Votation = require("../votation/votation.model");
+const Adopter = require("../model/Adopter");
+const Notification = require("../model/Notification");
 
 const getGeolocation = async (payload) => {
   //   const id = payload;
@@ -20,40 +22,70 @@ const setGeolocalization = async (payload) => {
   if (!longitude) return { msg: "No hay longitud" };
   try {
     console.log("setGeolocalization", id, latitude, longitude);
+
+    const user = await Adopter.findOne({
+      address: id,
+    });
+
+    const date = new Date();
+
+    const formattedDate = date.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // console.log("user", user);
+
+    // save notification
+    const notification = new Notification({
+      title: "Geolocalización",
+      message: "Se ha registrado una nueva geolocalización",
+      type: "geolocation",
+      data: {
+        coords: {
+          latitude,
+          longitude,
+        },
+        user: {
+          name: user.name,
+          lastName: user.lastName,
+          id: user._id,
+        },
+      },
+    });
+
+    await notification.save();
+
+    console.log("notification", notification);
+
     return {
-      msg: "Coordenadas guardadas",
-      coords: {
-        latitude,
-        longitude,
+      ok: true,
+      msg: "Geolocalización guardada",
+      info: {
+        title: "Geolocalización",
+        message: "Se ha registrado una nueva geolocalización",
+        type: "geolocation",
+        data: {
+          coords: {
+            latitude,
+            longitude,
+          },
+          user: {
+            name: user.name,
+            lastName: user.lastName,
+            id: user._id,
+          },
+        },
+        createdAt: date,
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       msg: "Error al guardar las coordenadas",
     };
   }
-  //   try {
-  //     const votation = new Votation(rest);
-  //     const votationSaved = await votation.save();
-  //     const votationId = votationSaved._id;
-  //     const itemsSaved = await Promise.all(
-  //       items.map(async (item) => {
-  //         const newItem = new Item(item);
-  //         newItem.votation = votationId;
-  //         await newItem.save();
-  //         return newItem;
-  //       })
-  //     );
-  //     return {
-  //       msg: "Votación guardada",
-  //       votation: votationSaved,
-  //       items: itemsSaved,
-  //     };
-  //   } catch (error) {
-  //     return {
-  //       msg: "Error al guardar la votación",
-  //     };
-  //   }
 };
 
 module.exports = {
