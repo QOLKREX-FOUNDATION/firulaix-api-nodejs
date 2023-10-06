@@ -13,6 +13,7 @@ const {
 	templateRequestUserRenian,
 } = require("../mail/mailRequestRegisterUserRenian");
 const path = require("path");
+const { templateEmailRegistro } = require("../mail/templateEmailRegistro");
 
 const copyToEmail = "pets@worldanimalregistry.org";
 
@@ -222,10 +223,29 @@ const mailRegisterUserRenian = async ({ registry, url }) => {
 	}
 };
 
+const mailRegisterUser = async ({ registry, entityRegister }) => {
+	try {
+		let transporter = configWar();
+
+		await transporter.sendMail({
+			from: "solicitudderegistro@worldanimalregistry.org",
+			to: registry.adopter.email,
+			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+			html: templateEmailRegistro({ data: registry, entityRegister }),
+		});
+
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+};
+
 module.exports = {
 	mail,
 	mailReset,
 	mailRegisterEntity,
 	mailRegisterUserWar,
 	mailRegisterUserRenian,
+	mailRegisterUser
 };

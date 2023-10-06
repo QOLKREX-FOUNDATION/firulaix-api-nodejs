@@ -9,6 +9,7 @@ const User = require("../model/User");
 const qrCode = require("qrcode");
 const jwt = require("jsonwebtoken");
 const { uploadImage, destroyImage } = require("../helpers/uploadImage");
+const { mailRegisterUser } = require("../helpers/mail");
 
 const createQr = async (req, res = response) => {
   const url = req.body.url;
@@ -472,7 +473,16 @@ const createForm = async (req = requestExpress, res = response) => {
 
     await newForm.save();
 
-    res.json({
+    const entityRegister = await User.find({
+      _id: registerEntity,
+    });
+
+    await mailRegisterUser({
+      registry: newForm,
+      entityRegister,
+    });
+
+    res.status(200).json({
       ok: true,
       form: {
         ...req.body,
@@ -793,6 +803,15 @@ const updateFormWithCorrelative = async (req, res = response) => {
         cloduinaryId: imageData?.cloduinaryId,
         imageUrl: imageData?.imageUrl,
       },
+    });
+
+    const entityRegister = await User.find({
+      _id: registerEntity,
+    });
+
+    await mailRegisterUser({
+      registry: newForm,
+      entityRegister,
     });
 
     res.status(200).json({
