@@ -130,7 +130,10 @@ const getForms = async (req, res = response) => {
     // son todos los formularios de registro
 
     // total forms
-    const forms = await Request.find();
+    const forms = await Request.find()
+      .sort({
+        createdAt: -1,
+      });
 
     // filtramos los formularios por entidad
     // const entities = forms.map(async (form) => {
