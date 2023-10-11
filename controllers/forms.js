@@ -180,6 +180,46 @@ const getForms = async (req, res = response) => {
   }
 };
 
+const getFormsById = async (req, res = response) => {
+  const { id } = req.params;
+
+  console.log("id", id);
+
+  try {
+    if (!id) {
+      return res.status(400).json({
+        ok: false,
+        msg: "The id is required",
+      });
+    }
+
+    // total forms
+    const form = await Request.findById(id);
+
+    // si no encuentra el formulario
+
+    if (!form) {
+      return res.status(200).json({
+        ok: false,
+        msg: "The form does not exist",
+      });
+    }
+
+    // console.log("form", form);
+    return res.status(200).json({
+      ok: true,
+      total: form.length,
+      form,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
 // busca el correlativo por jwt
 const getFormsByCorrelative = async (req, res = response) => {
   const { correlative: correlativeToken } = req.params;
@@ -914,6 +954,7 @@ const updateStatusForm = async (req = request, res = response) => {
 module.exports = {
   createQr,
   getForms,
+  getFormsById,
   getFormsByCorrelative,
   getFormsByAdress,
   createForm,
