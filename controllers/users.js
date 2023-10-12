@@ -33,10 +33,10 @@ const login = async (req, res = response) => {
 			"password email name lastName idRegisteringEntity"
 		);
 		console.log(find)
-		console.log(req.body.password)
+		// console.log(req.body.password)
 		// const response = passwordDencrypt(req.body.password, find.password);
 		const response = bcryptjs.compareSync(req.body.password, find.password);
-		console.log(passwordDencrypt("ENCVNxvS", "ENCVNxvS"))
+		// console.log(passwordDencrypt("ENCVNxvS", "ENCVNxvS"))
 
 		if (!response) {
 			return res.status(400).json({

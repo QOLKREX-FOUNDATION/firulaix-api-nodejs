@@ -2,6 +2,7 @@
 // const Votation = require("../votation/votation.model");
 const Adopter = require("../model/Adopter");
 const Notification = require("../model/Notification");
+const Pet = require("../model/Pet");
 
 const getGeolocation = async (payload) => {
   //   const id = payload;
@@ -25,6 +26,10 @@ const setGeolocalization = async (payload) => {
 
     const user = await Adopter.findOne({
       address: id,
+    });
+
+    const pet = await Pet.findOne({
+      address: user.address,
     });
 
     const date = new Date();
@@ -52,6 +57,10 @@ const setGeolocalization = async (payload) => {
           lastName: user.lastName,
           id: user._id,
         },
+        pet: {
+          name: pet.name,
+          chip: pet.chip,
+        },
       },
     });
 
@@ -75,6 +84,10 @@ const setGeolocalization = async (payload) => {
             name: user.name,
             lastName: user.lastName,
             id: user._id,
+          },
+          pet: {
+            name: pet.name,
+            chip: pet.chip,
           },
         },
         createdAt: date,
