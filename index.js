@@ -99,6 +99,9 @@ app.use("/api/entity-register", require("./routes/entityRegister"));
 
 app.use("/api/form", require("./routes/forms"));
 
+// Donaciones mercadopago
+app.use("/api/donate-payment", require("./routes/donatePayment"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
