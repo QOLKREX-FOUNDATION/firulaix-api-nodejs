@@ -52,9 +52,30 @@ const getForms = async (req, res = response) => {
 
   console.log("uid", uid);
 
+  const { adopter, pet, chip, correlative } = req.query;
+
   try {
     const userById = await User.findById(uid);
     console.log("userById", userById);
+
+    let query = {};
+
+    if (adopter) {
+      query["adopter.firstName"] = { $regex: adopter, $options: "i" };
+    }
+
+    if (pet) {
+      query["pet.firstNamePet"] = { $regex: pet, $options: "i" };
+    }
+
+    if (chip) {
+      query["pet.microchip"] = { $regex: chip, $options: "i" };
+    }
+
+    if (correlative) {
+      query["correlativeNumber"] = { $regex: correlative, $options: "i" };
+    }
+
     // const user = await User.find();
     // console.log("user", user);
 
@@ -130,10 +151,10 @@ const getForms = async (req, res = response) => {
     // son todos los formularios de registro
 
     // total forms
-    const forms = await Request.find()
+    const forms = await Request.find(query)
       .sort({
         createdAt: -1,
-      });
+      }).limit(100);
 
     // filtramos los formularios por entidad
     // const entities = forms.map(async (form) => {
