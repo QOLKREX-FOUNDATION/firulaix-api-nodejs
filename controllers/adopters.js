@@ -272,10 +272,15 @@ const updateRecord = async (req, res = response) => {
 			String(compare?.user?._id).toUpperCase() ||
 			String(find.user).toString() == "000000000000000000000000"
 		) {
+
+			// Crear una copia de req.body excluyendo explícitamente el campo 'password'
+			const updatedData = { ...req.body };
+			delete updatedData.password;
+
 			await Adopter.findByIdAndUpdate(
 				req.params.id,
 				{
-					...req.body,
+					...updatedData,
 					update_for: req.body.userAddress,
 					update_at: new Date(),
 					user:
