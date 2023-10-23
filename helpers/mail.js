@@ -14,6 +14,7 @@ const {
 } = require("../mail/mailRequestRegisterUserRenian");
 const path = require("path");
 const { templateEmailRegistro } = require("../mail/templateEmailRegistro");
+const { templateDonationGreeting } = require("../mail/mailDonationGreeting");
 
 const copyToEmail = "pets@worldanimalregistry.org";
 
@@ -241,11 +242,28 @@ const mailRegisterUser = async ({ registry, entityRegister }) => {
 	}
 };
 
+const mailGreetingDonation = async ({ email, name, lastName, amount, currency, dni }) => {
+	try {
+		let transporter = configWar();
+		await transporter.sendMail({
+			from: "no-reply@worldanimalregistry.org",
+			to: [email, "donaciones@worldanimalregistry.org"],
+			subject: "WORLD ANIMAL REGISTRY - ¡Gracias por tu generosa donación!",
+			html: templateDonationGreeting({ name, lastName, amount, currency, dni }),
+		});
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+}
+
 module.exports = {
 	mail,
 	mailReset,
 	mailRegisterEntity,
 	mailRegisterUserWar,
 	mailRegisterUserRenian,
-	mailRegisterUser
+	mailRegisterUser,
+	mailGreetingDonation,
 };
