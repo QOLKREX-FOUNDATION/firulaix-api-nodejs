@@ -37,7 +37,7 @@ const generateUrlForm = async () => {
         address: "",
         regiterEntity: "",
         jurament1: false,
-        jurament2: false,
+        isMicrochip: "",
         jurament3: false,
       },
       pet: {

@@ -69,8 +69,8 @@ const RequestShema = new Schema(
       jurament1: {
         type: Boolean,
       },
-      jurament2: {
-        type: Boolean,
+      isMicrochip: {
+        type: String,
       },
       jurament3: {
         type: Boolean,
