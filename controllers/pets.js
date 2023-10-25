@@ -150,17 +150,60 @@ const statusRecord = async (req, res = response) => {
 };
 
 const getHistory = async (req, res = response) => {
-  let { idRegisteringEntity } = req.query;
+  let { idRegisteringEntity, adopter, address, pet, chip, dni } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
 
   try {
-    let pets = await Pet.find({
-      idRegisteringEntity: { $in: idRegisteringEntity },
-      // idRegisteringEntity,
-    }).sort("create_at");
+    let queryPet = {};
 
-    let adopters = await Adopter.find({ idRegisteringEntity });
+    if (pet) {
+      queryPet["name"] = { $regex: pet, $options: "i" };
+    }
+
+    if (chip) {
+      queryPet["chip"] = { $regex: chip, $options: "i" };
+    }
+
+    if (address) {
+      queryPet["adopter"] = { $regex: address, $options: "i" };
+    }
+
+    if (adopter) {
+      queryPet["adopterName"] = { $regex: adopter, $options: "i" };
+    }
+    console.log("query", queryPet);
+
+    let queryAdopter = {};
+
+    if (dni) {
+      queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
+    }
+
+    let adopters = await Adopter.find({
+      idRegisteringEntity,
+      ...queryAdopter,
+    }).limit(100);
+
+    console.log({ adopters: adopters.length });
+    // console.log({ adopters: adopters[0] });
+
+    let pets = dni
+      ? await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        adopter: { $in: adopters.map((a) => a.address) },
+        ...queryPet,
+      })
+        .sort({ created_at: -1 })
+        .limit(100)
+      : await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        ...queryPet,
+      })
+        .sort({ created_at: -1 })
+        .limit(100);
+
+    console.log({ pets: pets.length });
 
     res.status(201).json({
       ok: true,
