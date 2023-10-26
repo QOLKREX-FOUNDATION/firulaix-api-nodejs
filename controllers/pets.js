@@ -183,7 +183,7 @@ const getHistory = async (req, res = response) => {
     let adopters = await Adopter.find({
       idRegisteringEntity,
       ...queryAdopter,
-    }).limit(100);
+    }).limit(500);
 
     console.log({ adopters: adopters.length });
     // console.log({ adopters: adopters[0] });
@@ -195,13 +195,13 @@ const getHistory = async (req, res = response) => {
         ...queryPet,
       })
         .sort({ created_at: -1 })
-        .limit(100)
+        .limit(500)
       : await Pet.find({
         idRegisteringEntity: { $in: idRegisteringEntity },
         ...queryPet,
       })
         .sort({ created_at: -1 })
-        .limit(100);
+        .limit(500);
 
     console.log({ pets: pets.length });
 
