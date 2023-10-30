@@ -149,6 +149,7 @@ const getEntityRegisterById = async (req = request, res = response) => {
           department: entity.user.department,
           province: entity.user?.province,
           district: entity.user?.district,
+          country: entity.entityRegister.country,
         };
       }
     );
