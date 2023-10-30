@@ -99,6 +99,10 @@ app.use("/api/entity-register", require("./routes/entityRegister"));
 
 app.use("/api/form", require("./routes/forms"));
 
+// codes phone
+
+app.use("/api/code", require("./routes/codePhone"));
+
 // Donaciones mercadopago
 app.use("/api/donate-payment", require("./routes/donatePayment"));
 
