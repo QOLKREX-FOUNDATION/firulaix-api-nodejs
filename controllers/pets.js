@@ -150,7 +150,16 @@ const statusRecord = async (req, res = response) => {
 };
 
 const getHistory = async (req, res = response) => {
-  let { idRegisteringEntity, adopter, address, pet, chip, dni } = req.query;
+  let {
+    idRegisteringEntity,
+    adopter,
+    address,
+    pet,
+    chip,
+    dni,
+    dateStart,
+    dateEnd,
+  } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
 
@@ -163,6 +172,13 @@ const getHistory = async (req, res = response) => {
 
     if (chip) {
       queryPet["chip"] = { $regex: chip, $options: "i" };
+    }
+
+    if (dateStart && dateEnd) {
+      const dateStartParse = new Date(dateStart);
+      const dateEndParse = new Date(dateEnd);
+      console.log({ dateStartParse, dateEndParse });
+      queryPet["created_at"] = { $gte: dateStartParse, $lte: dateEndParse };
     }
 
     if (address) {
@@ -229,7 +245,9 @@ const getHistoryPagination = async (req, res = response) => {
 
   const idRegisteringEntityParse = JSON.parse(idRegisteringEntity);
   console.log(idRegisteringEntityParse);
-  const idRegisteringEntityArray = idRegisteringEntityParse?.map((id) => Number(id));
+  const idRegisteringEntityArray = idRegisteringEntityParse?.map((id) =>
+    Number(id)
+  );
   console.log(idRegisteringEntityArray);
 
   try {
@@ -246,15 +264,16 @@ const getHistoryPagination = async (req, res = response) => {
       .skip(Number(offset))
       .sort("create_at");
 
+    const adoptersTotal = await Adopter.find({
+      idRegisteringEntity: idRegisteringEntityArray,
+    }).sort("create_at");
 
-    const adoptersTotal = await Adopter.find({ idRegisteringEntity: idRegisteringEntityArray })
-      .sort("create_at");
-
-    const adopters = await Adopter.find({ idRegisteringEntity: idRegisteringEntityArray })
+    const adopters = await Adopter.find({
+      idRegisteringEntity: idRegisteringEntityArray,
+    })
       .limit(Number(limit))
       .skip(Number(offset))
       .sort("create_at");
-
 
     return res.status(201).json({
       ok: true,
