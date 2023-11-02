@@ -15,6 +15,16 @@ const RequestShema = new Schema(
       documentNumber: {
         type: String,
       },
+      nationality: {
+        type: Schema.Types.ObjectId,
+        ref: "CodePhone",
+        required: true,
+      },
+      phoneCode: {
+        type: Schema.Types.ObjectId,
+        ref: "CodePhone",
+        required: true,
+      },
       adopterType: {
         type: String,
       },
