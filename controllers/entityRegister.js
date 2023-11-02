@@ -1,3 +1,4 @@
+const Adopter = require("../model/Adopter");
 const User = require("../model/User");
 
 const getEntityRegister = async (req = request, res = response) => {
@@ -170,7 +171,44 @@ const getEntityRegisterById = async (req = request, res = response) => {
   }
 };
 
+const getEntityRegisterByAddress = async (req = request, res = response) => {
+  const { id } = req.params;
+  try {
+    if(id === "undefined"){
+      return res.status(200).json({
+        ok: true,
+        total: 0,
+        entityRegister: [],
+      });
+    }
+    const entityRegister = await User.findOne({
+      publicAddress: id.toUpperCase(),
+    });
+    // if(!entityRegister){
+    //   const adopter = await User.findOne({
+    //     address: id,
+    //   });
+    //   const adopterObject = adopter.toObject();
+    //   return res.status(200).json({
+    //     ...adopterObject
+    //   });
+    // }
+    // console.log(entityRegister)
+    return res.status(200).json({
+      ...entityRegister.entityRegister,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+      // error,
+    });
+  }
+}
+
 module.exports = {
   getEntityRegister,
   getEntityRegisterById,
+  getEntityRegisterByAddress
 };
