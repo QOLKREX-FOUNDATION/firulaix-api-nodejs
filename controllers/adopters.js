@@ -361,7 +361,65 @@ const getHistory = async (req, res = response) => {
 	}
 };
 
+const getAdopterByEmailOrName = async (req, res = response) => {
+	const { search, limit = 10, offset = 0 } = req.params;
+	console.log("search", search);
+	try {
+		if (!search) {
+			return res.status(400).json({
+				ok: false,
+				msg: "The search is required",
+			});
+		}
 
+		const formTotal = await Adopter.find({
+			$or: [
+				{ name: { $regex: search.toUpperCase(), $options: "i" } },
+				{ secondName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ lastName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ email: { $regex: search.toUpperCase(), $options: "i" } },
+			],
+		});
+
+		// total forms
+		const form = await Adopter.find({
+			$or: [
+				{ name: { $regex: search.toUpperCase(), $options: "i" } },
+				{ secondName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ lastName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ email: { $regex: search.toUpperCase(), $options: "i" } },
+			],
+		})
+			.limit(limit)
+			.skip(offset);
+
+		// si no encuentra el formulario
+		if (form.length === 0) {
+			return res.status(200).json({
+				ok: false,
+				msg: "The form does not exist",
+			});
+		}
+
+		console.log("totalResults", formTotal.length);
+		console.log("form", form.length);
+		return res.status(200).json({
+			ok: true,
+			total: form.length,
+			totalResults: formTotal.length,
+			currentPage: offset,
+			form,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error inesperado... revisar logs",
+		});
+	}
+};
 
 module.exports = {
 	getPublic,
@@ -373,4 +431,5 @@ module.exports = {
 	deleteRecord,
 	getRecordAddress,
 	getHistory,
+	getAdopterByEmailOrName,
 };

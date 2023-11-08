@@ -103,6 +103,10 @@ app.use("/api/form", require("./routes/forms"));
 
 app.use("/api/code", require("./routes/codePhone"));
 
+// documents
+
+app.use("/api/document", require("./routes/document"));
+
 // Donaciones mercadopago
 app.use("/api/donate-payment", require("./routes/donatePayment"));
 
