@@ -362,9 +362,9 @@ const getHistory = async (req, res = response) => {
 };
 
 const getAdopterByEmailOrName = async (req, res = response) => {
-	const { search, limit = 10, offset = 0 } = req.params;
+	const { search } = req.params;
 
-	const { email = "true", name = "true" } = req.query;
+	const { email = "true", name = "true", limit = 10, offset = 0 } = req.query;
 	console.log("search", search);
 	console.log("search", { email, name });
 
