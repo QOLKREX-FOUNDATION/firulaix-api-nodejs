@@ -363,7 +363,14 @@ const getHistory = async (req, res = response) => {
 
 const getAdopterByEmailOrName = async (req, res = response) => {
 	const { search, limit = 10, offset = 0 } = req.params;
+
+	const { email = "true", name = "true" } = req.query;
 	console.log("search", search);
+	console.log("search", { email, name });
+
+	const isEmail = email === "true";
+	const isName = name === "true";
+
 	try {
 		if (!search) {
 			return res.status(400).json({
@@ -372,28 +379,35 @@ const getAdopterByEmailOrName = async (req, res = response) => {
 			});
 		}
 
-		const formTotal = await Adopter.find({
-			$or: [
-				{ name: { $regex: search.toUpperCase(), $options: "i" } },
-				{ secondName: { $regex: search.toUpperCase(), $options: "i" } },
-				{ lastName: { $regex: search.toUpperCase(), $options: "i" } },
-				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } },
-				{ email: { $regex: search.toUpperCase(), $options: "i" } },
-			],
-		});
+		const query = { $or: [] };
 
-		// total forms
-		const form = await Adopter.find({
-			$or: [
+		if (isEmail) {
+			query.$or.push({
+				email: { $regex: search.toUpperCase(), $options: "i" },
+			});
+		}
+
+		if (isName) {
+			query.$or.push(
 				{ name: { $regex: search.toUpperCase(), $options: "i" } },
 				{ secondName: { $regex: search.toUpperCase(), $options: "i" } },
 				{ lastName: { $regex: search.toUpperCase(), $options: "i" } },
-				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } },
-				{ email: { $regex: search.toUpperCase(), $options: "i" } },
-			],
-		})
-			.limit(limit)
-			.skip(offset);
+				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } }
+			);
+		}
+
+		console.log({ query });
+
+		if (query.$or.length === 0) {
+			return res.status(200).json({
+				ok: false,
+				msg: "No criteria for search provided",
+			});
+		}
+
+		const formTotal = await Adopter.find(query);
+
+		const form = await Adopter.find(query).limit(limit).skip(offset);
 
 		// si no encuentra el formulario
 		if (form.length === 0) {
