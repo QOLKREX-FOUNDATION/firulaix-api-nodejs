@@ -367,6 +367,7 @@ const getAdopterByEmailOrName = async (req, res = response) => {
 	const { email = "true", name = "true", limit = 10, offset = 0 } = req.query;
 	console.log("search", search);
 	console.log("search", { email, name });
+	console.log({ limit, offset });
 
 	const isEmail = email === "true";
 	const isName = name === "true";
