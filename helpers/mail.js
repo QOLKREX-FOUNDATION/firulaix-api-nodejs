@@ -192,22 +192,13 @@ const mailRegisterUserRenian = async ({ registry, url }) => {
 		const transporter = configRenian();
 		const to = "solicitudderegistro@renian.pe";
 		console.log({ registry });
-		if (registry.image === "") {
-			console.log("aqui");
-			await transporter.sendMail({
-				from: "solicitudderegistro@renian.pe",
-				to: [registry.email, to, copyToEmail],
-				subject: "RENIAN - Registro de Usuario",
-				html: templateRequestUserCardRenian({ registry, url }),
-			});
-			return true;
-		}
-
+		// if (registry.image === "") {
+		console.log("aqui");
 		await transporter.sendMail({
 			from: "solicitudderegistro@renian.pe",
 			to: [registry.email, to, copyToEmail],
 			subject: "RENIAN - Registro de Usuario",
-			html: templateRequestUserRenian({ registry }),
+			html: templateRequestUserCardRenian({ registry, url }),
 			attachments: [
 				{
 					filename: "voucher.png",
@@ -216,6 +207,22 @@ const mailRegisterUserRenian = async ({ registry, url }) => {
 				},
 			],
 		});
+		// return true;
+		// }
+
+		// await transporter.sendMail({
+		// 	from: "solicitudderegistro@renian.pe",
+		// 	to: [registry.email, to, copyToEmail],
+		// 	subject: "RENIAN - Registro de Usuario",
+		// 	html: templateRequestUserRenian({ registry }),
+		// 	attachments: [
+		// 		{
+		// 			filename: "voucher.png",
+		// 			path: registry.image,
+		// 			contentType: "application/png",
+		// 		},
+		// 	],
+		// });
 
 		return true;
 	} catch (error) {

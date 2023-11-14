@@ -2,8 +2,9 @@ const Request = require("../model/Request");
 const bcrypt = require("bcrypt");
 const { generateSequence } = require("./generateSquence");
 const { generateJWTCorrelative } = require("./jwt");
+const { default: mongoose } = require("mongoose");
 
-const generateUrlForm = async () => {
+const generateUrlForm = async (isPayment = true) => {
   // creamos formulario de registro en la base de datos con los datos vacios, pero con su correlative
 
   try {
@@ -39,6 +40,8 @@ const generateUrlForm = async () => {
         jurament1: false,
         isMicrochip: "",
         jurament3: false,
+        phoneCode: mongoose.Types.ObjectId("65401c7a404c98294c1be04f"),
+        nationality: mongoose.Types.ObjectId("65401c7a404c98294c1be04f"),
       },
       pet: {
         microchip: "",
@@ -57,7 +60,7 @@ const generateUrlForm = async () => {
         motherMicrochip: "",
       },
       correlativeNumber: newCorrelativeNumber,
-      isPayment: true,
+      isPayment: isPayment,
     });
 
     await newForm.save();
@@ -83,7 +86,7 @@ const generateUrlForm = async () => {
   } catch (error) {
     console.log(error);
     // const url = `http://localhost:3001/formulario/solicitud-de-registro`;
-    const url = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro`;
+    const url = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro?`;
 
     return url;
   }
