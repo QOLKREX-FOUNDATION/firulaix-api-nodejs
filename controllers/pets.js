@@ -159,6 +159,7 @@ const getHistory = async (req, res = response) => {
     dni,
     dateStart,
     dateEnd,
+    limit
   } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
@@ -178,6 +179,7 @@ const getHistory = async (req, res = response) => {
       const dateStartParse = new Date(dateStart);
       const dateEndParse = new Date(dateEnd);
       console.log({ dateStartParse, dateEndParse });
+      dateEndParse.setDate(dateEndParse.getDate() + 1);
       queryPet["created_at"] = { $gte: dateStartParse, $lte: dateEndParse };
     }
 
@@ -194,6 +196,30 @@ const getHistory = async (req, res = response) => {
 
     if (dni) {
       queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
+    }
+
+    if (limit === "false") {
+      let adopters = await Adopter.find({
+        idRegisteringEntity,
+        ...queryAdopter,
+      });
+
+      let pets = dni
+        ? await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          adopter: { $in: adopters.map((a) => a.address) },
+          ...queryPet,
+        }).sort({ created_at: -1 })
+        : await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          ...queryPet,
+        }).sort({ created_at: -1 });
+
+      return res.status(201).json({
+        ok: true,
+        pets,
+        adopters,
+      });
     }
 
     let adopters = await Adopter.find({
@@ -221,14 +247,14 @@ const getHistory = async (req, res = response) => {
 
     console.log({ pets: pets.length });
 
-    res.status(201).json({
+    return res.status(201).json({
       ok: true,
       pets,
       adopters,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
       msg: "Error, contact Admin",
     });
