@@ -102,12 +102,12 @@ const AdopterSchema = new Schema({
 	phoneCode: {
 		type: Schema.Types.ObjectId,
 		ref: "CodePhone",
-		required: true,
+		required: false,
 	},
 	nationality: {
 		type: Schema.Types.ObjectId,
 		ref: "CodePhone",
-		required: true,
+		required: false,
 	},
 });
 
