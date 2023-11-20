@@ -159,7 +159,7 @@ const getHistory = async (req, res = response) => {
     dni,
     dateStart,
     dateEnd,
-    limit
+    limit = "true"
   } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));

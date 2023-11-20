@@ -154,7 +154,7 @@ const getForms = async (req, res = response) => {
     const forms = await Request.find(query)
       .sort({
         createdAt: -1,
-      }).limit(100);
+      }).limit(500);
 
     // filtramos los formularios por entidad
     // const entities = forms.map(async (form) => {
