@@ -179,7 +179,7 @@ const getForms = async (req, res = response) => {
 
     console.log("formsByUid", formsByUid);
 
-    if (userById.user.position === "DEV") {
+    if (userById.user.position === "DEV" && userById.publicAddress !== "0X11C3E8EDCED034CFCBCF88BE14DC19CB169D9951") {
       return res.status(200).json({
         ok: true,
         total: forms.length,
