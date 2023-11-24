@@ -46,7 +46,31 @@ const createReport = async (req = request, res = response) => {
   }
 };
 
+const createReportEntity = async (req = request, res = response) => {
+  try {
+    const data = {
+      ...req.body,
+    };
+    // console.log(data);
+
+    const report = await generateExcelReport(data);
+
+    res.set(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.set("Content-Disposition", "attachment; filename=reporte.xlsx");
+
+    // Enviar el archivo Excel al frontend
+    return res.send(report);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error al crear el reporte" });
+  }
+};
+
 module.exports = {
   getAllReports,
   createReport,
+  createReportEntity
 };
