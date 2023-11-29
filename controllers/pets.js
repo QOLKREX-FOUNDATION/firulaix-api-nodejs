@@ -326,6 +326,135 @@ const getHistoryPagination = async (req, res = response) => {
   }
 };
 
+const getHistoryReport = async (req, res = response) => {
+  let {
+    idRegisteringEntity,
+    adopter,
+    address,
+    pet,
+    chip,
+    dni,
+    created_for,
+    dateStart,
+    dateEnd,
+    limit = true,
+  } = req.query;
+  idRegisteringEntity = JSON.parse(idRegisteringEntity);
+  idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+
+  try {
+    console.log({ dateStart, dateEnd });
+    let queryPet = {};
+
+    if (pet) {
+      queryPet["name"] = { $regex: pet, $options: "i" };
+    }
+
+    if (chip) {
+      queryPet["chip"] = { $regex: chip, $options: "i" };
+    }
+
+    if (dateStart && dateEnd) {
+      const dateStartParse = new Date(dateStart);
+      const dateEndParse = new Date(dateEnd);
+      console.log({ dateStartParse, dateEndParse });
+      dateEndParse.setDate(dateEndParse.getDate() + 1);
+      queryPet["created_at"] = { $gte: dateStartParse, $lte: dateEndParse };
+    }
+
+    if (address) {
+      queryPet["adopter"] = { $regex: address, $options: "i" };
+    }
+
+    if (adopter) {
+      queryPet["adopterName"] = { $regex: adopter, $options: "i" };
+    }
+    console.log("query", queryPet);
+
+    let queryAdopter = {};
+
+    if (dni) {
+      queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
+    }
+
+    if (created_for) {
+      queryPet["created_for"] = {
+        $regex: created_for.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    console.log({ limit });
+    console.log(typeof limit);
+
+    if (limit === "false") {
+      let adopters = await Adopter.find({
+        idRegisteringEntity,
+        ...queryAdopter,
+      });
+
+      let pets = dni
+        ? await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          adopter: { $in: adopters.map((a) => a.address) },
+          ...queryPet,
+        }).sort({ created_at: -1 })
+        : await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          ...queryPet,
+        }).sort({ created_at: -1 });
+
+      return res.status(201).json({
+        ok: true,
+        pets,
+        adopters,
+      });
+    }
+
+    let adopters = await Adopter.find({
+      idRegisteringEntity,
+      ...queryAdopter,
+    }).limit(500);
+
+    console.log({ adopters: adopters.length });
+    // console.log({ adopters: adopters[0] });
+
+    let pets = dni
+      ? await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        adopter: { $in: adopters.map((a) => a.address) },
+        ...queryPet,
+      })
+        .sort({ created_at: -1 })
+        .limit(500)
+      : await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        ...queryPet,
+        // idRegisteringEntity,
+      })
+        .sort({ created_at: -1 })
+        .limit(500);
+
+    console.log({ pets: pets.length });
+    // console.log({ pet1: pets[0] });
+
+    // console.log("pets", pets);
+    // console.log("adopters", adopters);
+
+    return res.status(201).json({
+      ok: true,
+      pets,
+      adopters,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const upload = async (req, res = response) => {
   try {
     const { name, chip } = req.body;
@@ -446,6 +575,7 @@ module.exports = {
   statusRecord,
   getHistory,
   getHistoryPagination,
+  getHistoryReport,
   getAdopterPets,
   upload,
 };
