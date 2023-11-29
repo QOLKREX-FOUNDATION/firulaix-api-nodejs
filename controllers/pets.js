@@ -337,10 +337,17 @@ const getHistoryReport = async (req, res = response) => {
     created_for,
     dateStart,
     dateEnd,
+    department,
+    province,
+    district,
+    typeAnimal,
+    typeRace,
     limit = true,
   } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+
+  console.log({ department, province, district });
 
   try {
     console.log({ dateStart, dateEnd });
@@ -371,15 +378,50 @@ const getHistoryReport = async (req, res = response) => {
     }
     console.log("query", queryPet);
 
+    if (created_for) {
+      queryPet["created_for"] = {
+        $regex: created_for.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    if (typeAnimal) {
+      queryPet["type"] = {
+        $regex: typeAnimal.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    if (typeRace) {
+      queryPet["race"] = {
+        $regex: typeRace.toUpperCase(),
+        $options: "i",
+      };
+    }
+
     let queryAdopter = {};
 
     if (dni) {
       queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
     }
 
-    if (created_for) {
-      queryPet["created_for"] = {
-        $regex: created_for.toUpperCase(),
+    if (department) {
+      queryAdopter["department"] = {
+        $regex: department.trim(),
+        $options: "i",
+      };
+    }
+
+    if (province) {
+      queryAdopter["province"] = {
+        $regex: province.trim(),
+        $options: "i",
+      };
+    }
+
+    if (district) {
+      queryAdopter["district"] = {
+        $regex: district.trim(),
         $options: "i",
       };
     }
@@ -398,11 +440,18 @@ const getHistoryReport = async (req, res = response) => {
           idRegisteringEntity: { $in: idRegisteringEntity },
           adopter: { $in: adopters.map((a) => a.address) },
           ...queryPet,
-        }).sort({ created_at: -1 })
+        })
+          .sort({ created_at: -1 })
+          .populate("user")
         : await Pet.find({
           idRegisteringEntity: { $in: idRegisteringEntity },
           ...queryPet,
-        }).sort({ created_at: -1 });
+        })
+          .sort({ created_at: -1 })
+          .populate("user");
+
+      console.log({ adopter: adopters[0] });
+      console.log({ pet: pets[0] });
 
       return res.status(201).json({
         ok: true,
@@ -427,13 +476,15 @@ const getHistoryReport = async (req, res = response) => {
       })
         .sort({ created_at: -1 })
         .limit(500)
+        .populate("user")
       : await Pet.find({
         idRegisteringEntity: { $in: idRegisteringEntity },
         ...queryPet,
         // idRegisteringEntity,
       })
         .sort({ created_at: -1 })
-        .limit(500);
+        .limit(500)
+        .populate("user");
 
     console.log({ pets: pets.length });
     // console.log({ pet1: pets[0] });

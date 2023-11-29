@@ -56,6 +56,7 @@ const getEntityRegister = async (req = request, res = response) => {
           district: entity.user?.district,
           phone: entity.user.phone,
           direction: entity.user.direction,
+          address: entity.publicAddress,
         };
       }
 
