@@ -29,6 +29,51 @@ const getRecord = async (req, res = response) => {
   }
 };
 
+const getGenealogy = async (req, res = response) => {
+  const { chip } = req.params;
+  console.log(chip);
+  try {
+    const pet = await Pet.findOne({
+      chip,
+    });
+
+    console.log({ chip, pet });
+
+    const { chipFather, chipMother } = pet;
+    // console.log({ chipFather, chipMother });
+
+    const father = await Pet.findOne({
+      chip: chipFather,
+    });
+
+    const mother = await Pet.findOne({
+      chip: chipMother,
+    });
+    console.log({ father, mother });
+
+    if (!father && !mother)
+      return res.status(400).json({
+        ok: false,
+        msg: "No exist father or mother",
+      });
+
+    return res.status(200).json({
+      ok: true,
+      genealogy: {
+        son: pet,
+        father,
+        mother,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const saveRecord = async (req, res = response) => {
   req.body.created_for = req.body.userAddress;
   const pet = new Pet(req.body);
@@ -629,4 +674,5 @@ module.exports = {
   getHistoryReport,
   getAdopterPets,
   upload,
+  getGenealogy
 };

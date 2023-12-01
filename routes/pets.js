@@ -12,6 +12,7 @@ const {
   upload,
   getHistoryPagination,
   getHistoryReport,
+  getGenealogy,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -22,6 +23,8 @@ const router = Router();
 router.post("/status", statusRecord);
 
 router.get("/", getRecord);
+
+router.get("/genealogy/:chip", getGenealogy);
 // router.get("/all",  getRecords);
 
 router.post("/", [validateJWT], saveRecord);
