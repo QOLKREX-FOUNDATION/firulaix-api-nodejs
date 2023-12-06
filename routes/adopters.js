@@ -12,6 +12,8 @@ const {
 	getRecordAddress,
 	getHistory,
 	getAdopterByEmailOrName,
+	getAdopterByDocumentNumber,
+	updateDocumentAdopter,
 } = require("../controllers/adopters");
 const { validateUppercase } = require("../middlewares/validateUppercase");
 
@@ -25,6 +27,11 @@ router.get("/public", getPublic);
 // router.use(validateJWT);
 
 router.get("/", [validateJWT], getRecord);
+router.get(
+	"/search/:documentNumber",
+	[validateJWT],
+	getAdopterByDocumentNumber
+);
 router.get("/getHistory", [validateJWT], getHistory);
 router.get("/getUpdate", [validateJWT], getRecordAddress);
 router.get("/email/", [validateJWT], getEmail);
@@ -33,6 +40,8 @@ router.get("/address/", [validateJWT], getAddress);
 router.post("/", [validateJWT], saveRecord);
 
 router.put("/:id", [validateJWT], updateRecord);
+
+router.put("/update-document/:id", [validateJWT], updateDocumentAdopter);
 
 router.delete("/:id", [validateJWT], deleteRecord);
 

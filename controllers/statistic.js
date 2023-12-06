@@ -120,7 +120,7 @@ const getStatistics = async (req = request, res = response) => {
     const petsByType = ["CAT", "DOG", "RABBIT", "MACAW", "HORSE", "BIRD"];
 
     const petsByBreedArray = petsByType.map((breed) => {
-      const petsByBreed = pets.filter((pet) => pet.type === breed);
+      const petsByBreed = petsFiltered.filter((pet) => pet.type === breed);
 
       return {
         quantity: petsByBreed.length,

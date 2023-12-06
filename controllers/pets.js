@@ -37,6 +37,12 @@ const getGenealogy = async (req, res = response) => {
       chip,
     });
 
+    if (!pet)
+      return res.status(400).json({
+        ok: false,
+        msg: "No exist pet",
+      });
+
     console.log({ chip, pet });
 
     const { chipFather, chipMother } = pet;
@@ -49,20 +55,63 @@ const getGenealogy = async (req, res = response) => {
     const mother = await Pet.findOne({
       chip: chipMother,
     });
-    console.log({ father, mother });
+
+    const children = await Pet.find({
+      $or: [{ chipFather: chip }, { chipMother: chip }],
+    });
+
+    console.log({ father, mother, children });
 
     if (!father && !mother)
-      return res.status(400).json({
+      return res.status(200).json({
         ok: false,
-        msg: "No exist father or mother",
+        genealogy: {
+          son: {
+            name: pet.name,
+            chip: pet.chip,
+          },
+          father: {
+            name: "No exist",
+            chip: "http://via.placeholder.com/640x360",
+          },
+          mother: {
+            name: "No exist",
+            chip: "http://via.placeholder.com/640x360",
+          },
+          children: children.map((child) => ({
+            name: "No exist",
+            chip: `http://via.placeholder.com/640x360`,
+          })),
+        },
       });
+    // return res.status(400).json({
+    //   ok: false,
+    //   msg: "No exist father or mother",
+    // });
 
     return res.status(200).json({
       ok: true,
       genealogy: {
-        son: pet,
-        father,
-        mother,
+        son: {
+          name: pet.name,
+          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ pet.chip }`,
+        },
+        father: {
+          name: father?.name,
+          chip: father
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ father?.chip }`
+            : "http://via.placeholder.com/640x360",
+        },
+        mother: {
+          name: mother?.name,
+          chip: mother
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ mother?.chip }`
+            : "http://via.placeholder.com/640x360",
+        },
+        children: children.map((child) => ({
+          name: child.name,
+          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ child.chip }`,
+        })),
       },
     });
   } catch (error) {
@@ -424,7 +473,7 @@ const getHistoryReport = async (req, res = response) => {
     console.log("query", queryPet);
 
     if (created_for) {
-      queryPet["created_for"] = {
+      queryPet["userAddress"] = {
         $regex: created_for.toUpperCase(),
         $options: "i",
       };

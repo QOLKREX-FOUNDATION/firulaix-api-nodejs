@@ -28,6 +28,7 @@ router.get("/genealogy/:chip", getGenealogy);
 // router.get("/all",  getRecords);
 
 router.post("/", [validateJWT], saveRecord);
+
 router.put("/", [validateJWT], updateRecord);
 
 router.post("/upload", [validateJWT, validateFile], upload);

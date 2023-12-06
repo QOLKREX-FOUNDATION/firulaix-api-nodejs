@@ -26,6 +26,35 @@ const getAddress = async (req, res = response) => {
 	}
 };
 
+// search adopter by documentNumber
+const getAdopterByDocumentNumber = async (req, res = response) => {
+	const { documentNumber } = req.params;
+
+	console.log({ documentNumber });
+
+	try {
+		const adopter = await Adopter.findOne({ documentNumber });
+
+		if (!adopter) {
+			return res.status(404).json({
+				ok: false,
+				msg: "The adopter does not exist",
+			});
+		}
+
+		return res.status(200).json({
+			ok: true,
+			adopter,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			ok: false,
+			msg: "Error inesperado... revisar logs",
+		});
+	}
+};
+
 const getPublic = async (req, res = response) => {
 	const { address } = req.query;
 	try {
@@ -309,6 +338,71 @@ const updateRecord = async (req, res = response) => {
 	}
 };
 
+const updateDocumentAdopter = async (req, res = response) => {
+	let msg = "";
+	console.log({ req: req.params.id });
+	try {
+		const find = await Adopter.findById(req.params.id);
+
+		const compare = await User.findById(String(find.user).toString()).populate(
+			"user",
+			"publicAddress"
+		);
+
+		const user = await User.findById(req.uid).populate("user", "publicAddress");
+
+		if (!find) {
+			return res.status(404).json({
+				ok: false,
+				msg: "No exist adopter",
+			});
+		}
+
+		if (msg) {
+			return res.status(400).json({
+				ok: false,
+				msg: msg,
+			});
+		}
+
+		if (
+			String(user?.user?._id).toUpperCase() ==
+			String(compare?.user?._id).toUpperCase() ||
+			String(find.user).toString() == "000000000000000000000000"
+		) {
+			// Crear una copia de req.body excluyendo explícitamente el campo 'password'
+			const updatedData = { ...req.body };
+			delete updatedData.password;
+
+			await Adopter.findByIdAndUpdate(
+				req.params.id,
+				{
+					country: updatedData.country,
+					person: updatedData.person,
+					document: updatedData.document,
+					documentNumber: updatedData.documentNumber,
+				},
+				{ new: true }
+			);
+
+			return res.status(200).json({
+				ok: true,
+			});
+		} else {
+			return res.status(404).json({
+				ok: false,
+				msg: "No permit",
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
 const deleteRecord = async (req, res = response) => {
 	const find = await Adopter.findById(req.params.id);
 
@@ -447,4 +541,6 @@ module.exports = {
 	getRecordAddress,
 	getHistory,
 	getAdopterByEmailOrName,
+	getAdopterByDocumentNumber,
+	updateDocumentAdopter
 };
