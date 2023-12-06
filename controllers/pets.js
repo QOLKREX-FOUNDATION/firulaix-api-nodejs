@@ -29,6 +29,51 @@ const getRecord = async (req, res = response) => {
   }
 };
 
+const getGenealogy = async (req, res = response) => {
+  const { chip } = req.params;
+  console.log(chip);
+  try {
+    const pet = await Pet.findOne({
+      chip,
+    });
+
+    console.log({ chip, pet });
+
+    const { chipFather, chipMother } = pet;
+    // console.log({ chipFather, chipMother });
+
+    const father = await Pet.findOne({
+      chip: chipFather,
+    });
+
+    const mother = await Pet.findOne({
+      chip: chipMother,
+    });
+    console.log({ father, mother });
+
+    if (!father && !mother)
+      return res.status(400).json({
+        ok: false,
+        msg: "No exist father or mother",
+      });
+
+    return res.status(200).json({
+      ok: true,
+      genealogy: {
+        son: pet,
+        father,
+        mother,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const saveRecord = async (req, res = response) => {
   req.body.created_for = req.body.userAddress;
   const pet = new Pet(req.body);
@@ -159,7 +204,7 @@ const getHistory = async (req, res = response) => {
     dni,
     dateStart,
     dateEnd,
-    limit
+    limit = "true"
   } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
@@ -326,6 +371,186 @@ const getHistoryPagination = async (req, res = response) => {
   }
 };
 
+const getHistoryReport = async (req, res = response) => {
+  let {
+    idRegisteringEntity,
+    adopter,
+    address,
+    pet,
+    chip,
+    dni,
+    created_for,
+    dateStart,
+    dateEnd,
+    department,
+    province,
+    district,
+    typeAnimal,
+    typeRace,
+    limit = true,
+  } = req.query;
+  idRegisteringEntity = JSON.parse(idRegisteringEntity);
+  idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
+
+  console.log({ department, province, district });
+
+  try {
+    console.log({ dateStart, dateEnd });
+    let queryPet = {};
+
+    if (pet) {
+      queryPet["name"] = { $regex: pet, $options: "i" };
+    }
+
+    if (chip) {
+      queryPet["chip"] = { $regex: chip, $options: "i" };
+    }
+
+    if (dateStart && dateEnd) {
+      const dateStartParse = new Date(dateStart);
+      const dateEndParse = new Date(dateEnd);
+      console.log({ dateStartParse, dateEndParse });
+      dateEndParse.setDate(dateEndParse.getDate() + 1);
+      queryPet["created_at"] = { $gte: dateStartParse, $lte: dateEndParse };
+    }
+
+    if (address) {
+      queryPet["adopter"] = { $regex: address, $options: "i" };
+    }
+
+    if (adopter) {
+      queryPet["adopterName"] = { $regex: adopter, $options: "i" };
+    }
+    console.log("query", queryPet);
+
+    if (created_for) {
+      queryPet["created_for"] = {
+        $regex: created_for.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    if (typeAnimal) {
+      queryPet["type"] = {
+        $regex: typeAnimal.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    if (typeRace) {
+      queryPet["race"] = {
+        $regex: typeRace.toUpperCase(),
+        $options: "i",
+      };
+    }
+
+    let queryAdopter = {};
+
+    if (dni) {
+      queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
+    }
+
+    if (department) {
+      queryAdopter["department"] = {
+        $regex: department.trim(),
+        $options: "i",
+      };
+    }
+
+    if (province) {
+      queryAdopter["province"] = {
+        $regex: province.trim(),
+        $options: "i",
+      };
+    }
+
+    if (district) {
+      queryAdopter["district"] = {
+        $regex: district.trim(),
+        $options: "i",
+      };
+    }
+
+    console.log({ limit });
+    console.log(typeof limit);
+
+    if (limit === "false") {
+      let adopters = await Adopter.find({
+        idRegisteringEntity,
+        ...queryAdopter,
+      });
+
+      let pets = dni
+        ? await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          adopter: { $in: adopters.map((a) => a.address) },
+          ...queryPet,
+        })
+          .sort({ created_at: -1 })
+          .populate("user")
+        : await Pet.find({
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          ...queryPet,
+        })
+          .sort({ created_at: -1 })
+          .populate("user");
+
+      console.log({ adopter: adopters[0] });
+      console.log({ pet: pets[0] });
+
+      return res.status(201).json({
+        ok: true,
+        pets,
+        adopters,
+      });
+    }
+
+    let adopters = await Adopter.find({
+      idRegisteringEntity,
+      ...queryAdopter,
+    }).limit(500);
+
+    console.log({ adopters: adopters.length });
+    // console.log({ adopters: adopters[0] });
+
+    let pets = dni
+      ? await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        adopter: { $in: adopters.map((a) => a.address) },
+        ...queryPet,
+      })
+        .sort({ created_at: -1 })
+        .limit(500)
+        .populate("user")
+      : await Pet.find({
+        idRegisteringEntity: { $in: idRegisteringEntity },
+        ...queryPet,
+        // idRegisteringEntity,
+      })
+        .sort({ created_at: -1 })
+        .limit(500)
+        .populate("user");
+
+    console.log({ pets: pets.length });
+    // console.log({ pet1: pets[0] });
+
+    // console.log("pets", pets);
+    // console.log("adopters", adopters);
+
+    return res.status(201).json({
+      ok: true,
+      pets,
+      adopters,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const upload = async (req, res = response) => {
   try {
     const { name, chip } = req.body;
@@ -446,6 +671,8 @@ module.exports = {
   statusRecord,
   getHistory,
   getHistoryPagination,
+  getHistoryReport,
   getAdopterPets,
   upload,
+  getGenealogy
 };

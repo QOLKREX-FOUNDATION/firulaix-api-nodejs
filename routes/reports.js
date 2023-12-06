@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllReports, createReport } = require("../controllers/reports");
+const { getAllReports, createReport, createReportEntity } = require("../controllers/reports");
 const { validateJWT, validateFields } = require("../middlewares");
 const { check } = require("express-validator");
 const router = express.Router();
@@ -17,5 +17,14 @@ router.post(
   createReport
 );
 // validateJWT, validateFields
+
+router.post(
+  "/create-report-entity",
+  [
+    check("startDate", "La fecha de inicio es obligatoria").not().isEmpty(),
+    check("endDate", "La fecha de fin es obligatoria").not().isEmpty(),
+  ],
+  createReportEntity
+);
 
 module.exports = router;

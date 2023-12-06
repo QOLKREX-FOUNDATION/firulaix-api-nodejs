@@ -2,12 +2,20 @@ const Adopter = require("../model/Adopter");
 const User = require("../model/User");
 
 const getEntityRegister = async (req = request, res = response) => {
-  const { department, province, district } = req.query;
+  const { department, province, district, address } = req.query;
   console.log(req.query);
   console.log({ department, province, district });
 
+  let queryEntities = {};
+
+  if (address !== undefined) {
+    queryEntities = {
+      publicAddress: { $regex: address, $options: "i" },
+    };
+  }
+
   try {
-    const entityRegister = await User.find();
+    const entityRegister = await User.find(queryEntities);
 
     if (district === "") {
       return res.status(200).json({
@@ -48,6 +56,7 @@ const getEntityRegister = async (req = request, res = response) => {
           district: entity.user?.district,
           phone: entity.user.phone,
           direction: entity.user.direction,
+          address: entity.publicAddress,
         };
       }
 
@@ -174,7 +183,7 @@ const getEntityRegisterById = async (req = request, res = response) => {
 const getEntityRegisterByAddress = async (req = request, res = response) => {
   const { id } = req.params;
   try {
-    if(id === "undefined"){
+    if (id === "undefined") {
       return res.status(200).json({
         ok: true,
         total: 0,

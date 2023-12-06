@@ -154,7 +154,7 @@ const getForms = async (req, res = response) => {
     const forms = await Request.find(query)
       .sort({
         createdAt: -1,
-      }).limit(100);
+      }).limit(500);
 
     // filtramos los formularios por entidad
     // const entities = forms.map(async (form) => {
@@ -179,7 +179,7 @@ const getForms = async (req, res = response) => {
 
     console.log("formsByUid", formsByUid);
 
-    if (userById.user.position === "DEV") {
+    if (userById.user.position === "DEV" && userById.publicAddress !== "0X11C3E8EDCED034CFCBCF88BE14DC19CB169D9951") {
       return res.status(200).json({
         ok: true,
         total: forms.length,

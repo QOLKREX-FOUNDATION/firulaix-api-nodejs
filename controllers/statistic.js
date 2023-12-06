@@ -51,7 +51,7 @@ const getStatistics = async (req = request, res = response) => {
       );
       // console.log(user);
       return {
-        label: `${user.user.name} - ${user.user.lastName}`,
+        label: `${ user.user.name } - ${ user.user.lastName }`,
         adopters: userAdopters.length,
       };
     });
@@ -63,8 +63,8 @@ const getStatistics = async (req = request, res = response) => {
 
     // registros de mascotas por mes de este año
 
-    const startDate = new Date(`${new Date().getFullYear()}-01-01`); //`${new Date().getFullYear()}-01-01
-    const endDate = new Date(`${new Date().getFullYear()}-12-31`); //`${new Date().getFullYear()}-12-31
+    const startDate = new Date(`${ new Date().getFullYear() }-01-01`); //`${new Date().getFullYear()}-01-01
+    const endDate = new Date(`${ new Date().getFullYear() }-12-31`); //`${new Date().getFullYear()}-12-31
 
     const petsFiltered = await Pet.find({
       created_at: { $gte: startDate, $lte: endDate },

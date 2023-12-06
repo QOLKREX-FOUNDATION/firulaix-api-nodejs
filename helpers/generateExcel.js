@@ -250,8 +250,12 @@ const generateExcelReport = async (data) => {
         ? petsWithAdoptersFiltered
         : petsWithAdoptersFiltered.filter((petWithAdopter) => {
           const date = new Date(petWithAdopter.pet.created_at);
+          const startDate = new Date(data.startDate);
+          const endDate = new Date(data.endDate);
+          endDate.setUTCDate(endDate.getUTCDate() + 1);
+          endDate.setUTCHours(0, 0, 0, 0);
           return (
-            date >= new Date(data.startDate) && date <= new Date(data.endDate)
+            date >= startDate && date <= endDate
           );
         });
 

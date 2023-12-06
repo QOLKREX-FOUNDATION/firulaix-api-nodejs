@@ -124,6 +124,12 @@ const PetSchema = new Schema({
   formId: {
     type: String,
   },
+  chipMother: {
+    type: String,
+  },
+  chipFather: {
+    type: String,
+  },
 });
 
 module.exports = model("Pet", PetSchema);
