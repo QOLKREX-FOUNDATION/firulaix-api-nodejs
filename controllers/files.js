@@ -26,19 +26,17 @@ const getFile = async (req = request, res = response) => {
   //   secure: true,
   // });
 
-
   try {
-
     const findImage = await Image.findOne({
       $or: [
         {
           name: name,
         },
         {
-          address: name
-        }
-      ]
-    })
+          address: name,
+        },
+      ],
+    });
 
     // console.log(name)
     // console.log(findImage)
@@ -64,6 +62,84 @@ const getFile = async (req = request, res = response) => {
   }
 };
 
+const uploadLogo = async (req = request, res = response) => {
+  const { idEntity } = req.body;
+  const file = req.files.file;
+  try {
+    if (!idEntity) {
+      return res.status(400).json({
+        ok: false,
+        msg: "idEntity is required",
+      });
+    }
+    if (!file) {
+      return res.status(400).json({
+        ok: false,
+        msg: "file is required",
+      });
+    }
+    await cloudinary.uploader.destroy(`entityRegister/logo/${idEntity}`);
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      public_id: `entityRegister/logo/${idEntity}`,
+    });
+    res.status(201).json({
+      ok: true,
+      message: "File upload",
+      idEntity,
+      image: result.secure_url,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
+const getLogo = async (req = request, res = response) => {
+  const { idEntity } = req.body;
+
+  if (!idEntity) {
+    return res.status(400).json({
+      ok: false,
+      msg: "idEntity is required",
+    });
+  }
+  try {
+    const findLogo = await cloudinary.api.resource(
+      `entityRegister/logo/${idEntity}`,
+      {
+        max_results: 1,
+        type: "upload",
+        format: ["png", "jpg"],
+        secure: true,
+      }
+    );
+
+    if (!findLogo) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Logo not found",
+      });
+    }
+    console.log(findLogo);
+    const { url } = findLogo;
+    res.status(201).json({
+      ok: true,
+      message: "File find",
+      image: url,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 const uploadFile = async (req = request, res = response) => {
   const { name, chip } = req.body;
   const file = req.files.file;
@@ -74,7 +150,7 @@ const uploadFile = async (req = request, res = response) => {
     // find chip in cloudinary and delete
 
     const imageDelete = await cloudinary.uploader.destroy(
-      `images/${ name }/${ chip }`
+      `images/${name}/${chip}`
     );
 
     console.log("imageDelete", imageDelete);
@@ -85,7 +161,7 @@ const uploadFile = async (req = request, res = response) => {
 
     // Upload the temporary file to Cloudinary
     const result = await cloudinary.uploader.upload(tempFilePath, {
-      public_id: `images/${ name }/${ chip }`,
+      public_id: `images/${name}/${chip}`,
     });
 
     // Delete the temporary file
@@ -113,9 +189,7 @@ const uploadFileEr = async (req = request, res = response) => {
   try {
     // find chip in cloudinary and delete
 
-    await cloudinary.uploader.destroy(
-      `images/${ folder }/${ name }`
-    );
+    await cloudinary.uploader.destroy(`images/${folder}/${name}`);
 
     // console.log("imageDelete", imageDelete);
 
@@ -125,10 +199,10 @@ const uploadFileEr = async (req = request, res = response) => {
 
     // Upload the temporary file to Cloudinary
     const result = await cloudinary.uploader.upload(tempFilePath, {
-      public_id: `images/${ folder }/${ name }`,
+      public_id: `images/${folder}/${name}`,
     });
 
-    const findImage = await Image.findOne({ name })
+    const findImage = await Image.findOne({ name });
     // console.log(findImage)
 
     if (!findImage) {
@@ -138,7 +212,7 @@ const uploadFileEr = async (req = request, res = response) => {
         address,
         path: result.public_id,
         url: result.secure_url,
-      })
+      });
 
       // console.log("newImage", imageDB)
       const imageDB = await newImage.save();
@@ -146,10 +220,10 @@ const uploadFileEr = async (req = request, res = response) => {
       return res.status(201).json({
         ok: true,
         message: "File upload",
-        image: imageDB
+        image: imageDB,
       });
     }
-    console.log(address)
+    console.log(address);
     const updateImage = await Image.findOneAndUpdate(
       { name },
       {
@@ -178,7 +252,7 @@ const uploadFileEr = async (req = request, res = response) => {
     res.status(201).json({
       ok: true,
       message: "File update",
-      image: updateImage
+      image: updateImage,
     });
   } catch (error) {
     console.log("error", error);
@@ -194,7 +268,7 @@ const deleteFile = async (req = request, res = response) => {
 
   try {
     const { secure_url } = await cloudinary.uploader.destroy(
-      `images/${ name }/${ chip }`
+      `images/${name}/${chip}`
     );
     console.log(secure_url);
 
@@ -216,4 +290,6 @@ module.exports = {
   uploadFile,
   uploadFileEr,
   deleteFile,
+  uploadLogo,
+  getLogo,
 };
