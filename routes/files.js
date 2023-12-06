@@ -1,7 +1,14 @@
 // routes upload and delte files (cloudinary)
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { getFile, uploadFile, deleteFile, uploadFileEr } = require("../controllers/files");
+const {
+  getFile,
+  uploadFile,
+  deleteFile,
+  uploadFileEr,
+  uploadLogo,
+  getLogo,
+} = require("../controllers/files");
 const { validateFile, validateFields, validateJWT } = require("../middlewares");
 const router = Router();
 
@@ -51,5 +58,8 @@ router.delete(
   ],
   deleteFile
 );
+
+router.post("/upload-logo", [validateJWT], uploadLogo);
+router.post("/get-logo", [validateJWT], getLogo);
 
 module.exports = router;
