@@ -24,6 +24,10 @@ const SchemaCodePhone = new Schema(
         default: "",
       },
     },
+    nationality: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
