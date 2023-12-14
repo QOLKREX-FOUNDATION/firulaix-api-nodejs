@@ -216,8 +216,20 @@ const getEntityRegisterByAddress = async (req = request, res = response) => {
   }
 }
 
+const getInfoByAdddress = async (req = request, res = response) => {
+  const { id } = req.params;
+  const user = await User.findOne({
+    address: id,
+  })
+  return res.send({
+    ok: true,
+    user,
+  });
+}
+
 module.exports = {
   getEntityRegister,
   getEntityRegisterById,
-  getEntityRegisterByAddress
+  getEntityRegisterByAddress,
+  getInfoByAdddress
 };
