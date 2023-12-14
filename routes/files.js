@@ -8,6 +8,7 @@ const {
   uploadFileEr,
   uploadLogo,
   getLogo,
+  deleteLogo,
 } = require("../controllers/files");
 const { validateFile, validateFields, validateJWT } = require("../middlewares");
 const router = Router();
@@ -61,5 +62,6 @@ router.delete(
 
 router.post("/upload-logo", [validateJWT], uploadLogo);
 router.post("/get-logo", [validateJWT], getLogo);
+router.delete("/delete-logo/:idEntity", deleteLogo);
 
 module.exports = router;
