@@ -113,7 +113,7 @@ const getCode = async (req, res = response) => {
 const createCode = async (req, res = response) => {
   try {
     // Obtener los datos de la nueva raza desde el cuerpo de la solicitud
-    const { name, countryCode, phoneCode } = req.body;
+    const { name, countryCode, phoneCode, nationality } = req.body;
 
     const files = req.files?.image;
 
@@ -136,6 +136,7 @@ const createCode = async (req, res = response) => {
         cloduinaryId: imageData?.cloduinaryId,
         imageUrl: imageData?.imageUrl,
       },
+      nationality: nationality.toUpperCase(),
     });
 
     // Guardar la nueva raza en la base de datos
