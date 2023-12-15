@@ -285,6 +285,28 @@ const deleteFile = async (req = request, res = response) => {
   }
 };
 
+const deleteLogo = async (req = request, res = response) => {
+  const { idEntity } = req.params;
+
+  try {
+    const { secure_url } = await cloudinary.uploader.destroy(
+      `entityRegister/logo/${idEntity}`
+    );
+    console.log(secure_url);
+
+    res.status(201).json({
+      ok: true,
+      message: "File delete",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
 module.exports = {
   getFile,
   uploadFile,
@@ -292,4 +314,5 @@ module.exports = {
   deleteFile,
   uploadLogo,
   getLogo,
+  deleteLogo,
 };
