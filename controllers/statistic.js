@@ -173,42 +173,27 @@ const getStatistics = async (req = request, res = response) => {
 
 const getStatisticsByAddress = async (req = request, res = response) => {
   try {
-    const { address } = req.params;
-    const addressEr = address.toUpperCase();
+    const { address } = req.body;
+    const addressesParse = JSON.parse(address); // Cambio aquí para recibir un array
+    const addresses = addressesParse.map((a) => a.toUpperCase());
+
+    console.log({ addresses });
+
     const pets = await Pet.find({
-      addressEr: addressEr,
+      addressEr: { $in: addresses },
     });
 
-    console.log({ address: addressEr });
-    console.log({ pets });
-
     const usersAddressEr = await User.find({
-      publicAddress: addressEr,
+      publicAddress: { $in: addresses },
     });
 
     const users = await User.find({
-      publicAddress: addressEr,
+      publicAddress: { $in: addresses },
     });
 
     const adopters = await Adopter.find({
-      address: addressEr,
+      address: { $in: addresses },
     }).populate("user");
-
-    // console.log(adopters);
-
-    // console.log(userWithPet);
-    // console.log(userWithPet.length);
-
-    // clasificame las mascotas por entidad registradora
-    // y creame un array con las mascotas que tengan la misma entidad registradora
-
-    // const petsWithRegisteringEntity = pets.map((pet) => {
-    //   const user = users.find((user) => user.publicAddress === pet.addressEr);
-    //   return {
-    //     pet,
-    //     user,
-    //   };
-    // });
 
     const petsWithRegisteringEntity = usersAddressEr.map((user) => {
       const userPets = pets.filter(
@@ -226,26 +211,19 @@ const getStatisticsByAddress = async (req = request, res = response) => {
         (adopter) =>
           adopter.user && adopter.user.publicAddress === user.publicAddress
       );
-      // console.log(user);
+
       return {
         label: `${ user.user.name } - ${ user.user.lastName }`,
         adopters: userAdopters.length,
       };
     });
 
-    // console.log(userWithRegisteringEntity);
-
-    // console.log(petsWithRegisteringEntity);
-    // console.log(petsWithRegisteringEntity.length);
-
-    // registros de mascotas por mes de este año
-
-    const startDate = new Date(`${ new Date().getFullYear() }-01-01`); //`${new Date().getFullYear()}-01-01
-    const endDate = new Date(`${ new Date().getFullYear() }-12-31`); //`${new Date().getFullYear()}-12-31
+    const startDate = new Date(`${ new Date().getFullYear() }-01-01`);
+    const endDate = new Date(`${ new Date().getFullYear() }-12-31`);
 
     const petsFiltered = await Pet.find({
       created_at: { $gte: startDate, $lte: endDate },
-      addressEr: addressEr,
+      addressEr: { $in: addresses },
     });
 
     const months = [
@@ -276,7 +254,7 @@ const getStatisticsByAddress = async (req = request, res = response) => {
 
     const adoptersFiltered = await Adopter.find({
       created_at: { $gte: startDate, $lte: endDate },
-      address: addressEr,
+      address: { $in: addresses },
     });
 
     const adoptersByMonthArray = months.map((month) => {
@@ -292,10 +270,6 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       };
     });
 
-    // console.log(petsByMonthArray);
-
-    // mascotas por type
-
     const petsByType = ["CAT", "DOG", "RABBIT", "MACAW", "HORSE", "BIRD"];
 
     const petsByBreedArray = petsByType.map((breed) => {
@@ -307,29 +281,19 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       };
     });
 
-    console.log(petsByBreedArray);
+    const petsByRaceArray = pets.map((pet) => pet.race);
+    const petsByRaceNoRepeat = [...new Set(petsByRaceArray)];
 
-    // mascotas por race
+    const petsByRaceArrayWithQuantity = petsByRaceNoRepeat.map((race) => {
+      const petsByRaceFiltered = petsFiltered.filter(
+        (pet) => pet.race === race
+      );
 
-    // array de razas sin repetir
-
-    const petsByRace = pets.map((pet) => pet.race);
-    const petsByRaceNoRepeat = [...new Set(petsByRace)];
-
-    // console.log(petsByRaceNoRepeat);
-
-    // array de razas con cantidad
-
-    // const petsByRaceArray = petsByRaceNoRepeat.map((race) => {
-    //   const petsbyRaceFiltered = pets.filter((pet) => pet.race === race);
-
-    //   return {
-    //     quantity: petsbyRaceFiltered.length,
-    //     race,
-    //   };
-    // });
-
-    // console.log(petsByRaceArray);
+      return {
+        quantity: petsByRaceFiltered.length,
+        race,
+      };
+    });
 
     return res.status(200).json({
       ok: true,
@@ -338,8 +302,7 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       petsByMonthArray,
       adoptersByMonthArray,
       petsByBreedArray,
-      // petsByRaceArray,
-      // userWithRegisteringEntity,
+      petsByRaceArray: petsByRaceArrayWithQuantity,
     });
   } catch (error) {
     console.log(error);

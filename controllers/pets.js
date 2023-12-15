@@ -424,6 +424,7 @@ const getHistoryReport = async (req, res = response) => {
   let {
     idRegisteringEntity,
     adopter,
+    userAddress,
     address,
     pet,
     chip,
@@ -438,9 +439,12 @@ const getHistoryReport = async (req, res = response) => {
     typeRace,
     limit = true,
   } = req.query;
+
+  if (idRegisteringEntity === "null") idRegisteringEntity = null;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
 
+  console.log("params", { address });
   console.log({ department, province, district });
 
   try {
@@ -460,17 +464,30 @@ const getHistoryReport = async (req, res = response) => {
       const dateEndParse = new Date(dateEnd);
       console.log({ dateStartParse, dateEndParse });
       dateEndParse.setDate(dateEndParse.getDate() + 1);
+      // dateStartParse.setHours(0, 0, 0, 0);
+      // dateStartParse.setHours(23, 59, 59, 999);
+      // dateEndParse.setHours(23, 59, 59, 999);
+      console.log({ dateStartParse, dateEndParse });
       queryPet["created_at"] = { $gte: dateStartParse, $lte: dateEndParse };
     }
 
     if (address) {
-      queryPet["adopter"] = { $regex: address, $options: "i" };
+      // queryPet["adopter"] = { $regex: address, $options: "i" };
+      queryPet["addressEr"] = { $regex: address, $options: "i" };
     }
 
     if (adopter) {
       queryPet["adopterName"] = { $regex: adopter, $options: "i" };
     }
     console.log("query", queryPet);
+
+    if (userAddress) {
+      console.log("userAddress", userAddress);
+      queryPet["userAddress"] = {
+        $regex: userAddress,
+        $options: "i",
+      };
+    }
 
     if (created_for) {
       queryPet["userAddress"] = {
@@ -493,31 +510,62 @@ const getHistoryReport = async (req, res = response) => {
       };
     }
 
+    let pipeline = [
+      {
+        $lookup: {
+          from: "adopters",
+          localField: "adopter",
+          foreignField: "address",
+          as: "petxadopter",
+        },
+      },
+      {
+        $unwind: "$petxadopter",
+      },
+      {
+        $match: {
+          ...queryPet,
+        },
+      },
+    ];
+
+    if (department) {
+      pipeline.push({
+        $match: {
+          "petxadopter.department": {
+            $regex: department.trim(),
+            $options: "i",
+          },
+        },
+      });
+    }
+
+    if (province) {
+      pipeline.push({
+        $match: {
+          "petxadopter.province": {
+            $regex: province.trim(),
+            $options: "i",
+          },
+        },
+      });
+    }
+
+    if (district) {
+      pipeline.push({
+        $match: {
+          "petxadopter.district": {
+            $regex: district.trim(),
+            $options: "i",
+          },
+        },
+      });
+    }
+
     let queryAdopter = {};
 
     if (dni) {
       queryAdopter["documentNumber"] = { $regex: dni, $options: "i" };
-    }
-
-    if (department) {
-      queryAdopter["department"] = {
-        $regex: department.trim(),
-        $options: "i",
-      };
-    }
-
-    if (province) {
-      queryAdopter["province"] = {
-        $regex: province.trim(),
-        $options: "i",
-      };
-    }
-
-    if (district) {
-      queryAdopter["district"] = {
-        $regex: district.trim(),
-        $options: "i",
-      };
     }
 
     console.log({ limit });
@@ -537,12 +585,9 @@ const getHistoryReport = async (req, res = response) => {
         })
           .sort({ created_at: -1 })
           .populate("user")
-        : await Pet.find({
-          idRegisteringEntity: { $in: idRegisteringEntity },
-          ...queryPet,
-        })
-          .sort({ created_at: -1 })
-          .populate("user");
+        : await Pet.aggregate(pipeline).sort({ created_at: -1 });
+
+      console.log(pipeline);
 
       console.log({ adopter: adopters[0] });
       console.log({ pet: pets[0] });
@@ -551,6 +596,7 @@ const getHistoryReport = async (req, res = response) => {
         ok: true,
         pets,
         adopters,
+        totalPets: pets.length,
       });
     }
 
@@ -584,12 +630,14 @@ const getHistoryReport = async (req, res = response) => {
     // console.log({ pet1: pets[0] });
 
     // console.log("pets", pets);
+    console.log("pets", pets.length);
     // console.log("adopters", adopters);
 
     return res.status(201).json({
       ok: true,
       pets,
       adopters,
+      totalPets: pets.length,
     });
   } catch (error) {
     console.log(error);
