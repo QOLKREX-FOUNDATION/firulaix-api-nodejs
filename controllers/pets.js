@@ -84,6 +84,80 @@ const getGenealogy = async (req, res = response) => {
           })),
         },
       });
+
+    // Obtener abuelos
+    let fatherFather, fatherMother, motherFather, motherMother;
+
+    if (father) {
+      fatherFather = await Pet.findOne({
+        chip: father.chipFather,
+      });
+
+      fatherMother = await Pet.findOne({
+        chip: father.chipMother,
+      });
+    }
+
+    if (mother) {
+      motherFather = await Pet.findOne({
+        chip: mother.chipFather,
+      });
+
+      motherMother = await Pet.findOne({
+        chip: mother.chipMother,
+      });
+    }
+
+    // Obtener tatarabuelos
+    let fatherFatherFather,
+      fatherFatherMother,
+      fatherMotherFather,
+      fatherMotherMother;
+    let motherFatherFather,
+      motherFatherMother,
+      motherMotherFather,
+      motherMotherMother;
+
+    if (fatherFather) {
+      fatherFatherFather = await Pet.findOne({
+        chip: fatherFather.chipFather,
+      });
+
+      fatherFatherMother = await Pet.findOne({
+        chip: fatherFather.chipMother,
+      });
+    }
+
+    if (fatherMother) {
+      fatherMotherFather = await Pet.findOne({
+        chip: fatherMother.chipFather,
+      });
+
+      fatherMotherMother = await Pet.findOne({
+        chip: fatherMother.chipMother,
+      });
+    }
+
+    if (motherFather) {
+      motherFatherFather = await Pet.findOne({
+        chip: motherFather.chipFather,
+      });
+
+      motherFatherMother = await Pet.findOne({
+        chip: motherFather.chipMother,
+      });
+    }
+
+    if (motherMother) {
+      motherMotherFather = await Pet.findOne({
+        chip: motherMother.chipFather,
+      });
+
+      motherMotherMother = await Pet.findOne({
+        chip: motherMother.chipMother,
+      });
+    }
+
     // return res.status(400).json({
     //   ok: false,
     //   msg: "No exist father or mother",
@@ -112,6 +186,98 @@ const getGenealogy = async (req, res = response) => {
           name: child.name,
           chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ child.chip }`,
         })),
+        grandparents: {
+          father: {
+            father: {
+              name: fatherFather?.name || "No existe",
+              chip: fatherFather
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFather?.chip }`
+                : "http://via.placeholder.com/640x360",
+            },
+            mother: {
+              name: fatherMother?.name || "No existe",
+              chip: fatherMother
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMother?.chip }`
+                : "http://via.placeholder.com/640x360",
+            },
+          },
+          mother: {
+            father: {
+              name: motherFather?.name || "No existe",
+              chip: motherFather
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFather?.chip }`
+                : "http://via.placeholder.com/640x360",
+            },
+            mother: {
+              name: motherMother?.name || "No existe",
+              chip: motherMother
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMother?.chip }`
+                : "http://via.placeholder.com/640x360",
+            },
+          },
+        },
+        greatGrandparents: {
+          father: {
+            father: {
+              father: {
+                name: fatherFatherFather?.name || "No existe",
+                chip: fatherFatherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherFather?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+              mother: {
+                name: fatherFatherMother?.name || "No existe",
+                chip: fatherFatherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherMother?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+            },
+            mother: {
+              father: {
+                name: fatherMotherFather?.name || "No existe",
+                chip: fatherMotherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherFather?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+              mother: {
+                name: fatherMotherMother?.name || "No existe",
+                chip: fatherMotherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherMother?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+            },
+          },
+          mother: {
+            father: {
+              father: {
+                name: motherFatherFather?.name || "No existe",
+                chip: motherFatherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherFather?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+              mother: {
+                name: motherFatherMother?.name || "No existe",
+                chip: motherFatherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherMother?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+            },
+            mother: {
+              father: {
+                name: motherMotherFather?.name || "No existe",
+                chip: motherMotherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherFather?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+              mother: {
+                name: motherMotherMother?.name || "No existe",
+                chip: motherMotherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherMother?.chip }`
+                  : "http://via.placeholder.com/640x360",
+              },
+            },
+          },
+        },
       },
     });
   } catch (error) {

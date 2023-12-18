@@ -180,7 +180,7 @@ const getStatisticsByAddress = async (req = request, res = response) => {
     console.log({ addresses });
 
     const pets = await Pet.find({
-      addressEr: { $in: addresses },
+      $or: [{ addressEr: { $in: addresses } }, { userAddress: { $in: addresses } }],
     });
 
     const usersAddressEr = await User.find({
@@ -192,25 +192,33 @@ const getStatisticsByAddress = async (req = request, res = response) => {
     });
 
     const adopters = await Adopter.find({
-      address: { $in: addresses },
-    }).populate("user");
+      // address: { $in: addresses },
+      // }).populate("user");
+    })
 
     const petsWithRegisteringEntity = usersAddressEr.map((user) => {
       const userPets = pets.filter(
-        (pet) => pet.addressEr === user.publicAddress
+        (pet) => pet.addressEr === user.publicAddress || pet.userAddress === user.publicAddress
       );
 
+      // console.log({ user });
+
       return {
-        label: user.entityRegister.name,
+        label: user.user.name + " " + user.user.lastName,
         pets: userPets.length,
       };
     });
 
+    console.log({ adopters: adopters.length });
+
     const userWithRegisteringEntity = users.map((user) => {
       const userAdopters = adopters.filter(
-        (adopter) =>
-          adopter.user && adopter.user.publicAddress === user.publicAddress
+        (adopter) => adopter.created_for === user.publicAddress.toUpperCase()
       );
+
+      // console.log({ aqui: user });
+      console.log({ adopter1: adopters[1] });
+      // console.log({ userAdopters: userAdopters });
 
       return {
         label: `${ user.user.name } - ${ user.user.lastName }`,
@@ -281,19 +289,19 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       };
     });
 
-    const petsByRaceArray = pets.map((pet) => pet.race);
-    const petsByRaceNoRepeat = [...new Set(petsByRaceArray)];
+    // const petsByRaceArray = pets.map((pet) => pet.race);
+    // const petsByRaceNoRepeat = [...new Set(petsByRaceArray)];
 
-    const petsByRaceArrayWithQuantity = petsByRaceNoRepeat.map((race) => {
-      const petsByRaceFiltered = petsFiltered.filter(
-        (pet) => pet.race === race
-      );
+    // const petsByRaceArrayWithQuantity = petsByRaceNoRepeat.map((race) => {
+    //   const petsByRaceFiltered = petsFiltered.filter(
+    //     (pet) => pet.race === race
+    //   );
 
-      return {
-        quantity: petsByRaceFiltered.length,
-        race,
-      };
-    });
+    //   return {
+    //     quantity: petsByRaceFiltered.length,
+    //     race,
+    //   };
+    // });
 
     return res.status(200).json({
       ok: true,
@@ -302,7 +310,7 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       petsByMonthArray,
       adoptersByMonthArray,
       petsByBreedArray,
-      petsByRaceArray: petsByRaceArrayWithQuantity,
+      // petsByRaceArray: petsByRaceArrayWithQuantity,
     });
   } catch (error) {
     console.log(error);
