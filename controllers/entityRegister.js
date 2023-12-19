@@ -218,13 +218,26 @@ const getEntityRegisterByAddress = async (req = request, res = response) => {
 
 const getInfoByAdddress = async (req = request, res = response) => {
   const { id } = req.params;
-  const user = await User.findOne({
-    address: id,
-  })
-  return res.send({
-    ok: true,
-    user,
-  });
+  try {
+    const user = await User.findOne({
+      publicAddress: id.toUpperCase(),
+    })
+    if (user.created_for) {
+      const entity = await User.findOne({
+        publicAddress: user.created_for.toUpperCase(),
+      })
+      return res.send({
+        ok: true,
+        user: entity,
+      });
+    }
+    return res.send({
+      ok: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = {
