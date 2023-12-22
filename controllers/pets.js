@@ -168,36 +168,36 @@ const getGenealogy = async (req, res = response) => {
       genealogy: {
         son: {
           name: pet.name,
-          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ pet.chip }`,
+          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${pet.chip}`,
         },
         father: {
           name: father?.name,
           chip: father
-            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ father?.chip }`
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${father?.chip}`
             : "http://via.placeholder.com/640x360",
         },
         mother: {
           name: mother?.name,
           chip: mother
-            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ mother?.chip }`
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${mother?.chip}`
             : "http://via.placeholder.com/640x360",
         },
         children: children.map((child) => ({
           name: child.name,
-          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ child.chip }`,
+          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${child.chip}`,
         })),
         grandparents: {
           father: {
             father: {
               name: fatherFather?.name || "No existe",
               chip: fatherFather
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFather?.chip }`
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFather?.chip}`
                 : "http://via.placeholder.com/640x360",
             },
             mother: {
               name: fatherMother?.name || "No existe",
               chip: fatherMother
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMother?.chip }`
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMother?.chip}`
                 : "http://via.placeholder.com/640x360",
             },
           },
@@ -205,13 +205,13 @@ const getGenealogy = async (req, res = response) => {
             father: {
               name: motherFather?.name || "No existe",
               chip: motherFather
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFather?.chip }`
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFather?.chip}`
                 : "http://via.placeholder.com/640x360",
             },
             mother: {
               name: motherMother?.name || "No existe",
               chip: motherMother
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMother?.chip }`
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMother?.chip}`
                 : "http://via.placeholder.com/640x360",
             },
           },
@@ -222,13 +222,13 @@ const getGenealogy = async (req, res = response) => {
               father: {
                 name: fatherFatherFather?.name || "No existe",
                 chip: fatherFatherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherFather?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFatherFather?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
               mother: {
                 name: fatherFatherMother?.name || "No existe",
                 chip: fatherFatherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherMother?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFatherMother?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
             },
@@ -236,13 +236,13 @@ const getGenealogy = async (req, res = response) => {
               father: {
                 name: fatherMotherFather?.name || "No existe",
                 chip: fatherMotherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherFather?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMotherFather?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
               mother: {
                 name: fatherMotherMother?.name || "No existe",
                 chip: fatherMotherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherMother?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMotherMother?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
             },
@@ -252,13 +252,13 @@ const getGenealogy = async (req, res = response) => {
               father: {
                 name: motherFatherFather?.name || "No existe",
                 chip: motherFatherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherFather?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFatherFather?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
               mother: {
                 name: motherFatherMother?.name || "No existe",
                 chip: motherFatherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherMother?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFatherMother?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
             },
@@ -266,13 +266,13 @@ const getGenealogy = async (req, res = response) => {
               father: {
                 name: motherMotherFather?.name || "No existe",
                 chip: motherMotherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherFather?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMotherFather?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
               mother: {
                 name: motherMotherMother?.name || "No existe",
                 chip: motherMotherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherMother?.chip }`
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMotherMother?.chip}`
                   : "http://via.placeholder.com/640x360",
               },
             },
@@ -419,7 +419,7 @@ const getHistory = async (req, res = response) => {
     dni,
     dateStart,
     dateEnd,
-    limit = "true"
+    limit = "true",
   } = req.query;
   idRegisteringEntity = JSON.parse(idRegisteringEntity);
   idRegisteringEntity = idRegisteringEntity?.map((id) => Number(id));
@@ -466,14 +466,14 @@ const getHistory = async (req, res = response) => {
 
       let pets = dni
         ? await Pet.find({
-          idRegisteringEntity: { $in: idRegisteringEntity },
-          adopter: { $in: adopters.map((a) => a.address) },
-          ...queryPet,
-        }).sort({ created_at: -1 })
+            idRegisteringEntity: { $in: idRegisteringEntity },
+            adopter: { $in: adopters.map((a) => a.address) },
+            ...queryPet,
+          }).sort({ created_at: -1 })
         : await Pet.find({
-          idRegisteringEntity: { $in: idRegisteringEntity },
-          ...queryPet,
-        }).sort({ created_at: -1 });
+            idRegisteringEntity: { $in: idRegisteringEntity },
+            ...queryPet,
+          }).sort({ created_at: -1 });
 
       return res.status(201).json({
         ok: true,
@@ -492,18 +492,18 @@ const getHistory = async (req, res = response) => {
 
     let pets = dni
       ? await Pet.find({
-        idRegisteringEntity: { $in: idRegisteringEntity },
-        adopter: { $in: adopters.map((a) => a.address) },
-        ...queryPet,
-      })
-        .sort({ created_at: -1 })
-        .limit(500)
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          adopter: { $in: adopters.map((a) => a.address) },
+          ...queryPet,
+        })
+          .sort({ created_at: -1 })
+          .limit(500)
       : await Pet.find({
-        idRegisteringEntity: { $in: idRegisteringEntity },
-        ...queryPet,
-      })
-        .sort({ created_at: -1 })
-        .limit(500);
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          ...queryPet,
+        })
+          .sort({ created_at: -1 })
+          .limit(500);
 
     console.log({ pets: pets.length });
 
@@ -745,12 +745,12 @@ const getHistoryReport = async (req, res = response) => {
 
       let pets = dni
         ? await Pet.find({
-          idRegisteringEntity: { $in: idRegisteringEntity },
-          adopter: { $in: adopters.map((a) => a.address) },
-          ...queryPet,
-        })
-          .sort({ created_at: -1 })
-          .populate("user")
+            idRegisteringEntity: { $in: idRegisteringEntity },
+            adopter: { $in: adopters.map((a) => a.address) },
+            ...queryPet,
+          })
+            .sort({ created_at: -1 })
+            .populate("user")
         : await Pet.aggregate(pipeline).sort({ created_at: -1 });
 
       console.log(pipeline);
@@ -776,21 +776,21 @@ const getHistoryReport = async (req, res = response) => {
 
     let pets = dni
       ? await Pet.find({
-        idRegisteringEntity: { $in: idRegisteringEntity },
-        adopter: { $in: adopters.map((a) => a.address) },
-        ...queryPet,
-      })
-        .sort({ created_at: -1 })
-        .limit(500)
-        .populate("user")
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          adopter: { $in: adopters.map((a) => a.address) },
+          ...queryPet,
+        })
+          .sort({ created_at: -1 })
+          .limit(500)
+          .populate("user")
       : await Pet.find({
-        idRegisteringEntity: { $in: idRegisteringEntity },
-        ...queryPet,
-        // idRegisteringEntity,
-      })
-        .sort({ created_at: -1 })
-        .limit(500)
-        .populate("user");
+          idRegisteringEntity: { $in: idRegisteringEntity },
+          ...queryPet,
+          // idRegisteringEntity,
+        })
+          .sort({ created_at: -1 })
+          .limit(500)
+          .populate("user");
 
     console.log({ pets: pets.length });
     // console.log({ pet1: pets[0] });
@@ -819,7 +819,7 @@ const upload = async (req, res = response) => {
     const { name, chip } = req.body;
     const file = req.files.file;
     // console.log(file, name, chip);
-    const url = path.join(__dirname, `../public/images/${ name }/${ chip }.jpg`);
+    const url = path.join(__dirname, `../public/images/${name}/${chip}.jpg`);
     // console.log("url", url);
     // file.mv(`./public/images/${name}/${chip}.jpg`, (err) => {
     file.mv(url, (err) => {
@@ -858,6 +858,164 @@ const getAdopterPets = async (req, res = response) => {
   }
 };
 
+const reportTest = async (req, res = response) => {
+  try {
+    const query = {};
+    const {
+      startDate,
+      endDate,
+      idRegisteringEntity,
+      userAddress = null,
+      department,
+      province,
+      district,
+    } = req.body;
+
+    if (!idRegisteringEntity) {
+      return res
+        .status(400)
+        .json({ ok: false, msg: "idRegisteringEntity debe ser un array" });
+    }
+    if (!startDate || !endDate)
+      return res
+        .status(400)
+        .json({ ok: false, msg: "startDate and endDate are required" });
+
+    const matchStage = {
+      ...(idRegisteringEntity && {
+        idRegisteringEntity: JSON.parse(idRegisteringEntity),
+      }),
+    };
+
+    const startDateAdjusted = new Date(`${startDate}T00:00:00.000Z`);
+    const endDateAdjusted = new Date(`${endDate}T23:59:59.999Z`);
+    query.created_at = {
+      $gte: startDateAdjusted,
+      $lt: endDateAdjusted,
+    };
+    if (userAddress) query.userAddress = userAddress;
+
+    const pets = await Pet.aggregate([
+      {
+        $match: {
+          ...query,
+          ...matchStage,
+        },
+      },
+      {
+        $lookup: {
+          from: "adopters",
+          localField: "adopter",
+          foreignField: "address",
+          as: "adopter",
+        },
+      },
+      {
+        $unwind: "$adopter",
+      },
+      {
+        $sort: { created_at: -1 },
+      },
+    ]);
+
+    if (department || province || district) {
+      const petsFiltered = pets.filter((pet) => {
+        const {
+          department: petDepartment,
+          province: petProvince,
+          district: petDistrict,
+        } = pet.adopter;
+
+        // Verificar si los valores proporcionados están presentes y coinciden
+        const departmentMatch = !department || petDepartment === department;
+        const provinceMatch = !province || petProvince === province;
+        const districtMatch = !district || petDistrict === district;
+
+        // Devolver true solo si todos los criterios coinciden
+        return departmentMatch && provinceMatch && districtMatch;
+      });
+
+      return res.status(200).json({
+        ok: true,
+        total: petsFiltered.length,
+        pets: petsFiltered,
+      });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      total: pets.length,
+      pets,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getAll = async (req, res = response) => {
+  const { limit = 5, offset = 0 } = req.query;
+
+  // const query = { status: true };
+
+  const [total, pets] = await Promise.all([
+    // Pet.countDocuments(query),
+    Pet.find()
+      // .populate("user", "name")
+      .skip(Number(offset))
+      .limit(Number(limit)),
+  ]);
+
+  res.json({
+    total,
+    pets,
+  });
+};
+
+const reportAdopter = async (req, res = response) => {
+  const {
+    chip,
+    dni,
+    address,
+    // idRegisteringEntity
+  } = req.body;
+  // if (!idRegisteringEntity)
+  //   return res
+  //     .status(400)
+  //     .json({ ok: false, msg: "idRegisteringEntity is required" });
+  const query = {};
+  if (dni) query.documentNumber = dni;
+  if (address) query.adopter = address.toUpperCase();
+  if (chip) query.chip = chip;
+  // if (idRegisteringEntity)
+  //   query.idRegisteringEntity = JSON.parse(idRegisteringEntity);
+  try {
+    if (dni) {
+      const adopter = await Adopter.findOne(query);
+      if (!adopter)
+        return res.status(400).json({ ok: false, msg: "No exist adopter" });
+      const adopterJson = adopter.toObject();
+      const pets = await Pet.find({ adopter: adopterJson.address });
+      return res.status(200).json({
+        ok: true,
+        pets,
+      });
+    }
+    const pets = await Pet.find(query);
+    if (!pets) return res.status(400).json({ ok: false, msg: "No exist pet" });
+
+    // const pets = await Pet.find({ adopter: adopter.address });
+    // console.log(adopter)
+
+    return res.status(200).json({
+      ok: true,
+      pets,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ ok: false, msg: "Error, contact Admin" });
+  }
+};
 // const getRecords = async (req, res = response) => {
 // 	try {
 // 		const { query, hash = null } = req.query;
@@ -937,5 +1095,8 @@ module.exports = {
   getHistoryReport,
   getAdopterPets,
   upload,
-  getGenealogy
+  getGenealogy,
+  reportTest,
+  getAll,
+  reportAdopter,
 };

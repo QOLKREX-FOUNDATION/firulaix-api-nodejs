@@ -13,6 +13,9 @@ const {
   getHistoryPagination,
   getHistoryReport,
   getGenealogy,
+  reportTest,
+  getAll,
+  reportAdopter,
 } = require("../controllers/pets");
 
 const router = Router();
@@ -42,5 +45,11 @@ router.get("/get-history-pagination", [], getHistoryPagination);
 router.get("/get-history-report", [], getHistoryReport);
 
 router.get("/getAdopterPets", [validateJWT], getAdopterPets);
+
+router.post("/report-pet", reportTest)
+
+router.post("/report-adopter", reportAdopter)
+
+router.get("/getall", getAll);
 
 module.exports = router;
