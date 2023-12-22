@@ -37,6 +37,10 @@ const getGenealogy = async (req, res = response) => {
       chip,
     });
 
+    // const adopter = Adopter.findOne({
+    //   address: pet.adopter,
+    // });
+
     if (!pet)
       return res.status(400).json({
         ok: false,
@@ -62,28 +66,28 @@ const getGenealogy = async (req, res = response) => {
 
     console.log({ father, mother, children });
 
-    if (!father && !mother)
-      return res.status(200).json({
-        ok: false,
-        genealogy: {
-          son: {
-            name: pet.name,
-            chip: pet.chip,
-          },
-          father: {
-            name: "No exist",
-            chip: "http://via.placeholder.com/640x360",
-          },
-          mother: {
-            name: "No exist",
-            chip: "http://via.placeholder.com/640x360",
-          },
-          children: children.map((child) => ({
-            name: "No exist",
-            chip: `http://via.placeholder.com/640x360`,
-          })),
-        },
-      });
+    // if (!father && !mother)
+    //   return res.status(200).json({
+    //     ok: false,
+    //     genealogy: {
+    //       son: {
+    //         name: pet.name,
+    //         chip: pet.chip,
+    //       },
+    //       father: {
+    //         name: "No exist",
+    //         chip: "http://via.placeholder.com/640x360",
+    //       },
+    //       mother: {
+    //         name: "No exist",
+    //         chip: "http://via.placeholder.com/640x360",
+    //       },
+    //       children: children.map((child) => ({
+    //         name: "No exist",
+    //         chip: `http://via.placeholder.com/640x360`,
+    //       })),
+    //     },
+    //   });
 
     // Obtener abuelos
     let fatherFather, fatherMother, motherFather, motherMother;
@@ -167,52 +171,59 @@ const getGenealogy = async (req, res = response) => {
       ok: true,
       genealogy: {
         son: {
-          name: pet.name,
-          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${pet.chip}`,
+          name: pet.name || "No existe",
+          image: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ pet.chip }`,
+          chip: pet.chip,
         },
         father: {
-          name: father?.name,
-          chip: father
-            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${father?.chip}`
+          name: father?.name || "No existe",
+          image: father
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ father?.chip }`
             : "http://via.placeholder.com/640x360",
+          chip: father?.chip,
         },
         mother: {
-          name: mother?.name,
-          chip: mother
-            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${mother?.chip}`
+          name: mother?.name || "No existe",
+          image: mother
+            ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ mother?.chip }`
             : "http://via.placeholder.com/640x360",
+          chip: mother?.chip,
         },
         children: children.map((child) => ({
-          name: child.name,
-          chip: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${child.chip}`,
+          name: child?.name || "No existe",
+          image: `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ child.chip }`,
         })),
         grandparents: {
           father: {
             father: {
               name: fatherFather?.name || "No existe",
-              chip: fatherFather
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFather?.chip}`
+              image: fatherFather
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFather?.chip }`
                 : "http://via.placeholder.com/640x360",
+              chip: fatherFather?.chip,
             },
             mother: {
               name: fatherMother?.name || "No existe",
-              chip: fatherMother
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMother?.chip}`
+              image: fatherMother
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMother?.chip }`
                 : "http://via.placeholder.com/640x360",
+              chip: fatherMother?.chip,
             },
           },
           mother: {
             father: {
               name: motherFather?.name || "No existe",
-              chip: motherFather
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFather?.chip}`
+              image: motherFather
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFather?.chip }`
                 : "http://via.placeholder.com/640x360",
+              chip: motherFather?.chip,
             },
             mother: {
               name: motherMother?.name || "No existe",
-              chip: motherMother
-                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMother?.chip}`
+              image: motherMother
+                ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMother?.chip }`
                 : "http://via.placeholder.com/640x360",
+              chip: motherMother?.chip,
             },
           },
         },
@@ -221,29 +232,33 @@ const getGenealogy = async (req, res = response) => {
             father: {
               father: {
                 name: fatherFatherFather?.name || "No existe",
-                chip: fatherFatherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFatherFather?.chip}`
+                image: fatherFatherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherFather?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: fatherFatherFather?.chip,
               },
               mother: {
                 name: fatherFatherMother?.name || "No existe",
-                chip: fatherFatherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherFatherMother?.chip}`
+                image: fatherFatherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherFatherMother?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: fatherFatherMother?.chip,
               },
             },
             mother: {
               father: {
                 name: fatherMotherFather?.name || "No existe",
-                chip: fatherMotherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMotherFather?.chip}`
+                image: fatherMotherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherFather?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: fatherMotherFather?.chip,
               },
               mother: {
                 name: fatherMotherMother?.name || "No existe",
-                chip: fatherMotherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${fatherMotherMother?.chip}`
+                image: fatherMotherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ fatherMotherMother?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: fatherMotherMother?.chip,
               },
             },
           },
@@ -251,34 +266,40 @@ const getGenealogy = async (req, res = response) => {
             father: {
               father: {
                 name: motherFatherFather?.name || "No existe",
-                chip: motherFatherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFatherFather?.chip}`
+                image: motherFatherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherFather?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: motherFatherFather?.chip,
               },
               mother: {
                 name: motherFatherMother?.name || "No existe",
-                chip: motherFatherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherFatherMother?.chip}`
+                image: motherFatherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherFatherMother?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: motherFatherMother?.chip,
               },
             },
             mother: {
               father: {
                 name: motherMotherFather?.name || "No existe",
-                chip: motherMotherFather
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMotherFather?.chip}`
+                image: motherMotherFather
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherFather?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: motherMotherFather?.chip,
               },
               mother: {
                 name: motherMotherMother?.name || "No existe",
-                chip: motherMotherMother
-                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${motherMotherMother?.chip}`
+                image: motherMotherMother
+                  ? `https://res.cloudinary.com/worldanireg/image/upload/v1/images/image/${ motherMotherMother?.chip }`
                   : "http://via.placeholder.com/640x360",
+                chip: motherMotherMother?.chip,
               },
             },
           },
         },
       },
+      // pet,
+      // adopter,
     });
   } catch (error) {
     console.log(error);
