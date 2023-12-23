@@ -914,7 +914,7 @@ const reportTest = async (req, res = response) => {
       $gte: startDateAdjusted,
       $lt: endDateAdjusted,
     };
-    if (userAddress) query.userAddress = userAddress;
+    if (userAddress) query.userAddress = userAddress.toUpperCase();
 
     const pets = await Pet.aggregate([
       {
