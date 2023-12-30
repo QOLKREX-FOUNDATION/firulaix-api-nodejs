@@ -904,7 +904,7 @@ const reportTest = async (req, res = response) => {
 
     const matchStage = {
       ...(idRegisteringEntity && {
-        idRegisteringEntity: JSON.parse(idRegisteringEntity),
+        idRegisteringEntity: { $in: idRegisteringEntity },
       }),
     };
 
