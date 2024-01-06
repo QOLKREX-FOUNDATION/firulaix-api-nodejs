@@ -430,8 +430,11 @@ const statsPets = async (req = request, res = response) => {
 };
 
 const statsAdopter = async (req = request, res = response) => {
-  const { year } = req.body;
-
+  const { year, idsEntity } = req.body;
+  if (!year) return res.status(400).json({ ok: false, msg: "year required" });
+  if (!idsEntity)
+    return res.status(400).json({ ok: false, msg: "idsEntity required" });
+  if(typeof idsEntity !== 'object') return res.status(400).json({ ok: false, msg: "idsEntity must be an array" });
   const startDate = new Date(`${year}-01-01T00:00:00.000Z`);
   const endDate = new Date(`${year}-12-31T23:59:59.999Z`);
 
@@ -450,9 +453,14 @@ const statsAdopter = async (req = request, res = response) => {
     "Diciembre",
   ];
 
-  const adopters = await Adopter.find({
-    created_at: { $gte: startDate, $lte: endDate },
-  }).sort({ created_at: -1 });
+  const adopters = await Adopter.aggregate([
+    {
+      $match: {
+        created_at: { $gte: startDate, $lte: endDate },
+        idRegisteringEntity: { $in: idsEntity },
+      },
+    },
+  ]);
 
   const adoptersByMonthArray = months.map((month) => {
     const adoptersByMonth = adopters.filter((adopter) => {
@@ -469,7 +477,7 @@ const statsAdopter = async (req = request, res = response) => {
     ok: true,
     total: adopters.length,
     adoptersByMonthArray,
-    // adopters,
+    adopters,
   });
 };
 
