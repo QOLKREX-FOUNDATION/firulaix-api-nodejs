@@ -51,7 +51,7 @@ const getStatistics = async (req = request, res = response) => {
       );
       // console.log(user);
       return {
-        label: `${ user.user.name } - ${ user.user.lastName }`,
+        label: `${user.user.name} - ${user.user.lastName}`,
         adopters: userAdopters.length,
       };
     });
@@ -63,8 +63,8 @@ const getStatistics = async (req = request, res = response) => {
 
     // registros de mascotas por mes de este año
 
-    const startDate = new Date(`${ new Date().getFullYear() }-01-01`); //`${new Date().getFullYear()}-01-01
-    const endDate = new Date(`${ new Date().getFullYear() }-12-31`); //`${new Date().getFullYear()}-12-31
+    const startDate = new Date(`${new Date().getFullYear()}-01-01`); //`${new Date().getFullYear()}-01-01
+    const endDate = new Date(`${new Date().getFullYear()}-12-31`); //`${new Date().getFullYear()}-12-31
 
     const petsFiltered = await Pet.find({
       created_at: { $gte: startDate, $lte: endDate },
@@ -180,7 +180,10 @@ const getStatisticsByAddress = async (req = request, res = response) => {
     console.log({ addresses });
 
     const pets = await Pet.find({
-      $or: [{ addressEr: { $in: addresses } }, { userAddress: { $in: addresses } }],
+      $or: [
+        { addressEr: { $in: addresses } },
+        { userAddress: { $in: addresses } },
+      ],
     });
 
     const usersAddressEr = await User.find({
@@ -194,11 +197,13 @@ const getStatisticsByAddress = async (req = request, res = response) => {
     const adopters = await Adopter.find({
       // address: { $in: addresses },
       // }).populate("user");
-    })
+    });
 
     const petsWithRegisteringEntity = usersAddressEr.map((user) => {
       const userPets = pets.filter(
-        (pet) => pet.addressEr === user.publicAddress || pet.userAddress === user.publicAddress
+        (pet) =>
+          pet.addressEr === user.publicAddress ||
+          pet.userAddress === user.publicAddress
       );
 
       // console.log({ user });
@@ -221,13 +226,13 @@ const getStatisticsByAddress = async (req = request, res = response) => {
       // console.log({ userAdopters: userAdopters });
 
       return {
-        label: `${ user.user.name } - ${ user.user.lastName }`,
+        label: `${user.user.name} - ${user.user.lastName}`,
         adopters: userAdopters.length,
       };
     });
 
-    const startDate = new Date(`${ new Date().getFullYear() }-01-01`);
-    const endDate = new Date(`${ new Date().getFullYear() }-12-31`);
+    const startDate = new Date(`${new Date().getFullYear()}-01-01`);
+    const endDate = new Date(`${new Date().getFullYear()}-12-31`);
 
     const petsFiltered = await Pet.find({
       created_at: { $gte: startDate, $lte: endDate },
@@ -321,7 +326,156 @@ const getStatisticsByAddress = async (req = request, res = response) => {
   }
 };
 
+const statsPets = async (req = request, res = response) => {
+  const { addresses, year } = req.body;
+  if (!addresses || !year)
+    return res
+      .status(400)
+      .json({ ok: false, msg: "addresses and year are required" });
+  if (typeof addresses !== "object")
+    return res
+      .status(400)
+      .json({ ok: false, msg: "addresses must be an array" });
+  const addressesToUpperCase = addresses.map((address) =>
+    address.toUpperCase()
+  );
+
+  const startDate = new Date(`${year}-01-01T00:00:00.000Z`);
+  const endDate = new Date(`${year}-12-31T23:59:59.999Z`);
+  try {
+    const pets = await Pet.aggregate([
+      {
+        $match: {
+          $or: [
+            { addressEr: { $in: addressesToUpperCase } },
+            { userAddress: { $in: addressesToUpperCase } },
+          ],
+          dateRegistring: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userAddress",
+          foreignField: "publicAddress",
+          as: "user",
+        },
+      },
+    ]);
+    const months = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const petsByMonthArray = months.map((month) => {
+      const petsByMonth = pets.filter((pet) => {
+        return (
+          new Date(pet.dateRegistring).getMonth() === months.indexOf(month)
+        );
+      });
+      return {
+        quantity: petsByMonth.length,
+        month: month,
+      };
+    });
+
+    const petReduce = pets.reduce((acc, pet) => {
+      const userName = pet.user[0].user.name;
+      const personType = pet.user[0].user.typePerson;
+      const nameToShow =
+        personType === "NATURAL" ? userName : pet.user[0].user.lastName;
+
+      if (!acc[nameToShow]) {
+        acc[nameToShow] = [];
+      }
+
+      acc[nameToShow].push(pet);
+
+      return acc;
+    }, {});
+
+    const petsPerAdopter = Object.entries(petReduce).map(
+      ([nameToShow, items]) => {
+        return {
+          label: nameToShow,
+          pets: items.length,
+          // items,
+        };
+      }
+    );
+
+    return res.send({
+      ok: true,
+      total: pets.length,
+      petsByMonthArray,
+      petsPerAdopter,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error, contact Admin",
+    });
+  }
+};
+
+const statsAdopter = async (req = request, res = response) => {
+  const { year } = req.body;
+
+  const startDate = new Date(`${year}-01-01T00:00:00.000Z`);
+  const endDate = new Date(`${year}-12-31T23:59:59.999Z`);
+
+  const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  const adopters = await Adopter.find({
+    created_at: { $gte: startDate, $lte: endDate },
+  }).sort({ created_at: -1 });
+
+  const adoptersByMonthArray = months.map((month) => {
+    const adoptersByMonth = adopters.filter((adopter) => {
+      return new Date(adopter.created_at).getMonth() === months.indexOf(month);
+    });
+
+    return {
+      adopters: adoptersByMonth.length,
+      label: month,
+    };
+  });
+
+  return res.send({
+    ok: true,
+    total: adopters.length,
+    adoptersByMonthArray,
+    // adopters,
+  });
+};
+
 module.exports = {
   getStatistics,
-  getStatisticsByAddress
+  getStatisticsByAddress,
+  statsPets,
+  statsAdopter,
 };
