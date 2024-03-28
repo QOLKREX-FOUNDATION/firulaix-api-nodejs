@@ -27,11 +27,11 @@ router.post(
 router.put(
   "/",
   [
-    // validateJWT,
-    // validateFile,
-    // check("name", "El nombre es requerido").not().isEmpty(),
-    // check("chip", "El chip es requerido").not().isEmpty(),
-    // validateFields,
+    validateJWT,
+    validateFile,
+    check("name", "El nombre es requerido").not().isEmpty(),
+    check("chip", "El chip es requerido").not().isEmpty(),
+    validateFields,
   ],
   uploadFile
 );
