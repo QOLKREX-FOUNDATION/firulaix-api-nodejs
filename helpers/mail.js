@@ -4,74 +4,78 @@ const { templateReset } = require("../mail/mailReset");
 const { templateRequestUser } = require("../mail/mailRequestRegisterUser");
 const { templateRequestEntity } = require("../mail/mailRequestRegisterEntity");
 const {
-	templateRequestUserCard,
+  templateRequestUserCard,
 } = require("../mail/mailRequestRegisterUserCard");
 const {
-	templateRequestUserCardRenian,
+  templateRequestUserCardRenian,
 } = require("../mail/mailRequestRegisterUserCardRenian");
 const {
-	templateRequestUserRenian,
+  templateRequestUserRenian,
 } = require("../mail/mailRequestRegisterUserRenian");
 const path = require("path");
 const { templateEmailRegistro } = require("../mail/templateEmailRegistro");
 const { templateDonationGreeting } = require("../mail/mailDonationGreeting");
+const {
+  templateRequestUserCardSRV,
+} = require("../mail/mailRequestRegisterUserCardSRV");
+const { templateRequestUserCardChip } = require("../mail/mailRequestRegisterUserCardChip");
 
 const copyToEmail = "pets@worldanimalregistry.org";
 
 // configuracion mail war
 const configWar = () => {
-	return nodemailer.createTransport({
-		// host: "mail.firulaixcoin.finance",
-		// port: 26,
-		host: "mail.worldanimalregistry.org",
-		port: 465,
-		secure: true,
-		auth: {
-			// user: "no-reply@firulaixcoin.finance",
-			// pass: "No_reply_23",
-			user: "no-reply@worldanimalregistry.org",
-			pass: "Noreply_23",
-		},
-		tls: {
-			rejectUnauthorized: false,
-		},
-	});
+  return nodemailer.createTransport({
+    // host: "mail.firulaixcoin.finance",
+    // port: 26,
+    host: "mail.worldanimalregistry.org",
+    port: 465,
+    secure: true,
+    auth: {
+      // user: "no-reply@firulaixcoin.finance",
+      // pass: "No_reply_23",
+      user: "no-reply@worldanimalregistry.org",
+      pass: "Noreply_23",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
 };
 
 // configuracion mail war
 const configWarSolicitud = () => {
-	return nodemailer.createTransport({
-		// host: "mail.firulaixcoin.finance",
-		// port: 26,
-		host: "mail.worldanimalregistry.org",
-		port: 465,
-		secure: true,
-		auth: {
-			// user: "no-reply@firulaixcoin.finance",
-			// pass: "No_reply_23",
-			user: "solicitudderegistro@worldanimalregistry.org",
-			pass: "Noreply_23",
-		},
-		tls: {
-			rejectUnauthorized: false,
-		},
-	});
+  return nodemailer.createTransport({
+    // host: "mail.firulaixcoin.finance",
+    // port: 26,
+    host: "mail.worldanimalregistry.org",
+    port: 465,
+    secure: true,
+    auth: {
+      // user: "no-reply@firulaixcoin.finance",
+      // pass: "No_reply_23",
+      user: "solicitudderegistro@worldanimalregistry.org",
+      pass: "Noreply_23",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
 };
 
 // configuracion mail renian
 const configRenian = () => {
-	return nodemailer.createTransport({
-		host: "mail.renian.pe",
-		port: 465,
-		secure: true,
-		auth: {
-			user: "solicitudderegistro@renian.pe",
-			pass: "Solicitud_23",
-		},
-		tls: {
-			rejectUnauthorized: false,
-		},
-	});
+  return nodemailer.createTransport({
+    host: "mail.renian.pe",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "solicitudderegistro@renian.pe",
+      pass: "Solicitud_23",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
 };
 
 // host: "qolkrex.foundation",
@@ -83,194 +87,245 @@ const configRenian = () => {
 // 		},
 
 const mail = async ({
-	email,
-	password,
-	address,
-	privateKey,
-	title = "WORLD ANIMAL REGISTRY",
+  email,
+  password,
+  address,
+  privateKey,
+  title = "WORLD ANIMAL REGISTRY",
 }) => {
-	console.log("email", email);
-	try {
-		let transporter = configWar();
+  console.log("email", email);
+  try {
+    let transporter = configWar();
 
-		await transporter.sendMail({
-			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
-			from: "pets@worldanimalregistry.org", // sender address,
-			to: [email, copyToEmail],
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: template({ email, password, address, privateKey, title }),
-		});
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    await transporter.sendMail({
+      // from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
+      from: "pets@worldanimalregistry.org", // sender address,
+      to: [email, copyToEmail],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: template({ email, password, address, privateKey, title }),
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 const mailReset = async ({ email, name, token }) => {
-	try {
-		let transporter = configWar();
-		// console.log("email", email.toLowerCase())
-		// const emailLower = email.toLowerCase()
+  try {
+    let transporter = configWar();
+    // console.log("email", email.toLowerCase())
+    // const emailLower = email.toLowerCase()
 
-		await transporter.sendMail({
-			// from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
-			from: "pets@worldanimalregistry.org", // sender address,
-			to: [email, copyToEmail],
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateReset({ name, token }),
-		});
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    await transporter.sendMail({
+      // from: '"W.A.R." <notification@firulaixcoin.finance>', // sender address,
+      from: "pets@worldanimalregistry.org", // sender address,
+      to: [email, copyToEmail],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateReset({ name, token }),
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 const mailRegisterEntity = async ({ registry }) => {
-	try {
-		let transporter = configWarSolicitud();
-		// console.log("email", email.toLowerCase())
-		// const emailLower = email.toLowerCase()
-		// console.log("plantilla", registry)
+  try {
+    let transporter = configWarSolicitud();
+    // console.log("email", email.toLowerCase())
+    // const emailLower = email.toLowerCase()
+    // console.log("plantilla", registry)
 
-		await transporter.sendMail({
-			from: "solicitudderegistro@worldanimalregistry.org",
-			to: [
-				registry.email,
-				"solicitudderegistro@worldanimalregistry.org",
-				copyToEmail,
-			],
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateRequestEntity({ registry }),
-		});
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    await transporter.sendMail({
+      from: "solicitudderegistro@worldanimalregistry.org",
+      to: [
+        registry.email,
+        "solicitudderegistro@worldanimalregistry.org",
+        copyToEmail,
+      ],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateRequestEntity({ registry }),
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 const mailRegisterUserWar = async ({ registry, url }) => {
-	try {
-		const transporter = configWar();
-		const to = "solicitudderegistro@worldanimalregistry.org";
+  try {
+    const transporter = configWar();
+    const to = "solicitudderegistro@worldanimalregistry.org";
 
-		if (!registry.image) {
-			await transporter.sendMail({
-				from: "solicitudderegistro@worldanimalregistry.org",
-				to: [registry.email, to, copyToEmail],
-				subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-				html: templateRequestUserCard({ registry, url }),
-			});
-			return true;
-		}
+    if (!registry.image) {
+      await transporter.sendMail({
+        from: "solicitudderegistro@worldanimalregistry.org",
+        to: [registry.email, to, copyToEmail],
+        subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+        html: templateRequestUserCard({ registry, url }),
+      });
+      return true;
+    }
 
-		await transporter.sendMail({
-			from: "solicitudderegistro@worldanimalregistry.org",
-			to: [registry.email, to, copyToEmail],
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateRequestUser({ registry }),
-			attachments: [
-				{
-					filename: "voucher.png",
-					path: registry.image,
-					contentType: "application/png",
-				},
-			],
-		});
+    await transporter.sendMail({
+      from: "solicitudderegistro@worldanimalregistry.org",
+      to: [registry.email, to, copyToEmail],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateRequestUser({ registry }),
+      attachments: [
+        {
+          filename: "voucher.png",
+          path: registry.image,
+          contentType: "application/png",
+        },
+      ],
+    });
 
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+const mailRegisterUserWarSRV = async ({ registry, url }) => {
+  try {
+    const transporter = configWar();
+    const to = "solicitudderegistro@worldanimalregistry.org";
+    await transporter.sendMail({
+      from: "solicitudderegistro@worldanimalregistry.org",
+      to: [registry.email, to, copyToEmail],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateRequestUserCardSRV({ registry, url }),
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+const mailRegisterUserWarChip = async ({ registry, url }) => {
+  try {
+    const transporter = configWar();
+    const to = "solicitudderegistro@worldanimalregistry.org";
+    await transporter.sendMail({
+      from: "solicitudderegistro@worldanimalregistry.org",
+      to: [registry.email, to, copyToEmail],
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateRequestUserCardChip({ registry, url }),
+      attachments: [
+        {
+          filename: "voucher.png",
+          path: registry.image,
+          contentType: "application/png",
+        },
+      ],
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 const mailRegisterUserRenian = async ({ registry, url }) => {
-	try {
-		const transporter = configRenian();
-		const to = "solicitudderegistro@renian.pe";
-		console.log({ registry });
-		// if (registry.image === "") {
-		console.log("aqui");
-		await transporter.sendMail({
-			from: "solicitudderegistro@renian.pe",
-			to: [registry.email, to, copyToEmail],
-			subject: "RENIAN - Registro de Usuario",
-			html: templateRequestUserCardRenian({ registry, url }),
-			attachments: [
-				{
-					filename: "voucher.png",
-					path: registry.image,
-					contentType: "application/png",
-				},
-			],
-		});
-		// return true;
-		// }
+  try {
+    const transporter = configRenian();
+    const to = "solicitudderegistro@renian.pe";
+    console.log({ registry });
+    // if (registry.image === "") {
+    console.log("aqui");
+    await transporter.sendMail({
+      from: "solicitudderegistro@renian.pe",
+      to: [registry.email, to, copyToEmail],
+      subject: "RENIAN - Registro de Usuario",
+      html: templateRequestUserCardRenian({ registry, url }),
+      attachments: [
+        {
+          filename: "voucher.png",
+          path: registry.image,
+          contentType: "application/png",
+        },
+      ],
+    });
+    // return true;
+    // }
 
-		// await transporter.sendMail({
-		// 	from: "solicitudderegistro@renian.pe",
-		// 	to: [registry.email, to, copyToEmail],
-		// 	subject: "RENIAN - Registro de Usuario",
-		// 	html: templateRequestUserRenian({ registry }),
-		// 	attachments: [
-		// 		{
-		// 			filename: "voucher.png",
-		// 			path: registry.image,
-		// 			contentType: "application/png",
-		// 		},
-		// 	],
-		// });
+    // await transporter.sendMail({
+    // 	from: "solicitudderegistro@renian.pe",
+    // 	to: [registry.email, to, copyToEmail],
+    // 	subject: "RENIAN - Registro de Usuario",
+    // 	html: templateRequestUserRenian({ registry }),
+    // 	attachments: [
+    // 		{
+    // 			filename: "voucher.png",
+    // 			path: registry.image,
+    // 			contentType: "application/png",
+    // 		},
+    // 	],
+    // });
 
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 const mailRegisterUser = async ({ registry, entityRegister }) => {
-	try {
-		let transporter = configWar();
+  try {
+    let transporter = configWar();
 
-		await transporter.sendMail({
-			from: "solicitudderegistro@worldanimalregistry.org",
-			to: registry.adopter.email,
-			subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
-			html: templateEmailRegistro({ data: registry, entityRegister }),
-		});
+    await transporter.sendMail({
+      from: "solicitudderegistro@worldanimalregistry.org",
+      to: registry.adopter.email,
+      subject: "WORLD ANIMAL REGISTRY - Registro de Usuario",
+      html: templateEmailRegistro({ data: registry, entityRegister }),
+    });
 
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
-const mailGreetingDonation = async ({ email, name, lastName, amount, currency, dni }) => {
-	try {
-		let transporter = configWar();
-		await transporter.sendMail({
-			from: "no-reply@worldanimalregistry.org",
-			to: [email, "donaciones@worldanimalregistry.org"],
-			subject: "WORLD ANIMAL REGISTRY - ¡Gracias por tu generosa donación!",
-			html: templateDonationGreeting({ name, lastName, amount, currency, dni }),
-		});
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-}
+const mailGreetingDonation = async ({
+  email,
+  name,
+  lastName,
+  amount,
+  currency,
+  dni,
+}) => {
+  try {
+    let transporter = configWar();
+    await transporter.sendMail({
+      from: "no-reply@worldanimalregistry.org",
+      to: [email, "donaciones@worldanimalregistry.org"],
+      subject: "WORLD ANIMAL REGISTRY - ¡Gracias por tu generosa donación!",
+      html: templateDonationGreeting({ name, lastName, amount, currency, dni }),
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
 
 module.exports = {
-	mail,
-	mailReset,
-	mailRegisterEntity,
-	mailRegisterUserWar,
-	mailRegisterUserRenian,
-	mailRegisterUser,
-	mailGreetingDonation,
+  mail,
+  mailReset,
+  mailRegisterEntity,
+  mailRegisterUserWar,
+  mailRegisterUserRenian,
+  mailRegisterUser,
+  mailGreetingDonation,
+  mailRegisterUserWarSRV,
+	mailRegisterUserWarChip,
 };
