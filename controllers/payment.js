@@ -310,7 +310,7 @@ const createOrder2War = async (req, res) => {
     mercadopago.configure({
         access_token: process.env.MP_WAR_ACCESS_TOKEN,
     });
-    console.log("req.body", JSON.stringify(req.body));
+    // console.log("req.body", JSON.stringify(req.body));
 
     const {
         platform,
