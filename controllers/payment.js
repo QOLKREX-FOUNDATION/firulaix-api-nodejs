@@ -330,7 +330,7 @@ const createOrder2War = async (req, res) => {
         items: [
             {
                 title: "Solo Registro",
-                unit_price: 30,
+                unit_price: 31,
                 quantity: 1,
                 currency_id: "PEN",
                 // unit_price: price,
