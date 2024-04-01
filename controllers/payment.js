@@ -132,7 +132,205 @@ const createOrder2 = async (req, res) => {
         items: [
             {
                 title: "Solo Registro",
-                unit_price: 31,
+                unit_price: 30,
+                quantity: 1,
+                currency_id: "PEN",
+                // unit_price: price,
+                // quantity: unit,
+            },
+        ],
+        back_urls: {
+            success:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/success`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/success`,
+            // success: `https://war-website.vercel.app/es/request/success`,
+            failure:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/failure`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
+            // failure: `https://war-website.vercel.app/es/request/failure`,
+        },
+        notification_url: `${ baseUrl }/api/payment/webhook`,
+        auto_return: "approved",
+        payment_methods: {
+            excluded_payment_methods: [
+                {
+                    id: "amex",
+                },
+            ],
+            excluded_payment_types: [
+                {
+                    id: "atm",
+                },
+            ],
+            installments: 6,
+        },
+        binary_mode: true,
+        payer: {
+            first_name: email,
+            email,
+            phone: {
+                // area_code: "51",
+                number: Number(phone),
+            },
+            identification: {
+                type: type,
+                number: documentNumber,
+            },
+            // address: {
+            //     country_name: country,
+            // }
+        },
+        metadata: {
+            platform,
+            country,
+            person,
+            email,
+            phone,
+            type,
+            typeService,
+            image,
+            document,
+            documentNumber,
+            paymentMethod,
+        },
+    };
+
+    try {
+        const response = await mercadopago.preferences.create(preference);
+        // console.log("response", response.body)
+        res.status(200).json({ data: response.body });
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).json({ error });
+    }
+};
+const createOrderWar = async (req, res) => {
+    mercadopago.configure({
+        access_token: process.env.MP_WAR_ACCESS_TOKEN,
+    });
+
+    console.log("req.body", JSON.stringify(req.body));
+
+    const {
+        platform,
+        country,
+        person,
+        email,
+        phone,
+        type,
+        typeService,
+        image,
+        document,
+        documentNumber,
+        paymentMethod,
+    } = req.body;
+
+    const preference = {
+        items: [
+            {
+                title: "Registro Completo",
+                unit_price: 60,
+                quantity: 1,
+                currency_id: "PEN",
+                // unit_price: price,
+                // quantity: unit,
+            },
+        ],
+        back_urls: {
+            success:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/success`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/success`,
+            // success: `https://war-website.vercel.app/es/request/success`,
+            failure:
+                platform === "war"
+                    ? `${ process.env.HOST_WAR }/es/request/failure`
+                    : `${ process.env.HOST_RENIAN }/solicitud-de-registro/failure`,
+            // failure: `https://war-website.vercel.app/es/request/failure`,
+        },
+        notification_url: `${ baseUrl }/api/payment/webhook`,
+        auto_return: "approved",
+        payment_methods: {
+            excluded_payment_methods: [
+                {
+                    id: "amex",
+                },
+            ],
+            excluded_payment_types: [
+                {
+                    id: "atm",
+                },
+            ],
+            installments: 6,
+        },
+        binary_mode: true,
+        payer: {
+            first_name: email,
+            email,
+            phone: {
+                // area_code: "51",
+                number: Number(phone),
+            },
+            identification: {
+                type: type,
+                number: documentNumber,
+            },
+            // address: {
+            //     country_name: country,
+            // }
+        },
+        metadata: {
+            platform,
+            country,
+            person,
+            email,
+            phone,
+            type,
+            typeService,
+            image,
+            document,
+            documentNumber,
+            paymentMethod,
+        },
+    };
+
+    try {
+        const response = await mercadopago.preferences.create(preference);
+        // console.log("response", response.body)
+        res.status(200).json({ data: response.body });
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).json({ error });
+    }
+};
+
+const createOrder2War = async (req, res) => {
+    mercadopago.configure({
+        access_token: process.env.MP_WAR_ACCESS_TOKEN,
+    });
+    console.log("req.body", JSON.stringify(req.body));
+
+    const {
+        platform,
+        country,
+        person,
+        email,
+        phone,
+        type,
+        typeService,
+        image,
+        document,
+        documentNumber,
+        paymentMethod,
+    } = req.body;
+
+    const preference = {
+        items: [
+            {
+                title: "Solo Registro",
+                unit_price: 30,
                 quantity: 1,
                 currency_id: "PEN",
                 // unit_price: price,
@@ -349,6 +547,8 @@ const getInfoOrder = async (req, res) => {
 module.exports = {
     createOrder,
     createOrder2,
+    createOrderWar,
+    createOrder2War,
     reciveWebhook,
     getInfoOrder,
 };
