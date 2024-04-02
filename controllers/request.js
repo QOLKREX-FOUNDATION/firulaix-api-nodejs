@@ -127,10 +127,6 @@ const requestRegisterUserWarSRV = async (req, res) => {
         msg: "Country is required",
       });
     }
-    const url = await generateUrlForm(true, country);
-    console.log(country);
-
-    // console.log(JSON.stringify(req.body));
     if (req.body) {
       const newUrl = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro?address=${
         country === "HN"
