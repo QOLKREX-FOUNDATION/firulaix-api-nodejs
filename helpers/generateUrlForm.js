@@ -4,7 +4,16 @@ const { generateSequence } = require("./generateSquence");
 const { generateJWTCorrelative } = require("./jwt");
 const { default: mongoose } = require("mongoose");
 
-const generateUrlForm = async (isPayment = true) => {
+const codePhone = {
+  "PE": "65401c7a404c98294c1be04f",
+  "CO": "65402ea31d724f42fb6982fa",
+  "EC": "65402f531d724f42fb698306",
+  "HN": "6553ebc32177197921e7ff8f",
+  "CL": "654a7b03a5ec1444091ef4ae",
+  "ES": "65417c1e262cf2d9e13ce896"
+}
+
+const generateUrlForm = async (isPayment = true, country = "PE") => {
   // creamos formulario de registro en la base de datos con los datos vacios, pero con su correlative
 
   try {
@@ -16,11 +25,11 @@ const generateUrlForm = async (isPayment = true) => {
     // crea el formulario en la base de datos
     const newForm = new Request({
       adopter: {
-        country: "",
+        country: country || "PE",
         person: "",
         documentType: "",
         documentNumber: "",
-        adopterType: "",
+        adopterType: "ADOPTER",
         isAddressPublic: "",
         addressPublic: "",
         // dni:"",
@@ -40,14 +49,14 @@ const generateUrlForm = async (isPayment = true) => {
         jurament1: false,
         isMicrochip: "",
         jurament3: false,
-        phoneCode: mongoose.Types.ObjectId("65401c7a404c98294c1be04f"),
-        nationality: mongoose.Types.ObjectId("65401c7a404c98294c1be04f"),
+        phoneCode: codePhone[country] || "65401c7a404c98294c1be04f",
+        nationality: codePhone[country] || "65401c7a404c98294c1be04f",
       },
       pet: {
         microchip: "",
         dateMicrochip: "",
         firstNamePet: "",
-        countryPet: "",
+        countryPet: country || "PE",
         birthDatePet: "",
         adoptionDate: "",
         genderPet: "",

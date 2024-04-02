@@ -80,7 +80,6 @@ const requestRegisterUserRenian = async (req, res) => {
 
 const requestRegisterUserWarWithChip = async (req, res) => {
   try {
-    const url = await generateUrlForm();
     const country = req.body.country;
     if (!country) {
       return res.status(400).json({
@@ -88,6 +87,7 @@ const requestRegisterUserWarWithChip = async (req, res) => {
         msg: "Country is required",
       });
     }
+    const url = await generateUrlForm(true, req.body.country);
     const addresses = {
       CL: "0x4f4c1714BD2583Be46a415b34acb3f69a4CC07f5",
       CO: "0xe4E0D5eB1Eda5c6a0C3279fDa8a9347c93501e25",
