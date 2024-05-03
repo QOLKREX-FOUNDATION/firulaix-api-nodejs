@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { createOrder, createOrder2, reciveWebhook, getInfoOrder, createOrderWar, createOrder2War } = require("../controllers/payment");
+const { createOrder, createOrder2, reciveWebhook, getInfoOrder, createOrderWar, createOrder2War, createOrderDonationWar } = require("../controllers/payment");
 
 const router = Router();
 
@@ -14,6 +14,8 @@ router.post("/war-create-order-2", createOrder2War);
 router.post("/webhook", reciveWebhook)
 
 router.post("/order", getInfoOrder)
+
+router.post("/war-create-donation-order", createOrderDonationWar);
 
 router.get("/", (req, res) => {
     res.send("Pagos")

@@ -405,6 +405,38 @@ const createOrder2War = async (req, res) => {
     }
 };
 
+const createOrderDonationWar = async (req, res) => {
+    mercadopago.configure({
+        access_token: process.env.MP_WAR_ACCESS_TOKEN,
+    });
+
+    const { name, lastName, email, dni, amount, currency } = req.body;
+
+    const preference = {
+        items: [
+            {
+                title: "Donación",
+                unit_price: Number(amount),
+                currency_id: "PEN",
+                quantity: 1,
+            },
+        ],
+        back_urls: {
+            success: `${ process.env.HOST_WAR }/es/donate/success`,
+            failure: `${ process.env.HOST_WAR }/es/donate/failure`,
+        },
+        auto_return: "approved",
+        notification_url: `${ baseUrl }/api/payment/webhook`,
+    };
+
+    try {
+        const result = await mercadopago.preferences.create(preference);
+        res.send(result.body);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const reciveWebhook = async (req, res) => {
     // console.log("webhook", req.query);
     mercadopago.configure({
@@ -551,4 +583,5 @@ module.exports = {
     createOrder2War,
     reciveWebhook,
     getInfoOrder,
+    createOrderDonationWar,
 };
