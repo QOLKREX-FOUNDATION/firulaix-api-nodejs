@@ -414,7 +414,6 @@ const createOrderDonationWar = async (req, res) => {
 
   const { name, lastname, email, amount, documentType, documentNumber, phone } =
     req.body;
-  console.log("req.body", req.body);
 
   const preference = {
     items: [
@@ -453,7 +452,6 @@ const createOrderDonationWar = async (req, res) => {
 const createDonator = async (req, res) => {
   const { name, lastName, email, phone, documentType, documentNumber, amount } =
     req.body;
-  console.log("req.bodyDonator", req.body);
 
   const donator = new Donator({
     name,
