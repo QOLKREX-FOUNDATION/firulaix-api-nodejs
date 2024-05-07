@@ -412,8 +412,17 @@ const createOrderDonationWar = async (req, res) => {
     access_token: process.env.MP_WAR_ACCESS_TOKEN,
   });
 
-  const { name, lastname, email, amount, documentType, documentNumber, phone } =
-    req.body;
+  const {
+    name,
+    lastname,
+    email,
+    amount,
+    documentType,
+    documentNumber,
+    phone,
+    campaign,
+    campaignName,
+  } = req.body;
 
   const preference = {
     items: [
@@ -425,8 +434,8 @@ const createOrderDonationWar = async (req, res) => {
       },
     ],
     back_urls: {
-      success: `${process.env.HOST_WAR}/es/compaigns/mascotassinhogar?status=success&amount=${amount}&name=${name}&lastName=${lastname}&email=${email}&phone=${phone}&documentType=${documentType}&documentNumber=${documentNumber}`,
-      failure: `${process.env.HOST_WAR}/es/compaigns/mascotassinhogar?status=failure`,
+      success: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=success&amount=${amount}&name=${name}&lastName=${lastname}&email=${email}&phone=${phone}&documentType=${documentType}&documentNumber=${documentNumber}&campaign=${campaign}`,
+      failure: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=failure`,
     },
     auto_return: "approved",
     notification_url: `${baseUrl}/api/payment/webhook`,
@@ -450,8 +459,16 @@ const createOrderDonationWar = async (req, res) => {
 };
 
 const createDonator = async (req, res) => {
-  const { name, lastName, email, phone, documentType, documentNumber, amount } =
-    req.body;
+  const {
+    name,
+    lastName,
+    email,
+    phone,
+    documentType,
+    documentNumber,
+    amount,
+    campaign,
+  } = req.body;
 
   const donator = new Donator({
     name,
@@ -461,6 +478,7 @@ const createDonator = async (req, res) => {
     documentType,
     documentNumber,
     amount,
+    campaign,
   });
 
   try {

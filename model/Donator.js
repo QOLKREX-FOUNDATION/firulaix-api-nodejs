@@ -30,6 +30,10 @@ const SchemaDonator = new Schema(
       type: Number,
       required: true,
     },
+    campaign: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
