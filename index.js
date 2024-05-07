@@ -110,6 +110,9 @@ app.use("/api/document", require("./routes/document"));
 // Donaciones mercadopago
 app.use("/api/donate-payment", require("./routes/donatePayment"));
 
+// Campañas
+app.use("/api/campaign", require("./routes/campaign"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
