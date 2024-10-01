@@ -3,10 +3,25 @@ const app = express();
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const morgan = require("morgan");
+const http = require("http");
+const { Server: SocketServer } = require("socket.io");
+const Sockets = require("./config/sockets");
 
 require("dotenv").config();
 
 const { dbConnection } = require("./database/config");
+
+const httpServer = http.createServer(app);
+
+const io = new SocketServer(httpServer, {
+  origins: "*",
+});
+
+function configurarSockets() {
+  new Sockets(io);
+}
+
+configurarSockets();
 
 //DB
 dbConnection();
@@ -44,11 +59,65 @@ app.use("/api/renian", require("./routes/renian"));
 
 app.use("/api/files", require("./routes/files"));
 
+// Admin Routes
+
+app.use("/api/races", require("./routes/races"));
+
+app.use("/api/animals", require("./routes/animal"));
+
+app.use("/api/colors", require("./routes/color"));
+
+// Quantity Routes
+
+app.use("/api/quantity", require("./routes/quantity"));
+
+// Request Email
+
+app.use("/api/request", require("./routes/request"));
+
+// payment mercadopago
+
+app.use("/api/payment", require("./routes/payment"));
+
+// reports
+
+app.use("/api/reports", require("./routes/reports"));
+
+// statistics
+
+app.use("/api/statistics", require("./routes/statistics"));
+
+// notifications
+
+app.use("/api/notification", require("./routes/notification"));
+
+// Entity Register
+
+app.use("/api/entity-register", require("./routes/entityRegister"));
+
+// forms
+
+app.use("/api/form", require("./routes/forms"));
+
+// codes phone
+
+app.use("/api/code", require("./routes/codePhone"));
+
+// documents
+
+app.use("/api/document", require("./routes/document"));
+
+// Donaciones mercadopago
+app.use("/api/donate-payment", require("./routes/donatePayment"));
+
+// Campañas
+app.use("/api/campaign", require("./routes/campaign"));
+
 // Static files
 // app.use("/public/images/", express.static(__dirname + "/public/images/"));
 
 process.env.TZ = "America/Lima";
 
-app.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en el puerto: " + process.env.PORT);
 });

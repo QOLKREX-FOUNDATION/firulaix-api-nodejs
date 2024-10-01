@@ -13,15 +13,44 @@ const getAddress = async (req, res = response) => {
 			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
 				? true
 				: false;
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			bandera,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
+		});
+	}
+};
+
+// search adopter by documentNumber
+const getAdopterByDocumentNumber = async (req, res = response) => {
+	const { documentNumber } = req.params;
+
+	console.log({ documentNumber });
+
+	try {
+		const adopter = await Adopter.findOne({ documentNumber });
+
+		if (!adopter) {
+			return res.status(404).json({
+				ok: false,
+				msg: "The adopter does not exist",
+			});
+		}
+
+		return res.status(200).json({
+			ok: true,
+			adopter,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			ok: false,
+			msg: "Error inesperado... revisar logs",
 		});
 	}
 };
@@ -30,20 +59,25 @@ const getPublic = async (req, res = response) => {
 	const { address } = req.query;
 	try {
 		let find = await Adopter.findOne({ address });
-
-		if (!find.status) {
-			res.status(400).json({
+		if (!find) {
+			return res.status(400).json({
 				ok: false,
 			});
 		}
 
-		res.status(201).json({
+		if (!find?.status) {
+			return res.status(400).json({
+				ok: false,
+			});
+		}
+
+		return res.status(201).json({
 			ok: true,
 			phone: find.phone,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -54,17 +88,20 @@ const getEmail = async (req, res = response) => {
 	const { email, id } = req.query;
 	try {
 		let find = await Adopter.findOne({ email });
+		console.log(find.email)
+		console.log(find?._id)
+		console.log(find.email && String(find?._id).toUpperCase())
 		let bandera =
 			find.email && String(find?._id).toUpperCase() !== String(id).toUpperCase()
 				? true
 				: false;
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			bandera,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -92,7 +129,7 @@ const getRecordAddress = async (req, res = response) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -116,7 +153,7 @@ const getRecord = async (req, res = response) => {
 
 		if (
 			String(user?.user?._id).toUpperCase() ==
-				String(compare?.user?._id).toUpperCase() ||
+			String(compare?.user?._id).toUpperCase() ||
 			String(adopters.user).toString() == "000000000000000000000000"
 		) {
 			adopters = {
@@ -150,7 +187,7 @@ const getRecord = async (req, res = response) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
@@ -190,6 +227,7 @@ const saveRecord = async (req, res = response) => {
 		const record = await adopter.save();
 		let sendEmail = false;
 		if (req.body?.sendEmail) {
+			console.log("sendEmail")
 			sendEmail = await mail({
 				email: req.body.email,
 				password: req.body.passwordText,
@@ -198,7 +236,7 @@ const saveRecord = async (req, res = response) => {
 			});
 		}
 
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			data: record,
 			sendEmail,
@@ -260,13 +298,18 @@ const updateRecord = async (req, res = response) => {
 
 		if (
 			String(user?.user?._id).toUpperCase() ==
-				String(compare?.user?._id).toUpperCase() ||
+			String(compare?.user?._id).toUpperCase() ||
 			String(find.user).toString() == "000000000000000000000000"
 		) {
+
+			// Crear una copia de req.body excluyendo explícitamente el campo 'password'
+			const updatedData = { ...req.body };
+			delete updatedData.password;
+
 			await Adopter.findByIdAndUpdate(
 				req.params.id,
 				{
-					...req.body,
+					...updatedData,
 					update_for: req.body.userAddress,
 					update_at: new Date(),
 					user:
@@ -277,7 +320,72 @@ const updateRecord = async (req, res = response) => {
 				{ new: true }
 			);
 
-			res.status(200).json({
+			return res.status(200).json({
+				ok: true,
+			});
+		} else {
+			return res.status(404).json({
+				ok: false,
+				msg: "No permit",
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			ok: false,
+			msg: "Error, contact Admin",
+		});
+	}
+};
+
+const updateDocumentAdopter = async (req, res = response) => {
+	let msg = "";
+	console.log({ req: req.params.id });
+	try {
+		const find = await Adopter.findById(req.params.id);
+
+		const compare = await User.findById(String(find.user).toString()).populate(
+			"user",
+			"publicAddress"
+		);
+
+		const user = await User.findById(req.uid).populate("user", "publicAddress");
+
+		if (!find) {
+			return res.status(404).json({
+				ok: false,
+				msg: "No exist adopter",
+			});
+		}
+
+		if (msg) {
+			return res.status(400).json({
+				ok: false,
+				msg: msg,
+			});
+		}
+
+		if (
+			String(user?.user?._id).toUpperCase() ==
+			String(compare?.user?._id).toUpperCase() ||
+			String(find.user).toString() == "000000000000000000000000"
+		) {
+			// Crear una copia de req.body excluyendo explícitamente el campo 'password'
+			const updatedData = { ...req.body };
+			delete updatedData.password;
+
+			await Adopter.findByIdAndUpdate(
+				req.params.id,
+				{
+					country: updatedData.country,
+					person: updatedData.person,
+					document: updatedData.document,
+					documentNumber: updatedData.documentNumber,
+				},
+				{ new: true }
+			);
+
+			return res.status(200).json({
 				ok: true,
 			});
 		} else {
@@ -314,12 +422,12 @@ const deleteRecord = async (req, res = response) => {
 
 	if (
 		String(user?.user?._id).toUpperCase() ==
-			String(compare?.user?._id).toUpperCase() ||
+		String(compare?.user?._id).toUpperCase() ||
 		String(find.user).toString() == "000000000000000000000000"
 	) {
 		await Adopter.findByIdAndRemove(req.params.id);
 
-		res.status(200).json({
+		return res.status(200).json({
 			ok: true,
 		});
 	} else {
@@ -334,20 +442,93 @@ const getHistory = async (req, res = response) => {
 	try {
 		const { created_for } = req.query.created_for;
 		let adopters = await Adopter.find({ created_for });
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			adopters,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		return res.status(500).json({
 			ok: false,
 			msg: "Error, contact Admin",
 		});
 	}
 };
 
+const getAdopterByEmailOrName = async (req, res = response) => {
+	const { search } = req.params;
 
+	const { email = "true", name = "true", limit = 10, offset = 0 } = req.query;
+	console.log("search", search);
+	console.log("search", { email, name });
+	console.log({ limit, offset });
+
+	const isEmail = email === "true";
+	const isName = name === "true";
+
+	try {
+		if (!search) {
+			return res.status(400).json({
+				ok: false,
+				msg: "The search is required",
+			});
+		}
+
+		const query = { $or: [] };
+
+		if (isEmail) {
+			query.$or.push({
+				email: { $regex: search.toUpperCase(), $options: "i" },
+			});
+		}
+
+		if (isName) {
+			query.$or.push(
+				{ name: { $regex: search.toUpperCase(), $options: "i" } },
+				{ secondName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ lastName: { $regex: search.toUpperCase(), $options: "i" } },
+				{ mLastName: { $regex: search.toUpperCase(), $options: "i" } }
+			);
+		}
+
+		console.log({ query });
+
+		if (query.$or.length === 0) {
+			return res.status(200).json({
+				ok: false,
+				msg: "No criteria for search provided",
+			});
+		}
+
+		const formTotal = await Adopter.find(query);
+
+		const form = await Adopter.find(query).limit(limit).skip(offset);
+
+		// si no encuentra el formulario
+		if (form.length === 0) {
+			return res.status(200).json({
+				ok: false,
+				msg: "The form does not exist",
+			});
+		}
+
+		console.log("totalResults", formTotal.length);
+		console.log("form", form.length);
+		return res.status(200).json({
+			ok: true,
+			total: form.length,
+			totalResults: formTotal.length,
+			currentPage: offset,
+			form,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			msg: "Error inesperado... revisar logs",
+		});
+	}
+};
 
 module.exports = {
 	getPublic,
@@ -359,4 +540,7 @@ module.exports = {
 	deleteRecord,
 	getRecordAddress,
 	getHistory,
+	getAdopterByEmailOrName,
+	getAdopterByDocumentNumber,
+	updateDocumentAdopter
 };

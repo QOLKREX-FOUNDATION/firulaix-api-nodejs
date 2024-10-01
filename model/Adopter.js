@@ -99,6 +99,16 @@ const AdopterSchema = new Schema({
 	update_at: {
 		type: String,
 	},
+	phoneCode: {
+		type: Schema.Types.ObjectId,
+		ref: "CodePhone",
+		required: false,
+	},
+	nationality: {
+		type: Schema.Types.ObjectId,
+		ref: "CodePhone",
+		required: false,
+	},
 });
 
 module.exports = model("Adopter", AdopterSchema);

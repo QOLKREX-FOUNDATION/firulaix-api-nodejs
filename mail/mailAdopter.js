@@ -1,18 +1,19 @@
-const template = ({email, password, address, privateKey="", title=""}) => {
-    let message=""; 
-    if(privateKey!="" && privateKey!=null && privateKey!=undefined){
-        message=`Importe su  LLave Privada para   conectar su dirección pública, recuerde no compartirla con ninguna entidad, está es única y no guardamos una copia por motivos de privacidad y seguridad.`;
+const template = ({ email, password, address, privateKey = "", title = "" }) => {
+    let message = "";
+    console.log("template")
+    if (privateKey != "" && privateKey != null && privateKey != undefined) {
+        message = `Importe su  LLave Privada para   conectar su dirección pública, recuerde no compartirla con ninguna entidad, está es única y no guardamos una copia por motivos de privacidad y seguridad.`;
     }
 
-	return `
+    return `
     <!DOCTYPE html>
     <html lang="es">
     
     <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <title>${title} - Registrado Correctamente</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${ title } - Registrado Correctamente</title>
         <style type="text/css">
             @media screen {
                 @font-face {
@@ -226,10 +227,10 @@ const template = ({email, password, address, privateKey="", title=""}) => {
         <td align="center" bgcolor="#e9ecef">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px">
                 <tr>
-                    <td class="mobile_toolbar__Bo3ir" align="center" valign="top" style="padding: 15px 0">
+                    <td class="mobile_toolbar__Bo3ir" align="center" valign="top" style="padding: 0px 0">
                         <a href="https://firulaixcoin.finance/" target="_blank" style="display: inline-block">
-                            <img src="https://firulaixcoin.finance/images/mail/war.png" alt="Logo" border="0"
-                                style="display: block; width: 400px; max-width: 400px" />
+                            <img src="https://media.discordapp.net/attachments/839620709517230081/1093538394224738305/logo-icon.png" alt="Logo" border="0"
+                                style="display: block; width: 120px; max-width: 120px" />
                         </a>
                     </td>
                 </tr>
@@ -259,7 +260,7 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                                     </center>
                                 </h1>
                                 <p class="text-line text-color" style="padding: 20px 10px">
-                                    Su registro fue realizado exitosamente por ${title} ! Por favor revise sus credenciales de registro a continuación. No comparta esta información con niguna entidad, su llave private es de suma importancia.
+                                    Su registro fue realizado exitosamente por ${ title } ! Por favor revise sus credenciales de registro a continuación. No comparta esta información con niguna entidad, su llave private es de suma importancia.
                                 </p>
                             </td>
                         </tr>
@@ -276,32 +277,30 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                                 font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
                             ">
                             <div class="flex-item text-color">
-                            <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
+                            <img src="https://media.discordapp.net/attachments/839620709517230081/1093539283605917716/check.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                             <p>
-                                <b>Usuario:</b> ${email}<br>
-                                <span style="font-size: 12px;">Su usuario para iniciar sesión en la <a href="https://registro.firulaixcoin.finance/" target="_blank"
-                                rel="noopener noreferrer"> Plataforma de ${title}</a></span>
+                                <b>Usuario:</b> ${ email }<br>
+                                
                             </p>
                         </div>
                         <div class="flex-item text-color">
-                        <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
+                        <img src="https://media.discordapp.net/attachments/839620709517230081/1093539283605917716/check.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                                 <p>
-                                    <b>Contraseña:</b> ${password}<br>
-                                    <span style="font-size: 12px;">Su contraseña para iniciar sesión en la <a href="https://registro.firulaixcoin.finance/" target="_blank"
-                                    rel="noopener noreferrer"> Plataforma de ${title}</a></span>
+                                    <b>Contraseña:</b> ${ password }<br>
+                                    <span style="font-size: 12px;">Su contraseña para iniciar sesión en la <a href="https://registro.worldanimalregistry.org/login" target="_blank"
+                                    rel="noopener noreferrer"> Plataforma de ${ title }</a></span>
                                 </p>
                         </div>
-                        ${
-                            message!="" ?
-                            `<div class="flex-item text-color">
-                            <img src="https://firulaixcoin.finance/images/email/checked.png" alt="checked"
+                        ${ message != "" ?
+            `<div class="flex-item text-color">
+                            <img src="https://media.discordapp.net/attachments/839620709517230081/1093539283605917716/check.png" alt="checked"
                                 border="0" style="display: block; width: 20px; height: 20px" />
                                 <p>
-                                    <b> LLave Privada</b>:  <br>${privateKey}  <br> 
-                                    <span style="font-size: 12px;">Sus mascotas serán registrada de manera desentralizada en la siguiente dirección pública(public address) ${address}.<br/>
-                                    ${message}
+                                    <b> LLave Privada</b>:  <br>${ privateKey }  <br> 
+                                    <span style="font-size: 12px;">Sus mascotas serán registrada de manera desentralizada en la siguiente dirección pública(public address) ${ address }.<br/>
+                                    ${ message }
                                     <br/>
                                     <br/>
                                          <span style="font-size: 12px;">Puedes ir a nuestra documentación para más información de como importar tu llave privada.<br/>
@@ -310,8 +309,8 @@ const template = ({email, password, address, privateKey="", title=""}) => {
                                 </p>
                             </div>
                             `
-                            : ``
-                        }
+            : ``
+        }
                     </td>
                         </tr>
                         <tr>
@@ -448,8 +447,7 @@ const template = ({email, password, address, privateKey="", title=""}) => {
     </body>
     
     </html>
-    
-    
+      
     `;
 };
 

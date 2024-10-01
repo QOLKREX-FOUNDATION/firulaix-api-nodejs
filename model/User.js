@@ -39,15 +39,21 @@ const UserSchema = new Schema({
 		idPermission: {
 			type: [String],
 		},
-		accessValues:{
+		accessValues: {
 			type: [[String]],
-		}
+		},
 	},
 	user: {
 		name: {
 			type: String,
 		},
+		secondName: {
+			type: String,
+		},
 		lastName: {
+			type: String,
+		},
+		secondLastName: {
 			type: String,
 		},
 		local: {
@@ -56,9 +62,38 @@ const UserSchema = new Schema({
 		position: {
 			type: String,
 		},
-		accessValues:{
+		accessValues: {
 			type: [[String]],
-		}
+		},
+
+		email: {
+			type: String,
+		},
+		phone: {
+			type: String,
+		},
+		birthDate: {
+			type: String,
+		},
+		gender: {
+			type: String,
+		},
+		department: {
+			type: String,
+		},
+		province: {
+			type: String,
+		},
+		district: {
+			type: String,
+		},
+		direction: {
+			type: String,
+		},
+		typePerson: {
+			type: String,
+			default: "JURIDIC",
+		},
 	},
 	created_for: {
 		type: String,
