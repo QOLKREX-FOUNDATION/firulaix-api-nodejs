@@ -131,7 +131,7 @@ const requestRegisterUserWarSRV = async (req, res) => {
       const newUrl = `https://registro.worldanimalregistry.org/formulario/solicitud-de-registro?address=${
         country === "HN"
           ? "0x3373681Db719331c7bdB06acB259247B0614d6f5"
-          : "0xE8A2a2c0fA6E62568f5dc389cAD421cDb06962D9"
+          : "0x7B9B14218998c7A90C1F28F13025c0F1d6678c95"
       }`;
       const sendEmail = await mailRegisterUserWarSRV({
         registry: req.body,
