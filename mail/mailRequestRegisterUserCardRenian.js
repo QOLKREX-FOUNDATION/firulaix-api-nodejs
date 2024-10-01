@@ -418,7 +418,7 @@ const templateRequestUserCardRenian = ({ registry, url }) => {
                           >
                           <a
                             href="${ url +
-    "&address=0xE8A2a2c0fA6E62568f5dc389cAD421cDb06962D9"
+    "&address=0x7B9B14218998c7A90C1F28F13025c0F1d6678c95"
     }"
                             target="_blank"
                             >Ir al Formulario</a
