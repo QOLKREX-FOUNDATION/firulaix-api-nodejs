@@ -11,9 +11,9 @@ const createOrder = async (req, res) => {
   const { amount, currency, name, lastName, email, dni, donationUrl } =
     req.body;
   redirectDonationUrl = donationUrl;
-  if (amount < 5) {
+  if (amount < 2) {
     return res.status(400).json({
-      msg: "La donacion tiene que ser mayor o igual a 5 dolares",
+      msg: "La donacion tiene que ser mayor o igual a 2 dolares",
     });
   }
   if (!amount || !currency) {

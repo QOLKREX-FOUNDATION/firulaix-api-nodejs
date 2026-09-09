@@ -5,6 +5,7 @@ const {
   mailDonator,
 } = require("../helpers/mail");
 const { generateUrlForm } = require("../helpers/generateUrlForm");
+const getExchangeRate = require("../helpers/getExchangeRate");
 const Donator = require("../model/Donator");
 
 const baseUrl = "https://firulaix-api-nodejs.vercel.app";
@@ -424,33 +425,36 @@ const createOrderDonationWar = async (req, res) => {
     campaignName,
   } = req.body;
 
-  const preference = {
-    items: [
-      {
-        title: "Donación",
-        unit_price: Number(amount),
-        currency_id: "PEN",
-        quantity: 1,
-      },
-    ],
-    back_urls: {
-      success: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=success&amount=${amount}&name=${name}&lastName=${lastname}&email=${email}&phone=${phone}&documentType=${documentType}&documentNumber=${documentNumber}&campaign=${campaign}`,
-      failure: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=failure`,
-    },
-    auto_return: "approved",
-    notification_url: `${baseUrl}/api/payment/webhook`,
-    metadata: {
-      name,
-      lastname,
-      email,
-      phone,
-      amount,
-      documentType,
-      documentNumber,
-    },
-  };
-
   try {
+    const venta = await getExchangeRate();
+    const soles = Number((Number(amount) * venta).toFixed(2));
+    const preference = {
+      items: [
+        {
+          title: "Donación",
+          unit_price: soles,
+          currency_id: "PEN",
+          quantity: 1,
+        },
+      ],
+      back_urls: {
+        success: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=success&amount=${amount}&name=${name}&lastName=${lastname}&email=${email}&phone=${phone}&documentType=${documentType}&documentNumber=${documentNumber}&campaign=${campaign}`,
+        failure: `${process.env.HOST_WAR}/es/compaigns/${campaignName}?status=failure`,
+      },
+      auto_return: "approved",
+      notification_url: `${baseUrl}/api/payment/webhook`,
+      metadata: {
+        name,
+        lastname,
+        email,
+        phone,
+        amount,
+        soles,
+        documentType,
+        documentNumber,
+      },
+    };
+
     const result = await mercadopago.preferences.create(preference);
     res.send(result.body);
   } catch (error) {
@@ -470,18 +474,21 @@ const createDonator = async (req, res) => {
     campaign,
   } = req.body;
 
-  const donator = new Donator({
-    name,
-    lastName,
-    email,
-    phone,
-    documentType,
-    documentNumber,
-    amount,
-    campaign,
-  });
-
   try {
+    const venta = await getExchangeRate();
+    const soles = Number((Number(amount) * venta).toFixed(2));
+    const donator = new Donator({
+      name,
+      lastName,
+      email,
+      phone,
+      documentType,
+      documentNumber,
+      amount,
+      soles,
+      campaign,
+    });
+
     const donatorDB = await donator.save();
 
     await mailDonator({
@@ -515,16 +522,16 @@ const reciveWebhook = async (req, res) => {
   try {
     if (payment.type === "payment") {
       const paymentInfo = await mercadopago.payment.findById(
-        payment["data.id"]
+        payment["data.id"],
       );
       console.log("paymentInfo reciveWebhook", paymentInfo);
       console.log(
         "paymentInfo reciveWebhook",
-        paymentInfo.body.additional_info.items[0].title
+        paymentInfo.body.additional_info.items[0].title,
       );
       console.log(
         "paymentInfo reciveWebhook",
-        paymentInfo.body.additional_info.payer
+        paymentInfo.body.additional_info.payer,
       );
 
       if (paymentInfo.body.status === "approved") {

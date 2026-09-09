@@ -27,10 +27,10 @@ const getTotalAmountByCampaign = async (req, res) => {
     const { campaign } = req.params;
     const donators = await Donator.find({ campaign }).exec();
     const totalAmount = donators.reduce(
-      (acc, donator) => acc + donator.amount,
-      0
+      (acc, donator) => acc + (donator.soles || 0),
+      0,
     );
-    res.json({ totalAmount: totalAmount / 10 });
+    res.json({ totalAmount });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

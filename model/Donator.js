@@ -30,12 +30,16 @@ const SchemaDonator = new Schema(
       type: Number,
       required: true,
     },
+    soles: {
+      type: Number,
+      required: true,
+    },
     campaign: {
       type: Number,
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 SchemaDonator.method("toJSON", function () {
