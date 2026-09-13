@@ -30,6 +30,10 @@ const SchemaDonator = new Schema(
       type: Number,
       required: true,
     },
+    paws: {
+      type: Number,
+      required: true,
+    },
     soles: {
       type: Number,
       required: true,

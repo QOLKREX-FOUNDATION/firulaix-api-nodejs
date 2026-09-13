@@ -7,6 +7,7 @@ const {
 const { generateUrlForm } = require("../helpers/generateUrlForm");
 const getExchangeRate = require("../helpers/getExchangeRate");
 const Donator = require("../model/Donator");
+const Sequence = require("../model/Sequence");
 
 const baseUrl = "https://firulaix-api-nodejs.vercel.app";
 // const baseUrl = "https://3tfgz37n-5000.brs.devtunnels.ms"
@@ -471,8 +472,22 @@ const createDonator = async (req, res) => {
     documentType,
     documentNumber,
     amount,
+    paws,
+    pawstotal,
+    amounttotal,
     campaign,
   } = req.body;
+
+  if (
+    ![paws, pawstotal, amounttotal].every((value) =>
+      Number.isFinite(Number(value)),
+    )
+  ) {
+    return res.status(400).json({
+      ok: false,
+      msg: "paws, pawstotal y amounttotal deben ser valores numéricos",
+    });
+  }
 
   try {
     const venta = await getExchangeRate();
@@ -485,11 +500,22 @@ const createDonator = async (req, res) => {
       documentType,
       documentNumber,
       amount,
+      paws,
       soles,
       campaign,
     });
 
     const donatorDB = await donator.save();
+    const sequencesDB = await Sequence.findOneAndUpdate(
+      { model: "Donator", field: "totals" },
+      {
+        $inc: {
+          pawstotal: Number(pawstotal),
+          amounttotal: Number(amounttotal),
+        },
+      },
+      { new: true, upsert: true },
+    );
 
     await mailDonator({
       email,
@@ -500,6 +526,7 @@ const createDonator = async (req, res) => {
     res.json({
       ok: true,
       donator: donatorDB,
+      sequences: sequencesDB,
     });
   } catch (error) {
     console.error(error);
