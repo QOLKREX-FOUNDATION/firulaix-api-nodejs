@@ -5,7 +5,6 @@ const {
   mailDonator,
 } = require("../helpers/mail");
 const { generateUrlForm } = require("../helpers/generateUrlForm");
-const getExchangeRate = require("../helpers/getExchangeRate");
 const Donator = require("../model/Donator");
 const AccountDonator = require("../model/AccountDonator");
 
@@ -419,6 +418,7 @@ const createOrderDonationWar = async (req, res) => {
     lastname,
     email,
     amount,
+    soles,
     documentType,
     documentNumber,
     phone,
@@ -426,14 +426,25 @@ const createOrderDonationWar = async (req, res) => {
     campaignName,
   } = req.body;
 
+  if (
+    soles === undefined ||
+    soles === null ||
+    soles === "" ||
+    !Number.isFinite(Number(soles)) ||
+    Number(soles) <= 0
+  ) {
+    return res.status(400).json({
+      ok: false,
+      msg: "soles debe ser un monto numérico mayor que cero",
+    });
+  }
+
   try {
-    const venta = await getExchangeRate();
-    const soles = Number((Number(amount) * venta).toFixed(2));
     const preference = {
       items: [
         {
           title: "Donación",
-          unit_price: soles,
+          unit_price: Number(soles),
           currency_id: "PEN",
           quantity: 1,
         },
@@ -450,7 +461,7 @@ const createOrderDonationWar = async (req, res) => {
         email,
         phone,
         amount,
-        soles,
+        soles: Number(soles),
         documentType,
         documentNumber,
       },
@@ -509,7 +520,13 @@ const createDonator = async (req, res) => {
     const donatorDB = await donator.save();
     const accountDonatorDB = await AccountDonator.findOneAndUpdate(
       { campaign: String(campaign) },
-      { $inc: { amountsoles: Number(soles) } },
+      {
+        $inc: {
+          amountsoles: Number(soles),
+          amountpaws: Number(paws),
+          amountsuma: Number(amount),
+        },
+      },
       { new: true, upsert: true, setDefaultsOnInsert: true },
     );
 

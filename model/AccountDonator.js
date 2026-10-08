@@ -7,6 +7,16 @@ const accountDonatorSchema = new Schema(
       required: true,
       default: 0,
     },
+    amountpaws: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    amountsuma: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     campaign: {
       type: String,
       required: true,
