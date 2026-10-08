@@ -1,4 +1,5 @@
 const Donator = require("../model/Donator");
+const AccountDonator = require("../model/AccountDonator");
 
 const baseUrl = "https://firulaix-api-nodejs.vercel.app";
 
@@ -25,12 +26,17 @@ const getDonatorsByCampaign = async (req, res) => {
 const getTotalAmountByCampaign = async (req, res) => {
   try {
     const { campaign } = req.params;
-    const donators = await Donator.find({ campaign }).exec();
-    const totalAmount = donators.reduce(
-      (acc, donator) => acc + (donator.soles || 0),
-      0,
-    );
-    res.json({ totalAmount });
+    const accountDonator = await AccountDonator.findOne({
+      campaign: String(campaign),
+    }).lean();
+    const amountsoles = accountDonator?.amountsoles || 0;
+
+    res.json({
+      totalAmount: amountsoles,
+      amountsoles,
+      amountpaws: accountDonator?.amountpaws || 0,
+      amountsuma: accountDonator?.amountsuma || 0,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
