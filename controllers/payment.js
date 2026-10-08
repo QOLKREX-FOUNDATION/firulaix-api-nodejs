@@ -7,7 +7,7 @@ const {
 const { generateUrlForm } = require("../helpers/generateUrlForm");
 const getExchangeRate = require("../helpers/getExchangeRate");
 const Donator = require("../model/Donator");
-const Sequence = require("../model/Sequence");
+const AccountDonator = require("../model/AccountDonator");
 
 const baseUrl = "https://firulaix-api-nodejs.vercel.app";
 // const baseUrl = "https://3tfgz37n-5000.brs.devtunnels.ms"
@@ -473,25 +473,26 @@ const createDonator = async (req, res) => {
     documentNumber,
     amount,
     paws,
-    pawstotal,
-    amounttotal,
+    soles,
     campaign,
   } = req.body;
 
   if (
-    ![paws, pawstotal, amounttotal].every((value) =>
-      Number.isFinite(Number(value)),
+    [paws, soles].some(
+      (value) =>
+        value === undefined ||
+        value === null ||
+        value === "" ||
+        !Number.isFinite(Number(value)),
     )
   ) {
     return res.status(400).json({
       ok: false,
-      msg: "paws, pawstotal y amounttotal deben ser valores numéricos",
+      msg: "paws y soles son obligatorios y deben ser valores numéricos",
     });
   }
 
   try {
-    const venta = await getExchangeRate();
-    const soles = Number((Number(amount) * venta).toFixed(2));
     const donator = new Donator({
       name,
       lastName,
@@ -500,21 +501,16 @@ const createDonator = async (req, res) => {
       documentType,
       documentNumber,
       amount,
-      paws,
-      soles,
+      paws: Number(paws),
+      soles: Number(soles),
       campaign,
     });
 
     const donatorDB = await donator.save();
-    const sequencesDB = await Sequence.findOneAndUpdate(
-      { model: "Donator", field: "totals" },
-      {
-        $inc: {
-          pawstotal: Number(pawstotal),
-          amounttotal: Number(amounttotal),
-        },
-      },
-      { new: true, upsert: true },
+    const accountDonatorDB = await AccountDonator.findOneAndUpdate(
+      { campaign: String(campaign) },
+      { $inc: { amountsoles: Number(soles) } },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
     );
 
     await mailDonator({
@@ -526,7 +522,7 @@ const createDonator = async (req, res) => {
     res.json({
       ok: true,
       donator: donatorDB,
-      sequences: sequencesDB,
+      accountDonator: accountDonatorDB,
     });
   } catch (error) {
     console.error(error);
